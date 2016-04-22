@@ -12,15 +12,15 @@ main toolbar in the notebook itself, refreshing every 5s.
 You can currently install this directly from git:
 
 ```
-pip install git+https://github.com/yuvipanda/nbresuser.git
-jupyter serverextension install --py nbresuser
-jupyter nbextension install --py nbresuser
+pip install git+https://github.com/yuvipanda/nbresuse.git
+jupyter serverextension install --py nbresuse
+jupyter nbextension install --py nbresuse
 ```
 
 To enable this extension for all notebooks:
 
 ```
-jupyter nbextension enable --py nbresuser
+jupyter nbextension enable --py nbresuse
 ```
 
 ## Resources displayed
