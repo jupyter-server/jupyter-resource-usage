@@ -1,4 +1,5 @@
 import setuptools
+from glob import glob
 
 setuptools.setup(
     name="nbresuse",
@@ -10,5 +11,8 @@ setuptools.setup(
     install_requires=[
         'psutil',
         'notebook',
+    ],
+    data_files=[
+        ('share/jupyter/nbextensions/nbresuse', glob('nbresuse/static/*'))
     ]
 )
