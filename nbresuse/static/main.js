@@ -1,6 +1,4 @@
-define(['jquery'], function ($) {
-    var displayDiv = null;
-
+define(['jquery', 'base/js/utils'], function ($, utils) {
     function createDisplayDiv() {
         $('#maintoolbar-container').append(
             $('<div>').attr('id', 'nbresuse-display')
@@ -16,7 +14,7 @@ define(['jquery'], function ($) {
     }
 
     var displayMetrics = function() {
-        $.getJSON('/metrics', function(data) {
+        $.getJSON(utils.get_body_data('baseUrl') + 'metrics', function(data) {
             // FIXME: Proper setups for MB and GB. MB should have 0 things
             // after the ., but GB should have 2.
             var displayRSS = (data['rss'] / (1024 * 1024)).toFixed(0);
