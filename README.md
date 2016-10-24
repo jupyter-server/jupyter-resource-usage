@@ -13,7 +13,7 @@ You can currently install this directly from git:
 
 ```
 pip install git+https://github.com/yuvipanda/nbresuse.git
-jupyter serverextension install --py nbresuse
+jupyter serverextension enable --py nbresuse
 jupyter nbextension install --py nbresuse
 ```
 
