@@ -1,3 +1,4 @@
+import os
 import json
 import psutil
 from notebook.utils import url_path_join
@@ -9,6 +10,9 @@ def get_metrics():
     rss = sum([p.memory_info().rss for p in all_processes])
     return {
         'rss': rss,
+        'limits': {
+            'memory': int(os.environ.get('LIMIT_MEM', None))
+        }
     }
 
 
