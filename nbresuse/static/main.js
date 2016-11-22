@@ -17,10 +17,10 @@ define(['jquery', 'base/js/utils'], function ($, utils) {
         $.getJSON(utils.get_body_data('baseUrl') + 'metrics', function(data) {
             // FIXME: Proper setups for MB and GB. MB should have 0 things
             // after the ., but GB should have 2.
-            var display = str((data['rss'] / (1024 * 1024)).toFixed(0)) + " MB";
+            var display = Math.round(data['rss'] / (1024 * 1024)) + " MB";
 
-            if (data['limits']['mem'] !== null) {
-                display += " / " + (data['limits']['mem'] / (1024 * 1024));
+            if (data['limits']['memory'] !== null) {
+                display += " / " + (data['limits']['memory'] / (1024 * 1024));
             }
             $('#nbresuse-mem').text(display);
         });
