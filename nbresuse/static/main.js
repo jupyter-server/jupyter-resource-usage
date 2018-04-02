@@ -1,9 +1,18 @@
 define(['jquery', 'base/js/utils'], function ($, utils) {
-    function setupDOM() {
+    function getCookieValue(name) {
+        var values = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return values ? values.pop() : '';
+    }
+
+    function setupDOM()  {
         $('#maintoolbar-container').append(
             $('<div>').attr('id', 'nbresuse-display')
                       .addClass('btn-group')
                       .addClass('pull-right')
+            // FIXME: Temporary location here until we move it somewhere else nicer
+            .append(
+                $('<span>').text('Hub: ' + getCookieValue('hub') + ' | User: ' + getCookieValue('username') + ' | ')
+            )
             .append(
                 $('<strong>').text('Memory: ')
             ).append(
@@ -18,6 +27,7 @@ define(['jquery', 'base/js/utils'], function ($, utils) {
         $('head').append(
             $('<style>').html('#nbresuse-display { padding: 2px 8px; }')
         );
+
     }
 
     var displayMetrics = function() {
