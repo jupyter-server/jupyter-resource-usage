@@ -1,8 +1,9 @@
+from glob import glob
 import setuptools
 
 setuptools.setup(
     name="nbresuse",
-    version='0.2.0',
+    version='0.3.0',
     url="https://github.com/yuvipanda/nbresuse",
     author="Yuvi Panda",
     description="Simple Jupyter extension to show how much resources (RAM) your notebook is using",
@@ -11,5 +12,11 @@ setuptools.setup(
         'psutil',
         'notebook',
     ],
-    package_data={'nbresuse': ['static/*']},
+    data_files=[
+        ('share/jupyter/nbextensions/nbresuse', glob('nbresuse/static/*')),
+        ('etc/jupyter/jupyter_notebook_config.d', ['nbresuse/etc/serverextension.json']),
+        ('etc/jupyter/nbconfig/notebook.d', ['nbresuse/etc/nbextension.json'])
+    ],
+    zip_safe=False,
+    include_package_data=True
 )

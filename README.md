@@ -15,7 +15,8 @@ You can currently install this package from PyPI.
 pip install nbresuse
 ```
 
-Once installed, you need to enable it for use in your notebook
+**If your notebook version is < 5.3**, you need to enable the extension manually.
+
 ```
 jupyter serverextension enable --py nbresuse --sys-prefix
 jupyter nbextension install --py nbresuse --sys-prefix
