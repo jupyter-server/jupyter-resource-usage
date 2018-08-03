@@ -13,7 +13,8 @@ setuptools.setup(
     ],
     package_data={'nbresuse': ['static/*']},
     data_files=[
-        ('etc/jupyter/jupyter_notebook_config.d', ['nbresuse/etc/nbresuse.json'])
+        ('etc/jupyter/jupyter_notebook_config.d', ['nbresuse/etc/serverextension.json']),
+        ('etc/jupyter/nbconfig/notebook.d', ['nbresuse/etc/nbextension.json'])
     ],
     zip_safe=False,
     include_package_data=True

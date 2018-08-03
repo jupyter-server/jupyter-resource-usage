@@ -3,9 +3,6 @@
     "nbserver_extensions": {
       "nbresuse": true
     }
-  },
-  "load_extensions": {
-     "nbresuse/static/main": true
   }
 }
 
