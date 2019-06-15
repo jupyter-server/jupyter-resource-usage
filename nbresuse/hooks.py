@@ -4,7 +4,7 @@ hookspec = pluggy.HookspecMarker("nbresuse")
 hookimpl = pluggy.HookimplMarker("nbresuse")
 
 @hookspec
-def nbresuse_add_resource(config):
+def nbresuse_add_resource(nbapp):
     """
     Return resource definitions to send to clients.
 

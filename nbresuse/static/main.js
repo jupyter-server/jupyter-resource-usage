@@ -34,14 +34,14 @@ define(['jquery', 'base/js/utils'], function ($, utils) {
             // FIXME: Proper setups for MB and GB. MB should have 0 things
             // after the ., but GB should have 2.
 
-            var memory = data['nbresuse.jupyter.org/memory'];
+            var memory = data['nbresuse.jupyter.org/usage'];
 
             // Show RSS info
-            var rss = memory['notebook']['rss'];
+            var rss = memory['rss'];
             var display = Math.round(rss['usage'] / (1024 * 1024));
 
             if (rss['limit']) {
-                display += ' / ' + (rss['limit'] / (1024 * 1024));
+                display += ' / ' + Math.round((rss['limit'] / (1024 * 1024)));
 
                 if (rss['usage'] / rss['limit'] >= rss['warn']) {
                     $('#nbresuse-display').addClass('nbresuse-warn');
