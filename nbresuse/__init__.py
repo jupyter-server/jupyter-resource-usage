@@ -5,9 +5,11 @@ from traitlets import Float, Int, default
 from traitlets.config import Configurable
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
+from tornado import web
 
 
 class MetricsHandler(IPythonHandler):
+    @web.authenticated
     def get(self):
         """
         Calculate and return current resource usage metrics
