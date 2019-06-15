@@ -6,32 +6,43 @@ from traitlets.config import Configurable
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 from tornado import web
+import asyncio
 
 
 class MetricsHandler(IPythonHandler):
+    def initialize(self):
+        self.set_header('content-type', 'text/event-stream')
+        self.set_header('cache-control', 'no-cache')
+
     @web.authenticated
-    def get(self):
+    async def get(self):
         """
         Calculate and return current resource usage metrics
         """
         config = self.settings['nbresuse_display_config']
-        cur_process = psutil.Process()
-        all_processes = [cur_process] + cur_process.children(recursive=True)
-        rss = sum([p.memory_info().rss for p in all_processes])
+        while True:
+          cur_process = psutil.Process()
+          all_processes = [cur_process] + cur_process.children(recursive=True)
+          rss = sum([p.memory_info().rss for p in all_processes])
 
-        limits = {}
+          limits = {}
 
-        if config.mem_limit != 0:
-            limits['memory'] = {
-                'rss': config.mem_limit
-            }
-            if config.mem_warning_threshold != 0:
-                limits['memory']['warn'] = (config.mem_limit - rss) < (config.mem_limit * config.mem_warning_threshold)
-        metrics = {
-            'rss': rss,
-            'limits': limits,
-        }
-        self.write(json.dumps(metrics))
+          if config.mem_limit != 0:
+              limits['memory'] = {
+                  'rss': config.mem_limit
+              }
+              if config.mem_warning_threshold != 0:
+                  limits['memory']['warn'] = (config.mem_limit - rss) < (config.mem_limit * config.mem_warning_threshold)
+          metrics = {
+              'rss': rss,
+              'limits': limits,
+          }
+          self.write('data: {}\n\n'.format(json.dumps(metrics)))
+          try:
+              await self.flush()
+          except iostream.StreamClosedError:
+              return
+          await asyncio.sleep(5)
 
 
 def _jupyter_server_extension_paths():
@@ -95,5 +106,5 @@ def load_jupyter_server_extension(nbapp):
     """
     resuseconfig = ResourceUseDisplay(parent=nbapp)
     nbapp.web_app.settings['nbresuse_display_config'] = resuseconfig
-    route_pattern = url_path_join(nbapp.web_app.settings['base_url'], '/metrics')
+    route_pattern = url_path_join(nbapp.web_app.settings['base_url'], '/api/nbresuse')
     nbapp.web_app.add_handlers('.*', [(route_pattern, MetricsHandler)])

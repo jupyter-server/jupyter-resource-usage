@@ -25,7 +25,10 @@ define(['jquery', 'base/js/utils'], function ($, utils) {
             // Don't poll when nobody is looking
             return;
         }
-        $.getJSON(utils.get_body_data('baseUrl') + 'metrics', function(data) {
+        var metricsUrl = utils.get_body_data('baseUrl') + 'api/nbresuse';
+        var metricsSource = new EventSource(metricsUrl);
+        metricsSource.onmessage = function(message) {
+            var data = JSON.parse(message.data);
             // FIXME: Proper setups for MB and GB. MB should have 0 things
             // after the ., but GB should have 2.
             var display = Math.round(data['rss'] / (1024 * 1024));
@@ -44,20 +47,18 @@ define(['jquery', 'base/js/utils'], function ($, utils) {
             if (data['limits']['memory'] !== null) {
             }
             $('#nbresuse-mem').text(display + ' MB');
-        });
+        };
     }
 
     var load_ipython_extension = function () {
         setupDOM();
         displayMetrics();
-        // Update every five seconds, eh?
-        setInterval(displayMetrics, 1000 * 5);
 
         document.addEventListener("visibilitychange", function() {
             // Update instantly when user activates notebook tab
             // FIXME: Turn off update timer completely when tab not in focus
             if (!document.hidden) {
-                displayMetrics();
+                //displayMetrics();
             }
         }, false);
     };
