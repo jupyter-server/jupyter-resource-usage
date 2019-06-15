@@ -1,12 +1,19 @@
 import os
 import json
-import psutil
 from traitlets import Float, Int, default
 from traitlets.config import Configurable
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
-from tornado import web
+from tornado import web, iostream
 import asyncio
+import pluggy
+from nbresuse import hooks, memory
+from collections import ChainMap
+
+
+plugin_manager = pluggy.PluginManager('nbresuse')
+plugin_manager.add_hookspecs(hooks)
+plugin_manager.register(memory)
 
 
 class MetricsHandler(IPythonHandler):
@@ -21,28 +28,15 @@ class MetricsHandler(IPythonHandler):
         """
         config = self.settings['nbresuse_display_config']
         while True:
-          cur_process = psutil.Process()
-          all_processes = [cur_process] + cur_process.children(recursive=True)
-          rss = sum([p.memory_info().rss for p in all_processes])
-
-          limits = {}
-
-          if config.mem_limit != 0:
-              limits['memory'] = {
-                  'rss': config.mem_limit
-              }
-              if config.mem_warning_threshold != 0:
-                  limits['memory']['warn'] = (config.mem_limit - rss) < (config.mem_limit * config.mem_warning_threshold)
-          metrics = {
-              'rss': rss,
-              'limits': limits,
-          }
-          self.write('data: {}\n\n'.format(json.dumps(metrics)))
-          try:
-              await self.flush()
-          except iostream.StreamClosedError:
-              return
-          await asyncio.sleep(5)
+            metrics = {}
+            for metric_response in plugin_manager.hook.nbresuse_add_resource(config=config):
+                metrics.update(metric_response)
+            self.write('data: {}\n\n'.format(json.dumps(metrics)))
+            try:
+                await self.flush()
+            except iostream.StreamClosedError:
+                return
+            await asyncio.sleep(5)
 
 
 def _jupyter_server_extension_paths():

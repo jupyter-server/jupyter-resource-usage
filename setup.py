@@ -11,6 +11,7 @@ setuptools.setup(
     install_requires=[
         'psutil',
         'notebook',
+        'pluggy'
     ],
     data_files=[
         ('share/jupyter/nbextensions/nbresuse', glob('nbresuse/static/*')),

@@ -25,42 +25,37 @@ define(['jquery', 'base/js/utils'], function ($, utils) {
             // Don't poll when nobody is looking
             return;
         }
-        var metricsUrl = utils.get_body_data('baseUrl') + 'api/nbresuse';
+        var metricsUrl = utils.get_body_data('baseUrl') + 'api/nbresuse/v1';
+
+        // FIXME: Reconnect on failure
         var metricsSource = new EventSource(metricsUrl);
         metricsSource.onmessage = function(message) {
             var data = JSON.parse(message.data);
             // FIXME: Proper setups for MB and GB. MB should have 0 things
             // after the ., but GB should have 2.
-            var display = Math.round(data['rss'] / (1024 * 1024));
 
-            var limits = data['limits'];
-            if ('memory' in limits) {
-                if ('rss' in limits['memory']) {
-                    display += " / " + (limits['memory']['rss'] / (1024 * 1024));
-                }
-                if (limits['memory']['warn']) {
+            var memory = data['nbresuse.jupyter.org/memory'];
+
+            // Show RSS info
+            var rss = memory['notebook']['rss'];
+            var display = Math.round(rss['usage'] / (1024 * 1024));
+
+            if (rss['limit']) {
+                display += ' / ' + (rss['limit'] / (1024 * 1024));
+
+                if (rss['usage'] / rss['limit'] >= rss['warn']) {
                     $('#nbresuse-display').addClass('nbresuse-warn');
                 } else {
                     $('#nbresuse-display').removeClass('nbresuse-warn');
                 }
             }
-            if (data['limits']['memory'] !== null) {
-            }
             $('#nbresuse-mem').text(display + ' MB');
         };
-    }
+    };
 
     var load_ipython_extension = function () {
         setupDOM();
         displayMetrics();
-
-        document.addEventListener("visibilitychange", function() {
-            // Update instantly when user activates notebook tab
-            // FIXME: Turn off update timer completely when tab not in focus
-            if (!document.hidden) {
-                //displayMetrics();
-            }
-        }, false);
     };
 
     return {
