@@ -29,6 +29,20 @@ class MetricsHandler(IPythonHandler):
         else: # mem_limit is an Int
             mem_limit = config.mem_limit
 
+        def get_cpu_percent(p):
+            try:
+                return p.cpu_percent(interval=0.1)
+            # Avoid littering logs with stack traces complaining
+            # about dead processes having no CPU usage
+            except:
+                return 0
+        cpu_percent = sum([get_cpu_percent(p) for p in all_processes])
+        # A better approach would use cpu_affinity to account for the
+        # fact that the number of logical CPUs in the system is not
+        # necessarily the same as the number of CPUs the process
+        # can actually use. But cpu_affinity isn't available for OS X.
+        cpu_count = psutil.cpu_count()
+
         limits = {}
 
         if config.mem_limit != 0:
@@ -37,8 +51,18 @@ class MetricsHandler(IPythonHandler):
             }
             if config.mem_warning_threshold != 0:
                 limits['memory']['warn'] = (config.mem_limit - rss) < (config.mem_limit * config.mem_warning_threshold)
+
+        if config.cpu_limit != 0:
+            limits['cpu'] = {
+                'cpu': config.cpu_limit
+            }
+            if config.cpu_warning_threshold != 0:
+                limits['cpu']['warn'] = (config.cpu_limit - cpu_percent) < (config.cpu_limit * config.cpu_warning_threshold)
+
         metrics = {
             'rss': rss,
+            'cpu_percent': cpu_percent,
+            'cpu_count': cpu_count,
             'limits': limits,
         }
         self.write(json.dumps(metrics))
@@ -95,9 +119,38 @@ class ResourceUseDisplay(Configurable):
         """
     ).tag(config=True)
 
+    cpu_warning_threshold = Float(
+        0.1,
+        help="""
+        Warn user with flashing lights when CPU usage is within this fraction
+        CPU usage limit.
+
+        For example, if memory limit is 150%, `cpu_warning_threshold` is 0.1,
+        we will start warning the user when they use (150 - (150 * 0.1)) %.
+
+        Set to 0 to disable warning.
+        """
+    ).tag(config=True)
+
+    cpu_limit = Float(
+        0,
+        help="""
+        CPU usage limit to display to the user.
+
+        Note that this does not actually limit the user's CPU usage!
+
+        Defaults to reading from the `CPU_LIMIT` environment variable. If
+        set to 0, no CPU usage limit is displayed.
+        """
+    ).tag(config=True)
+
     @default('mem_limit')
     def _mem_limit_default(self):
         return int(os.environ.get('MEM_LIMIT', 0))
+
+    @default('cpu_limit')
+    def _cpu_limit_default(self):
+        return float(os.environ.get('CPU_LIMIT', 0))
 
 def load_jupyter_server_extension(nbapp):
     """
