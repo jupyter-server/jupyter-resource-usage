@@ -1,7 +1,7 @@
 import os
 import json
 import psutil
-from traitlets import Float, Int, Union, default
+from traitlets import Bool, Float, Int, Union, default
 from traitlets.config import Configurable
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
@@ -15,46 +15,37 @@ except ImportError:
 
 from threading import Thread
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from tornado.concurrent import run_on_executor
 
 class MetricsHandler(IPythonHandler):
     def initialize(self):
         super().initialize()
         self.cpu_percent = 0
+        
+        # https://www.tornadoweb.org/en/stable/concurrent.html#tornado.concurrent.run_on_executor
+        self.executor = ThreadPoolExecutor(max_workers=10)
+
         # A better approach would use cpu_affinity to account for the
         # fact that the number of logical CPUs in the system is not
         # necessarily the same as the number of CPUs the process
         # can actually use. But cpu_affinity isn't available for OS X.
         self.cpu_count = psutil.cpu_count()
 
-        def update_cpu_percent():
-            def get_cpu_percent(p):
-                try:
-                    return p.cpu_percent(interval=0.1)
-                # Avoid littering logs with stack traces complaining
-                # about dead processes having no CPU usage
-                except:
-                    return 0
-            # This loop should execute roughly every "interval" seconds
-            # Slower if max_workers is much less than the number of processes
-            while True:
-                cur_process = psutil.Process()
-                all_processes = [cur_process] + cur_process.children(recursive=True)
-                # Could have a worker for every process
-                with ThreadPoolExecutor(max_workers=10) as executor:
-                    cpu_percents = [executor.submit(get_cpu_percent, p) for p in all_processes]
-                    total_percent = 0
-                    for future in as_completed(cpu_percents):
-                        try:
-                            total_percent += future.result()
-                        except:
-                            pass
-                    self.cpu_percent = total_percent
+    @run_on_executor
+    def update_cpu_percent(self, all_processes):
 
-        t = Thread(target=update_cpu_percent)
-        t.start()
+        def get_cpu_percent(p):
+            try:
+                return p.cpu_percent(interval=0.05)
+            # Avoid littering logs with stack traces complaining
+            # about dead processes having no CPU usage
+            except:
+                return 0
+
+        return sum([get_cpu_percent(p) for p in all_processes])
 
     @web.authenticated
-    def get(self):
+    async def get(self):
         """
         Calculate and return current resource usage metrics
         """
@@ -68,19 +59,14 @@ class MetricsHandler(IPythonHandler):
         else: # mem_limit is an Int
             mem_limit = config.mem_limit
 
-        def get_cpu_percent(p):
-            try:
-                return p.cpu_percent(interval=0.1)
-            # Avoid littering logs with stack traces complaining
-            # about dead processes having no CPU usage
-            except:
-                return 0
-        cpu_percent = sum([get_cpu_percent(p) for p in all_processes])
         # A better approach would use cpu_affinity to account for the
         # fact that the number of logical CPUs in the system is not
         # necessarily the same as the number of CPUs the process
         # can actually use. But cpu_affinity isn't available for OS X.
         cpu_count = psutil.cpu_count()
+
+        if config.track_cpu_percent:
+            self.cpu_percent = await self.update_cpu_percent(all_processes)
 
         limits = {}
 
@@ -155,6 +141,13 @@ class ResourceUseDisplay(Configurable):
 
         Defaults to reading from the `MEM_LIMIT` environment variable. If
         set to 0, no memory limit is displayed.
+        """
+    ).tag(config=True)
+
+    track_cpu_percent = Bool(
+        False,
+        help="""
+        Set to True in order to enable reporting of CPU usage statistics.
         """
     ).tag(config=True)
 
