@@ -6,14 +6,53 @@ from traitlets.config import Configurable
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 from tornado import web
+
 try:
     # Traitlets >= 4.3.3
     from traitlets import Callable
 except ImportError:
     from .callable import Callable
 
+from threading import Thread
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class MetricsHandler(IPythonHandler):
+    def initialize(self):
+        super().initialize()
+        self.cpu_percent = 0
+        # A better approach would use cpu_affinity to account for the
+        # fact that the number of logical CPUs in the system is not
+        # necessarily the same as the number of CPUs the process
+        # can actually use. But cpu_affinity isn't available for OS X.
+        self.cpu_count = psutil.cpu_count()
+
+        def update_cpu_percent():
+            def get_cpu_percent(p):
+                try:
+                    return p.cpu_percent(interval=0.1)
+                # Avoid littering logs with stack traces complaining
+                # about dead processes having no CPU usage
+                except:
+                    return 0
+            # This loop should execute roughly every "interval" seconds
+            # Slower if max_workers is much less than the number of processes
+            while True:
+                cur_process = psutil.Process()
+                all_processes = [cur_process] + cur_process.children(recursive=True)
+                # Could have a worker for every process
+                with ThreadPoolExecutor(max_workers=10) as executor:
+                    cpu_percents = [executor.submit(get_cpu_percent, p) for p in all_processes]
+                    total_percent = 0
+                    for future in as_completed(cpu_percents):
+                        try:
+                            total_percent += future.result()
+                        except:
+                            pass
+                    self.cpu_percent = total_percent
+
+        t = Thread(target=update_cpu_percent)
+        t.start()
+
     @web.authenticated
     def get(self):
         """
@@ -61,8 +100,8 @@ class MetricsHandler(IPythonHandler):
 
         metrics = {
             'rss': rss,
-            'cpu_percent': cpu_percent,
-            'cpu_count': cpu_count,
+            'cpu_percent': self.cpu_percent,
+            'cpu_count': self.cpu_count,
             'limits': limits,
         }
         self.write(json.dumps(metrics))
