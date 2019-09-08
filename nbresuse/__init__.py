@@ -11,10 +11,9 @@ try:
     # Traitlets >= 4.3.3
     from traitlets import Callable
 except ImportError:
-    from .callable import Callable
+    from .utils import Callable
 
-from threading import Thread
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
 
 class MetricsHandler(IPythonHandler):
@@ -25,10 +24,6 @@ class MetricsHandler(IPythonHandler):
         # https://www.tornadoweb.org/en/stable/concurrent.html#tornado.concurrent.run_on_executor
         self.executor = ThreadPoolExecutor(max_workers=10)
 
-        # A better approach would use cpu_affinity to account for the
-        # fact that the number of logical CPUs in the system is not
-        # necessarily the same as the number of CPUs the process
-        # can actually use. But cpu_affinity isn't available for OS X.
         self.cpu_count = psutil.cpu_count()
 
     @run_on_executor
@@ -51,7 +46,10 @@ class MetricsHandler(IPythonHandler):
         """
         config = self.settings['nbresuse_display_config']
         cur_process = psutil.Process()
-        all_processes = [cur_process] + cur_process.children(recursive=True)
+        all_processes = [cur_process] + cur_process.children(recursive=True)     
+        limits = {}
+
+        # Get memory information
         rss = sum([p.memory_info().rss for p in all_processes])
 
         if callable(config.mem_limit):
@@ -68,28 +66,33 @@ class MetricsHandler(IPythonHandler):
         if config.track_cpu_percent:
             self.cpu_percent = await self.update_cpu_percent(all_processes)
 
-        limits = {}
-
         if config.mem_limit != 0:
             limits['memory'] = {
                 'rss': mem_limit
             }
             if config.mem_warning_threshold != 0:
-                limits['memory']['warn'] = (config.mem_limit - rss) < (config.mem_limit * config.mem_warning_threshold)
+                limits['memory']['warn'] = (mem_limit - rss) < (mem_limit * config.mem_warning_threshold)
 
-        if config.cpu_limit != 0:
-            limits['cpu'] = {
-                'cpu': config.cpu_limit
-            }
-            if config.cpu_warning_threshold != 0:
-                limits['cpu']['warn'] = (config.cpu_limit - cpu_percent) < (config.cpu_limit * config.cpu_warning_threshold)
+        # Optionally get CPU information
+        if config.track_cpu_percent:
+            self.cpu_percent = await self.update_cpu_percent(all_processes)
+
+            if config.cpu_limit != 0:
+                limits['cpu'] = {
+                    'cpu': config.cpu_limit
+                }
+                if config.cpu_warning_threshold != 0:
+                    limits['cpu']['warn'] = (config.cpu_limit - self.cpu_percent) < (config.cpu_limit * config.cpu_warning_threshold)
 
         metrics = {
             'rss': rss,
-            'cpu_percent': self.cpu_percent,
-            'cpu_count': self.cpu_count,
             'limits': limits,
         }
+        if config.track_cpu_percent:
+            metrics.update(cpu_percent=self.cpu_percent,
+                               cpu_count=self.cpu_count)
+
+        self.log.debug("NBResuse metrics: %s", metrics)
         self.write(json.dumps(metrics))
 
 
@@ -118,7 +121,7 @@ class ResourceUseDisplay(Configurable):
     """
 
     mem_warning_threshold = Float(
-        0.1,
+        default_value=0.1,
         help="""
         Warn user with flashing lights when memory usage is within this fraction
         memory limit.
@@ -132,7 +135,6 @@ class ResourceUseDisplay(Configurable):
 
     mem_limit = Union(
         trait_types=[Int(), Callable()],
-        0,
         help="""
         Memory limit to display to the user, in bytes.
         Can also be a function which calculates the memory limit.
@@ -144,20 +146,24 @@ class ResourceUseDisplay(Configurable):
         """
     ).tag(config=True)
 
+    @default('mem_limit')
+    def _mem_limit_default(self):
+        return int(os.environ.get('MEM_LIMIT', 0))
+
     track_cpu_percent = Bool(
-        False,
+        default_value=False,
         help="""
         Set to True in order to enable reporting of CPU usage statistics.
         """
     ).tag(config=True)
 
     cpu_warning_threshold = Float(
-        0.1,
+        default_value=0.1,
         help="""
         Warn user with flashing lights when CPU usage is within this fraction
         CPU usage limit.
 
-        For example, if memory limit is 150%, `cpu_warning_threshold` is 0.1,
+        For example, if CPU limit is 150%, `cpu_warning_threshold` is 0.1,
         we will start warning the user when they use (150 - (150 * 0.1)) %.
 
         Set to 0 to disable warning.
@@ -165,7 +171,7 @@ class ResourceUseDisplay(Configurable):
     ).tag(config=True)
 
     cpu_limit = Float(
-        0,
+        default_value=0,
         help="""
         CPU usage limit to display to the user.
 
@@ -175,10 +181,6 @@ class ResourceUseDisplay(Configurable):
         set to 0, no CPU usage limit is displayed.
         """
     ).tag(config=True)
-
-    @default('mem_limit')
-    def _mem_limit_default(self):
-        return int(os.environ.get('MEM_LIMIT', 0))
 
     @default('cpu_limit')
     def _cpu_limit_default(self):
