@@ -33,7 +33,7 @@ define(['jquery', 'base/js/utils'], function ($, utils) {
             var limits = data['limits'];
             if ('memory' in limits) {
                 if ('rss' in limits['memory']) {
-                    display += " / " + (limits['memory']['rss'] / (1024 * 1024));
+                    display += " / " + Math.round(limits['memory']['rss'] / (1024 * 1024));
                 }
                 if (limits['memory']['warn']) {
                     $('#nbresuse-display').addClass('nbresuse-warn');

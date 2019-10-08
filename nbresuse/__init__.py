@@ -1,11 +1,16 @@
 import os
 import json
 import psutil
-from traitlets import Float, Int, default
+from traitlets import Float, Int, Union, default
 from traitlets.config import Configurable
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 from tornado import web
+try:
+    # Traitlets >= 4.3.3
+    from traitlets import Callable
+except ImportError:
+    from .callable import Callable
 
 
 class MetricsHandler(IPythonHandler):
@@ -19,11 +24,16 @@ class MetricsHandler(IPythonHandler):
         all_processes = [cur_process] + cur_process.children(recursive=True)
         rss = sum([p.memory_info().rss for p in all_processes])
 
+        if callable(config.mem_limit):
+            mem_limit = config.mem_limit(rss=rss)
+        else: # mem_limit is an Int
+            mem_limit = config.mem_limit
+
         limits = {}
 
         if config.mem_limit != 0:
             limits['memory'] = {
-                'rss': config.mem_limit
+                'rss': mem_limit
             }
             if config.mem_warning_threshold != 0:
                 limits['memory']['warn'] = (config.mem_limit - rss) < (config.mem_limit * config.mem_warning_threshold)
@@ -68,22 +78,22 @@ class ResourceUseDisplay(Configurable):
         we will start warning the user when they use (128 - (128 * 0.1)) MB.
 
         Set to 0 to disable warning.
-        """,
-        config=True
-    )
+        """
+    ).tag(config=True)
 
-    mem_limit = Int(
+    mem_limit = Union(
+        trait_types=[Int(), Callable()],
         0,
-        config=True,
         help="""
         Memory limit to display to the user, in bytes.
+        Can also be a function which calculates the memory limit.
 
         Note that this does not actually limit the user's memory usage!
 
         Defaults to reading from the `MEM_LIMIT` environment variable. If
         set to 0, no memory limit is displayed.
         """
-    )
+    ).tag(config=True)
 
     @default('mem_limit')
     def _mem_limit_default(self):
