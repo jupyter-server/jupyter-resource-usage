@@ -1,99 +1,16 @@
 import os
-import json
-import psutil
+
+from tornado import ioloop
 from traitlets import Bool, Float, Int, Union, default
 from traitlets.config import Configurable
-from notebook.utils import url_path_join
-from notebook.base.handlers import IPythonHandler
-from tornado import web
+
+from nbresuse.prometheus import PrometheusHandler
 
 try:
     # Traitlets >= 4.3.3
     from traitlets import Callable
 except ImportError:
     from .utils import Callable
-
-from concurrent.futures import ThreadPoolExecutor
-from tornado.concurrent import run_on_executor
-
-class MetricsHandler(IPythonHandler):
-    def initialize(self):
-        super().initialize()
-        self.cpu_percent = 0
-        
-        # https://www.tornadoweb.org/en/stable/concurrent.html#tornado.concurrent.run_on_executor
-        self.executor = ThreadPoolExecutor(max_workers=10)
-
-        self.cpu_count = psutil.cpu_count()
-
-    @run_on_executor
-    def update_cpu_percent(self, all_processes):
-
-        def get_cpu_percent(p):
-            try:
-                return p.cpu_percent(interval=0.05)
-            # Avoid littering logs with stack traces complaining
-            # about dead processes having no CPU usage
-            except:
-                return 0
-
-        return sum([get_cpu_percent(p) for p in all_processes])
-
-    @web.authenticated
-    async def get(self):
-        """
-        Calculate and return current resource usage metrics
-        """
-        config = self.settings['nbresuse_display_config']
-        cur_process = psutil.Process()
-        all_processes = [cur_process] + cur_process.children(recursive=True)     
-        limits = {}
-
-        # Get memory information
-        rss = sum([p.memory_info().rss for p in all_processes])
-
-        if callable(config.mem_limit):
-            mem_limit = config.mem_limit(rss=rss)
-        else: # mem_limit is an Int
-            mem_limit = config.mem_limit
-
-        # A better approach would use cpu_affinity to account for the
-        # fact that the number of logical CPUs in the system is not
-        # necessarily the same as the number of CPUs the process
-        # can actually use. But cpu_affinity isn't available for OS X.
-        cpu_count = psutil.cpu_count()
-
-        if config.track_cpu_percent:
-            self.cpu_percent = await self.update_cpu_percent(all_processes)
-
-        if config.mem_limit != 0:
-            limits['memory'] = {
-                'rss': mem_limit
-            }
-            if config.mem_warning_threshold != 0:
-                limits['memory']['warn'] = (mem_limit - rss) < (mem_limit * config.mem_warning_threshold)
-
-        # Optionally get CPU information
-        if config.track_cpu_percent:
-            self.cpu_percent = await self.update_cpu_percent(all_processes)
-
-            if config.cpu_limit != 0:
-                limits['cpu'] = {
-                    'cpu': config.cpu_limit
-                }
-                if config.cpu_warning_threshold != 0:
-                    limits['cpu']['warn'] = (config.cpu_limit - self.cpu_percent) < (config.cpu_limit * config.cpu_warning_threshold)
-
-        metrics = {
-            'rss': rss,
-            'limits': limits,
-        }
-        if config.track_cpu_percent:
-            metrics.update(cpu_percent=self.cpu_percent,
-                               cpu_count=self.cpu_count)
-
-        self.log.debug("NBResuse metrics: %s", metrics)
-        self.write(json.dumps(metrics))
 
 
 def _jupyter_server_extension_paths():
@@ -103,6 +20,7 @@ def _jupyter_server_extension_paths():
     return [{
         'module': 'nbresuse',
     }]
+
 
 def _jupyter_nbextension_paths():
     """
@@ -114,6 +32,7 @@ def _jupyter_nbextension_paths():
         "src": "static",
         "require": "nbresuse/main"
     }]
+
 
 class ResourceUseDisplay(Configurable):
     """
@@ -142,7 +61,7 @@ class ResourceUseDisplay(Configurable):
         Note that this does not actually limit the user's memory usage!
 
         Defaults to reading from the `MEM_LIMIT` environment variable. If
-        set to 0, no memory limit is displayed.
+        set to 0, the max memory available is displayed.
         """
     ).tag(config=True)
 
@@ -151,7 +70,7 @@ class ResourceUseDisplay(Configurable):
         return int(os.environ.get('MEM_LIMIT', 0))
 
     track_cpu_percent = Bool(
-        default_value=False,
+        default_value=True,
         help="""
         Set to True in order to enable reporting of CPU usage statistics.
         """
@@ -178,7 +97,7 @@ class ResourceUseDisplay(Configurable):
         Note that this does not actually limit the user's CPU usage!
 
         Defaults to reading from the `CPU_LIMIT` environment variable. If
-        set to 0, no CPU usage limit is displayed.
+        set to 0, the total CPU count available is displayed.
         """
     ).tag(config=True)
 
@@ -186,11 +105,12 @@ class ResourceUseDisplay(Configurable):
     def _cpu_limit_default(self):
         return float(os.environ.get('CPU_LIMIT', 0))
 
+
 def load_jupyter_server_extension(nbapp):
     """
     Called during notebook start
     """
     resuseconfig = ResourceUseDisplay(parent=nbapp)
     nbapp.web_app.settings['nbresuse_display_config'] = resuseconfig
-    route_pattern = url_path_join(nbapp.web_app.settings['base_url'], '/metrics')
-    nbapp.web_app.add_handlers('.*', [(route_pattern, MetricsHandler)])
+    callback = ioloop.PeriodicCallback(PrometheusHandler(nbapp), 1000)
+    callback.start()
