@@ -70,7 +70,7 @@ class ResourceUseDisplay(Configurable):
         return int(os.environ.get('MEM_LIMIT', 0))
 
     track_cpu_percent = Bool(
-        default_value=True,
+        default_value=False,
         help="""
         Set to True in order to enable reporting of CPU usage statistics.
         """
