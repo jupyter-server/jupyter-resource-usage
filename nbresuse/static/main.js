@@ -1,4 +1,7 @@
-define(['jquery', 'base/js/utils'], function ($, utils) {
+define([
+    'jquery',
+    'base/js/utils'
+], function ($, utils) {
     function setupDOM() {
         $('#maintoolbar-container').append(
             $('<div>').attr('id', 'nbresuse-display')
@@ -20,32 +23,54 @@ define(['jquery', 'base/js/utils'], function ($, utils) {
         );
     }
 
+    function humanFileSize(size) {
+        var i = Math.floor( Math.log(size) / Math.log(1024) );
+        return ( size / Math.pow(1024, i) ).toFixed(1) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+    }
+
+
+    function metric(metric_name, text, multiple=false) {
+        var regex = new RegExp("^" + metric_name + "\{?([^ \}]*)\}? (.*)$", "gm");
+        var matches = [];
+        var match;
+
+        do{
+            match = regex.exec(text);
+            if (match){
+                matches.push(match)
+            }
+        }
+        while (match);
+
+        if (!multiple) {
+            if (matches.length > 0)
+                return matches[0];
+            return null;
+        }else
+            return matches;
+    }
+
     var displayMetrics = function() {
         if (document.hidden) {
             // Don't poll when nobody is looking
             return;
         }
-        $.getJSON(utils.get_body_data('baseUrl') + 'metrics', function(data) {
-            // FIXME: Proper setups for MB and GB. MB should have 0 things
-            // after the ., but GB should have 2.
-            var display = Math.round(data['rss'] / (1024 * 1024));
+        $.ajax({
+            url: utils.get_body_data('baseUrl') + 'metrics',
+            success: function(data) {
+                let totalMemoryUsage = metric("total_memory_usage", data);
+                let maxMemoryUsage = metric("max_memory_usage", data);
 
-            var limits = data['limits'];
-            if ('memory' in limits) {
-                if ('rss' in limits['memory']) {
-                    display += " / " + Math.round(limits['memory']['rss'] / (1024 * 1024));
-                }
-                if (limits['memory']['warn']) {
-                    $('#nbresuse-display').addClass('nbresuse-warn');
-                } else {
-                    $('#nbresuse-display').removeClass('nbresuse-warn');
-                }
+                if (!totalMemoryUsage || !maxMemoryUsage)
+                    return;
+                totalMemoryUsage = humanFileSize(parseFloat(totalMemoryUsage[2]));
+                maxMemoryUsage = humanFileSize(parseFloat(maxMemoryUsage[2]));
+
+                var display = totalMemoryUsage + "/" + maxMemoryUsage;
+                $('#nbresuse-mem').text(display);
             }
-            if (data['limits']['memory'] !== null) {
-            }
-            $('#nbresuse-mem').text(display + ' MB');
         });
-    }
+    };
 
     var load_ipython_extension = function () {
         setupDOM();
