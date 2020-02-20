@@ -1,4 +1,10 @@
 # nbresuse
+[![Build Status](https://dev.azure.com/tpaine154/jupyter/_apis/build/status/timkpaine.nbresuse?branchName=master)](https://dev.azure.com/tpaine154/jupyter/_build/latest?definitionId=17&branchName=master)
+[![Coverage](https://img.shields.io/azure-devops/coverage/tpaine154/jupyter/17)](https://dev.azure.com/tpaine154/jupyter/_build?definitionId=17&_a=summary)
+[![PyPI](https://img.shields.io/pypi/l/nbresuse.svg)](https://pypi.python.org/pypi/nbresuse)
+[![PyPI](https://img.shields.io/pypi/v/nbresuse.svg)](https://pypi.python.org/pypi/nbresuse)
+
+
 
 ![Screenshot with memory limit](screenshot.png)
 

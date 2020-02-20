@@ -2,6 +2,8 @@ from traitlets import TraitType
 import six
 
 # copy-pasted from the master of Traitlets source
+
+
 class Callable(TraitType):
     """A trait which is callable.
     Notes

@@ -37,7 +37,7 @@ def cpu_metrics() -> CPUMetrics:
             return p.cpu_percent(interval=0.05)
         # Avoid littering logs with stack traces complaining
         # about dead processes having no CPU usage
-        except:
+        except BaseException:
             return 0
     cpu_percent = sum([get_cpu_percent(p) for p in all_processes])
 
