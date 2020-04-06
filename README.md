@@ -34,12 +34,12 @@ jupyter nbextension enable --py nbresuse --sys-prefix
 ### Memory Limit
 
 `nbresuse` can display a memory limit (but not enforce it). You can set this
-in serveral ways:
+in several ways:
 
-1. `MEM_LIMIT` environment variable. This is set by [JupyterHub](http://github.com/jupyterhub/jupyterhub/)
+1. `MEM_LIMIT` environment variable. This is set by [JupyterHub](https://github.com/jupyterhub/jupyterhub/)
    if using a spawner that supports it.
 2. In the commandline when starting `jupyter notebook`, as `--ResourceUseDisplay.mem_limit`.
-3. In your jupyter notebook [traitlets](https://traitlets.readthedocs.io/en/stable/) config file
+3. In your Jupyter notebook [traitlets](https://traitlets.readthedocs.io/en/stable/) config file
 
 The limit needs to be set as an integer in Bytes.
 
@@ -53,7 +53,36 @@ The threshold for this warning can be configured as a fraction of the memory lim
 If you want to flash the warning to the user when they are within 10% of the memory limit, you
 can set the parameter `--ResourceUseDisplay.mem_warning_threshold=0.1`.
 
+
+### CPU Usage
+
+`nbresuse` can also track CPU usage and report a `cpu_percent` value as part of the `/metrics` response.
+
+You can set the `cpu_limit` in several ways:
+
+1. `CPU_LIMIT` environment variable. This is set by [JupyterHub](https://github.com/jupyterhub/jupyterhub/)
+   if using a spawner that supports it.
+2. In the command line when starting `jupyter notebook`, as `--ResourceUseDisplay.cpu_limit`.
+3. In your Jupyter notebook [traitlets](https://traitlets.readthedocs.io/en/stable/) config file
+
+The limit corresponds to the number of cpus the user has access to, but does not enforce it.
+
+Additionally, you can set the `track_cpu_percent` trait to enable CPU usage tracking (disabled by default):
+
+```python
+c = get_config()
+c.NotebookApp.ResourceUseDisplay.track_cpu_percent = True
+```
+
+As a command line argument:
+
+```bash
+jupyter notebook --ResourceUseDisplay.track_cpu_percent=True
+```
+
 ## Resources displayed
 
 Currently it only displays Memory usage (just RSS). Other metrics will be
 added in the future as needed.
+
+The notebook extension currently doesn't show CPU usage.
