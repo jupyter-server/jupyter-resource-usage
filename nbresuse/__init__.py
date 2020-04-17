@@ -93,7 +93,8 @@ class ResourceUseDisplay(Configurable):
         """,
     ).tag(config=True)
 
-    cpu_limit = Float(
+    cpu_limit = Union(
+        trait_types=[Float(), Callable()],
         default_value=0,
         help="""
         CPU usage limit to display to the user.

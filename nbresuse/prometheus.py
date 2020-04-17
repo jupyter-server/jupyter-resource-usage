@@ -44,13 +44,15 @@ class PrometheusHandler(Callable):
     def apply_memory_limits(self, metrics: Optional[MemoryMetrics]) -> Optional[MemoryMetrics]:
         if metrics is not None:
             if callable(self.config.mem_limit):
-                metrics.max_memory = self.config.mem_limit(rss=metrics.max_memory)
+                metrics.max_memory = self.config.mem_limit(rss=metrics.current_memory)
             elif self.config.mem_limit > 0:  # mem_limit is an Int
                 metrics.max_memory = self.config.mem_limit
         return metrics
 
     def apply_cpu_limits(self, metrics: Optional[CPUMetrics]) -> Optional[CPUMetrics]:
         if metrics is not None:
-            if self.config.cpu_limit > 0:
+            if callable(self.config.cpu_limit):
+                metrics.cpu_max = self.config.cpu_limit(cpu_percent=metrics.cpu_usage)
+            elif self.config.cpu_limit > 0.0:  # cpu_limit is a Float
                 metrics.cpu_max = self.config.cpu_limit
         return metrics
