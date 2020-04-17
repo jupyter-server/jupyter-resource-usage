@@ -20,10 +20,7 @@ def memory_metrics() -> MemoryMetrics:
     rss = sum([p.memory_info().rss for p in all_processes])
     virtual_memory = psutil.virtual_memory()
 
-    return MemoryMetrics(
-        rss,
-        virtual_memory.total
-    )
+    return MemoryMetrics(rss, virtual_memory.total)
 
 
 def cpu_metrics() -> CPUMetrics:
@@ -39,9 +36,7 @@ def cpu_metrics() -> CPUMetrics:
         # about dead processes having no CPU usage
         except BaseException:
             return 0
+
     cpu_percent = sum([get_cpu_percent(p) for p in all_processes])
 
-    return CPUMetrics(
-        cpu_count * 100.0,
-        cpu_percent
-    )
+    return CPUMetrics(cpu_count * 100.0, cpu_percent)
