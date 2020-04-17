@@ -1,5 +1,12 @@
 from glob import glob
 import setuptools
+import pathlib
+
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
+
+# The text of the README file
+README = (HERE / "README.md").read_text()
 
 setuptools.setup(
     name="nbresuse",
@@ -7,6 +14,13 @@ setuptools.setup(
     url="https://github.com/yuvipanda/nbresuse",
     author="Yuvi Panda",
     description="Simple Jupyter extension to show how much resources (RAM) your notebook is using",
+    long_description=README,
+    long_description_content_type="text/markdown",
+    license="BSD",
+    classifiers=[
+        "License :: OSI Approved :: BSD License",
+        "Programming Language :: Python :: 3",
+        ],
     packages=setuptools.find_packages(),
     install_requires=[
         'psutil>=5.6.0',

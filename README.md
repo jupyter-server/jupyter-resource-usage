@@ -1,14 +1,21 @@
-# nbresuse
+**[Installation](#installation)** |
+**[Configuration](#configuration)** |
+**[Resources Displayed](#resources-displayed)** |
+**[Contributing](#contributing)**
+
+# NBResuse
+
+[![PyPI](https://img.shields.io/pypi/v/nbresuse.svg)](https://pypi.python.org/pypi/nbresuse)
+[![PyPI](https://img.shields.io/pypi/l/nbresuse.svg)](https://pypi.python.org/pypi/nbresuse)
+[![GitHub](https://img.shields.io/badge/issue_tracking-github-blue?logo=github)](https://github.com/yuvipanda/nbresuse/issues)
+[![TravisCI build status](https://img.shields.io/travis/jupyter/nbviewer/master?logo=travis)](https://travis-ci.org/yuvipanda/nbresuse)
 [![Build Status](https://dev.azure.com/tpaine154/jupyter/_apis/build/status/timkpaine.nbresuse?branchName=master)](https://dev.azure.com/tpaine154/jupyter/_build/latest?definitionId=17&branchName=master)
 [![Coverage](https://img.shields.io/azure-devops/coverage/tpaine154/jupyter/17)](https://dev.azure.com/tpaine154/jupyter/_build?definitionId=17&_a=summary)
-[![PyPI](https://img.shields.io/pypi/l/nbresuse.svg)](https://pypi.python.org/pypi/nbresuse)
-[![PyPI](https://img.shields.io/pypi/v/nbresuse.svg)](https://pypi.python.org/pypi/nbresuse)
-
 
 
 ![Screenshot with memory limit](screenshot.png)
 
-NB Resource Usage (nbresuse) is a small extension for Jupyter Notebooks that
+NB Resource Usage (NBResuse) is a small extension for Jupyter Notebooks that
 displays an indication of how much resources your current notebook server and
 its children (kernels, terminals, etc) are using. This is displayed in the
 main toolbar in the notebook itself, refreshing every 5s.
@@ -80,9 +87,14 @@ As a command line argument:
 jupyter notebook --ResourceUseDisplay.track_cpu_percent=True
 ```
 
-## Resources displayed
+## Resources Displayed
 
-Currently it only displays Memory usage (just RSS). Other metrics will be
+Currently the server extension only reports memory usage (just RSS) and CPU usage. Other metrics will be
 added in the future as needed.
 
-The notebook extension currently doesn't show CPU usage.
+The notebook extension currently doesn't show CPU usage, only memory usage.
+
+## Contributing
+
+If you would like to contribute to the project, please read the [`CONTRIBUTING.md`](CONTRIBUTING.md). The `CONTRIBUTING.md` file
+explains how to set up a development installation and how to run the test suite.
