@@ -2,7 +2,10 @@ from notebook.notebookapp import NotebookApp
 from prometheus_client import Gauge
 from tornado import gen
 
-from nbresuse.metrics import CPUMetrics, MemoryMetrics, cpu_metrics, memory_metrics
+from nbresuse.metrics import cpu_metrics
+from nbresuse.metrics import CPUMetrics
+from nbresuse.metrics import memory_metrics
+from nbresuse.metrics import MemoryMetrics
 
 try:
     # Traitlets >= 4.3.3
@@ -10,35 +13,19 @@ try:
 except ImportError:
     from .utils import Callable
 
-TOTAL_MEMORY_USAGE = Gauge(
-    'total_memory_usage',
-    'counter for total memory usage',
-    []
-)
+TOTAL_MEMORY_USAGE = Gauge("total_memory_usage", "counter for total memory usage", [])
 
-MAX_MEMORY_USAGE = Gauge(
-    'max_memory_usage',
-    'counter for max memory usage',
-    []
-)
+MAX_MEMORY_USAGE = Gauge("max_memory_usage", "counter for max memory usage", [])
 
-TOTAL_CPU_USAGE = Gauge(
-    'total_cpu_usage',
-    'counter for total cpu usage',
-    []
-)
+TOTAL_CPU_USAGE = Gauge("total_cpu_usage", "counter for total cpu usage", [])
 
-MAX_CPU_USAGE = Gauge(
-    'max_cpu_usage',
-    'counter for max cpu usage',
-    []
-)
+MAX_CPU_USAGE = Gauge("max_cpu_usage", "counter for max cpu usage", [])
 
 
 class PrometheusHandler(Callable):
     def __init__(self, nbapp: NotebookApp):
         super().__init__()
-        self.config = nbapp.web_app.settings['nbresuse_display_config']
+        self.config = nbapp.web_app.settings["nbresuse_display_config"]
         self.session_manager = nbapp.session_manager
 
     @gen.coroutine
