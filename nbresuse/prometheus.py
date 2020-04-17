@@ -1,6 +1,7 @@
 from notebook.notebookapp import NotebookApp
 from prometheus_client import Gauge
 from tornado import gen
+from typing import Optional
 
 from nbresuse.metrics import cpu_metrics
 from nbresuse.metrics import CPUMetrics
@@ -31,21 +32,25 @@ class PrometheusHandler(Callable):
     @gen.coroutine
     def __call__(self, *args, **kwargs):
         metrics = self.apply_memory_limits(memory_metrics())
-        TOTAL_MEMORY_USAGE.set(metrics.current_memory)
-        MAX_MEMORY_USAGE.set(metrics.max_memory)
+        if metrics is not None:
+            TOTAL_MEMORY_USAGE.set(metrics.current_memory)
+            MAX_MEMORY_USAGE.set(metrics.max_memory)
         if self.config.track_cpu_percent:
             metrics = self.apply_cpu_limits(cpu_metrics())
-            TOTAL_CPU_USAGE.set(metrics.cpu_usage)
-            MAX_CPU_USAGE.set(metrics.cpu_max)
+            if metrics is not None:
+                TOTAL_CPU_USAGE.set(metrics.cpu_usage)
+                MAX_CPU_USAGE.set(metrics.cpu_max)
 
-    def apply_memory_limits(self, metrics: MemoryMetrics) -> MemoryMetrics:
-        if callable(self.config.mem_limit):
-            metrics.max_memory = self.config.mem_limit(rss=metrics.max_memory)
-        elif self.config.mem_limit > 0:  # mem_limit is an Int
-            metrics.max_memory = self.config.mem_limit
+    def apply_memory_limits(self, metrics: Optional[MemoryMetrics]) -> Optional[MemoryMetrics]:
+        if metrics is not None:
+            if callable(self.config.mem_limit):
+                metrics.max_memory = self.config.mem_limit(rss=metrics.max_memory)
+            elif self.config.mem_limit > 0:  # mem_limit is an Int
+                metrics.max_memory = self.config.mem_limit
         return metrics
 
-    def apply_cpu_limits(self, metrics: CPUMetrics) -> CPUMetrics:
-        if self.config.cpu_limit > 0:
-            metrics.cpu_max = self.config.cpu_limit
+    def apply_cpu_limits(self, metrics: Optional[CPUMetrics]) -> Optional[CPUMetrics]:
+        if metrics is not None:
+            if self.config.cpu_limit > 0:
+                metrics.cpu_max = self.config.cpu_limit
         return metrics

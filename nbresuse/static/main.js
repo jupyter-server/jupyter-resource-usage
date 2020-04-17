@@ -61,7 +61,7 @@ define([
                 let totalMemoryUsage = metric("total_memory_usage", data);
                 let maxMemoryUsage = metric("max_memory_usage", data);
 
-                if (!totalMemoryUsage || !maxMemoryUsage)
+                if (maxMemoryUsage[2] <= 0)
                     return;
                 totalMemoryUsage = humanFileSize(parseFloat(totalMemoryUsage[2]));
                 maxMemoryUsage = humanFileSize(parseFloat(maxMemoryUsage[2]));

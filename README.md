@@ -25,8 +25,10 @@ main toolbar in the notebook itself, refreshing every 5s.
 You can currently install this package from PyPI.
 
 ```bash
-pip install nbresuse
+pip install nbresuse[resources]
 ```
+
+The above command will install NBResuse along with `psutil` Python package (which is used for getting hardware usage information from the system). If you would like to install NBResuse _without_ `psutil` (in which case NBResuse does essentially nothing), run `pip install nbresuse` instead.
 
 **If your notebook version is < 5.3**, you need to enable the extension manually.
 
