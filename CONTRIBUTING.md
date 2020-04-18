@@ -32,8 +32,10 @@ We recommend using [pipenv](https://docs.pipenv.org/) to make development easier
 4. Do a dev install of nbresuse and its dependencies
 
    ```bash
-   pip install --editable .
+   pip install --editable .[resources]
    ```
+
+   To test the behavior of NBResuse without `psutil` installed, run `pip install --editable .` instead.
 
 5. Install and enable the nbextension for use with Jupyter Classic Notebook.
 

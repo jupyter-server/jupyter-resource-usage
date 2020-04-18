@@ -1,53 +1,81 @@
-from typing import NamedTuple, Optional
-
 try:
     import psutil
 except ImportError:
     psutil = None
 
-
-class MemoryMetrics(NamedTuple):
-    current_memory: int
-    max_memory: int
+from notebook.notebookapp import NotebookApp
 
 
-class CPUMetrics(NamedTuple):
-    cpu_max: float
-    cpu_usage: float
+class PSUtilMetricsLoader:
+    def __init__(self, nbapp: NotebookApp):
+        self.config = nbapp.web_app.settings["nbresuse_display_config"]
+        self.nbapp = nbapp
 
+    def process_metric(self, name, kwargs={}, attribute=None):
+        if psutil is None:
+            return None
+        else:
+            current_process = psutil.Process()
+            all_processes = [current_process] + current_process.children(recursive=True)
 
-def memory_metrics() -> Optional[MemoryMetrics]:
-    if psutil:
-        cur_process = psutil.Process()
-        all_processes = [cur_process] + cur_process.children(recursive=True)
+            def get_process_metric(process, name, kwargs, attribute=None):
+                try:
+                    # psutil.Process methods will either return...
+                    metric_value = getattr(process, name)(**kwargs)
+                    if attribute is not None:  # ... a named tuple
+                        return getattr(metric_value, attribute)
+                    else:  # ... or a number
+                        return metric_value
+                # Avoid littering logs with stack traces
+                # complaining about dead processes
+                except BaseException:
+                    return 0
 
-        rss = sum([p.memory_info().rss for p in all_processes])
-        virtual_memory = psutil.virtual_memory().total
+            process_metric_value = lambda process: get_process_metric(
+                process, name, kwargs, attribute
+            )
 
-    else:
-        return None
+            return sum([process_metric_value(process) for process in all_processes])
 
-    return MemoryMetrics(rss, virtual_memory)
+    def system_metric(self, name, kwargs={}, attribute=None):
+        if psutil is None:
+            return None
+        else:
+            # psutil functions will either return...
+            metric_value = getattr(psutil, name)(**kwargs)
+            if attribute is not None:  # ... a named tuple
+                return getattr(metric_value, attribute)
+            else:  # ... or a number
+                return metric_value
 
+    def get_metric_values(self, metrics, metric_type):
+        metric_types = {"process": self.process_metric, "system": self.system_metric}
+        metric_value = metric_types[metric_type]  # Switch statement
 
-def cpu_metrics() -> Optional[CPUMetrics]:
-    if psutil:
-        cur_process = psutil.Process()
-        all_processes = [cur_process] + cur_process.children(recursive=True)
+        metric_values = {}
+        for metric in metrics:
+            name = metric["name"]
+            if metric.get("attribute", False):
+                name += "_" + metric.get("attribute")
+            metric_values.update({name: metric_value(**metric)})
+        return metric_values
 
-        cpu_count = psutil.cpu_count()
+    def metrics(self, process_metrics, system_metrics):
 
-        def get_cpu_percent(p):
-            try:
-                return p.cpu_percent(interval=0.05)
-            # Avoid littering logs with stack traces complaining
-            # about dead processes having no CPU usage
-            except BaseException:
-                return 0
+        metric_values = self.get_metric_values(process_metrics, "process")
+        metric_values.update(self.get_metric_values(system_metrics, "system"))
 
-        cpu_percent = sum([get_cpu_percent(p) for p in all_processes])
+        if any(value is None for value in metric_values.values()):
+            return None
 
-    else:
-        return None
+        return metric_values
 
-    return CPUMetrics(cpu_count * 100.0, cpu_percent)
+    def memory_metrics(self):
+        return self.metrics(
+            self.config.process_memory_metrics, self.config.system_memory_metrics
+        )
+
+    def cpu_metrics(self):
+        return self.metrics(
+            self.config.process_cpu_metrics, self.config.system_cpu_metrics
+        )
