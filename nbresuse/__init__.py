@@ -3,11 +3,15 @@ import os
 from tornado import ioloop
 from traitlets import Bool
 from traitlets import default
+from traitlets import Dict
 from traitlets import Float
 from traitlets import Int
+from traitlets import List
+from traitlets import TraitType
 from traitlets import Union
 from traitlets.config import Configurable
 
+from nbresuse.metrics import PSUtilMetricsLoader
 from nbresuse.prometheus import PrometheusHandler
 
 try:
@@ -15,6 +19,21 @@ try:
     from traitlets import Callable
 except ImportError:
     from .utils import Callable
+
+
+class PSUtilMetric(TraitType):
+    """A trait describing the format to specify a metric from the psutil package"""
+
+    info_text = "A dictionary specifying the function/method name, any keyword arguments, and if a named tuple is returned, which attribute of the named tuple to select"
+
+    def validate(self, obj, value):
+        if isinstance(value, dict):
+            keys = list(value.keys())
+            if "name" in keys:
+                keys.remove("name")
+                if all(key in ["kwargs", "attribute"] for key in keys):
+                    return value
+        self.error(obj, value)
 
 
 def _jupyter_server_extension_paths():
@@ -42,6 +61,25 @@ class ResourceUseDisplay(Configurable):
     """
     Holds server-side configuration for nbresuse
     """
+
+    process_memory_metrics = List(
+        trait=PSUtilMetric(),
+        default_value=[{"name": "memory_info", "attribute": "rss"}],
+    )
+
+    system_memory_metrics = List(
+        trait=PSUtilMetric(),
+        default_value=[{"name": "virtual_memory", "attribute": "total"}],
+    )
+
+    process_cpu_metrics = List(
+        trait=PSUtilMetric(),
+        default_value=[{"name": "cpu_percent", "kwargs": {"interval": 0.05}}],
+    )
+
+    system_cpu_metrics = List(
+        trait=PSUtilMetric(), default_value=[{"name": "cpu_count"}]
+    )
 
     mem_warning_threshold = Float(
         default_value=0.1,
@@ -117,5 +155,7 @@ def load_jupyter_server_extension(nbapp):
     """
     resuseconfig = ResourceUseDisplay(parent=nbapp)
     nbapp.web_app.settings["nbresuse_display_config"] = resuseconfig
-    callback = ioloop.PeriodicCallback(PrometheusHandler(nbapp), 1000)
+    callback = ioloop.PeriodicCallback(
+        PrometheusHandler(PSUtilMetricsLoader(nbapp)), 1000
+    )
     callback.start()
