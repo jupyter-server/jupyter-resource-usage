@@ -1,3 +1,5 @@
+import os
+
 from traitlets import Bool
 from traitlets import default
 from traitlets import Dict
@@ -14,6 +16,7 @@ try:
 except ImportError:
     from .utils import Callable
 
+
 class PSUtilMetric(TraitType):
     """A trait describing the format to specify a metric from the psutil package"""
 
@@ -27,6 +30,7 @@ class PSUtilMetric(TraitType):
                 if all(key in ["kwargs", "attribute"] for key in keys):
                     return value
         self.error(obj, value)
+
 
 class ResourceUseDisplay(Configurable):
     """

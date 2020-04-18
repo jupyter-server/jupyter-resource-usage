@@ -11,6 +11,19 @@ class PSUtilMetricsLoader:
         self.config = nbapp.web_app.settings["nbresuse_display_config"]
         self.nbapp = nbapp
 
+    def get_process_metric_value(self, process, name, kwargs, attribute=None):
+        try:
+            # psutil.Process methods will either return...
+            metric_value = getattr(process, name)(**kwargs)
+            if attribute is not None:  # ... a named tuple
+                return getattr(metric_value, attribute)
+            else:  # ... or a number
+                return metric_value
+        # Avoid littering logs with stack traces
+        # complaining about dead processes
+        except BaseException:
+            return 0
+
     def process_metric(self, name, kwargs={}, attribute=None):
         if psutil is None:
             return None
@@ -18,20 +31,7 @@ class PSUtilMetricsLoader:
             current_process = psutil.Process()
             all_processes = [current_process] + current_process.children(recursive=True)
 
-            def get_process_metric(process, name, kwargs, attribute=None):
-                try:
-                    # psutil.Process methods will either return...
-                    metric_value = getattr(process, name)(**kwargs)
-                    if attribute is not None:  # ... a named tuple
-                        return getattr(metric_value, attribute)
-                    else:  # ... or a number
-                        return metric_value
-                # Avoid littering logs with stack traces
-                # complaining about dead processes
-                except BaseException:
-                    return 0
-
-            process_metric_value = lambda process: get_process_metric(
+            process_metric_value = lambda process: self.get_process_metric_value(
                 process, name, kwargs, attribute
             )
 

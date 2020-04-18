@@ -1,5 +1,3 @@
-import os
-
 from tornado import ioloop
 
 from nbresuse.config import ResourceUseDisplay
