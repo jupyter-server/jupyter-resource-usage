@@ -19,17 +19,11 @@ class PrometheusHandler(Callable):
         self.config = metricsloader.config
         self.session_manager = metricsloader.nbapp.session_manager
 
-        self.TOTAL_MEMORY_USAGE = Gauge(
-            "total_memory_usage", "counter for total memory usage", []
-        )
-        self.MAX_MEMORY_USAGE = Gauge(
-            "max_memory_usage", "counter for max memory usage", []
-        )
-
-        self.TOTAL_CPU_USAGE = Gauge(
-            "total_cpu_usage", "counter for total cpu usage", []
-        )
-        self.MAX_CPU_USAGE = Gauge("max_cpu_usage", "counter for max cpu usage", [])
+        gauge_names = ["total_memory", "max_memory", "total_cpu", "max_cpu"]
+        for name in gauge_names:
+            phrase = name + "_usage"
+            gauge = Gauge(phrase, "counter for " + phrase.replace("_", " "), [])
+            setattr(self, phrase.upper(), gauge)
 
     async def __call__(self, *args, **kwargs):
         memory_metric_values = self.metricsloader.memory_metrics()
