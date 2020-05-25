@@ -20,6 +20,7 @@ class PrometheusHandler(Callable):
         self.metricsloader = metricsloader
         self.config = metricsloader.config
         self.session_manager = metricsloader.nbapp.session_manager
+        self.kernel_spec_manager = metricsloader.nbapp.kernel_spec_manager
 
         gauge_names = ["total_memory", "max_memory", "total_cpu", "max_cpu", "kernel_memory"]
         for name in gauge_names:
@@ -82,9 +83,9 @@ class PrometheusHandler(Callable):
 
         session_manager = self.session_manager
         sessions = yield maybe_future(session_manager.list_sessions())
-        kernel_processes = PrometheusHandler._kernel_processes()
+        kernel_processes = PrometheusHandler._kernel_processes(self.kernel_spec_manager.get_all_specs())
 
-        def find_process(session_id):
+        def find_process(kernel_id):
             for proc in kernel_processes:
                 cmd = proc.cmdline()
                 if cmd:
@@ -103,10 +104,14 @@ class PrometheusHandler(Callable):
         raise gen.Return(kernel_memory)
 
     @staticmethod
-    def _kernel_processes():
+    def _kernel_processes(kernel_specs):
         for proc in process_iter():
             try:
-                if 'ipykernel_launcher' in proc.cmdline():
-                    yield proc
+                for specs in kernel_specs.values():
+                    for spec in specs.values():
+                        if 'argv' in spec:
+                            key = " ".join(spec.get('argv')[:-1])
+                            if key in " ".join(proc.cmdline()):
+                                yield proc
             except (AccessDenied, NoSuchProcess, OSError):
                 pass
