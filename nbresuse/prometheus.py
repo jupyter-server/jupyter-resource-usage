@@ -81,9 +81,8 @@ class PrometheusHandler(Callable):
     def _list_kernel_memory(self):
         kernel_memory = dict()
 
-        session_manager = self.session_manager
-        sessions = yield maybe_future(session_manager.list_sessions())
-        kernel_processes = PrometheusHandler._kernel_processes(self.kernel_spec_manager.get_all_specs())
+        sessions = yield maybe_future(self.session_manager.list_sessions())
+        kernel_processes = PrometheusHandler._kernel_processes(maybe_future(self.kernel_spec_manager.get_all_specs()))
 
         def find_process(kernel_id):
             for proc in kernel_processes:
