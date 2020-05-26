@@ -1,5 +1,7 @@
 from typing import Optional
 
+import sys
+
 from tornado import gen
 from notebook.utils import maybe_future
 from prometheus_client import Gauge
@@ -110,8 +112,12 @@ class PrometheusHandler(Callable):
                 for specs in kernel_specs.values():
                     for spec in specs.values():
                         if 'argv' in spec:
-                            key = " ".join(spec.get('argv')[:-1])
-                            if key in " ".join(proc.cmdline()):
-                                yield proc
+                            if spec.get('argv')[0] in {'python', 
+                                                       'python%i' % sys.version_info[0], 
+                                                       'python%i.%i' % sys.version_info[:2]}
+                                spec.get('argv')[0] = sys.executable
+                                key = " ".join(spec.get('argv')[:-1])
+                                if key in " ".join(proc.cmdline()):
+                                    yield proc
             except (AccessDenied, NoSuchProcess, OSError):
                 pass
