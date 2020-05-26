@@ -114,7 +114,7 @@ class PrometheusHandler(Callable):
                         if 'argv' in spec:
                             if spec.get('argv')[0] in {'python', 
                                                        'python%i' % sys.version_info[0], 
-                                                       'python%i.%i' % sys.version_info[:2]}
+                                                       'python%i.%i' % sys.version_info[:2]}:
                                 spec.get('argv')[0] = sys.executable
                                 key = " ".join(spec.get('argv')[:-1])
                                 if key in " ".join(proc.cmdline()):
