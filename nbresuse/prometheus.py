@@ -31,7 +31,7 @@ class PrometheusHandler(Callable):
                 label = []
             gauge = Gauge(phrase, "counter for " + phrase.replace("_", " "), label)
             setattr(self, phrase.upper(), gauge)
-            
+
     @gen.coroutine
     def __call__(self, *args, **kwargs):
         yield self.kernel_metrics()
@@ -70,7 +70,7 @@ class PrometheusHandler(Callable):
                 return self.config.cpu_limit
             else:
                 return 100.0 * cpu_metric_values["cpu_count"]
-            
+
     @gen.coroutine
     def kernel_metrics(self):
         kernels = yield maybe_future(self._list_kernel_memory())
@@ -82,14 +82,15 @@ class PrometheusHandler(Callable):
         kernel_memory = dict()
 
         sessions = yield maybe_future(self.session_manager.list_sessions())
-        kernel_processes = PrometheusHandler._kernel_processes(maybe_future(self.kernel_spec_manager.get_all_specs()))
+        specs = yield maybe_future(self.kernel_spec_manager.get_all_specs())
+        kernel_processes = PrometheusHandler._kernel_processes(specs)
 
         def find_process(kernel_id):
             for proc in kernel_processes:
                 cmd = proc.cmdline()
                 if cmd:
                     last_arg = cmd[-1]
-                    if session_id in last_arg:
+                    if kernel_id in last_arg:
                         return proc
             return None
 
