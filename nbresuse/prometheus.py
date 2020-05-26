@@ -107,17 +107,21 @@ class PrometheusHandler(Callable):
 
     @staticmethod
     def _kernel_processes(kernel_specs):
+        keys = []
+        for kernel_spec in kernel_specs.values():
+            for each_spec in kernel_spec.values():
+                if 'argv' in each_spec:
+                    keys.append(each_spec.get('argv'))
+
         for proc in process_iter():
             try:
-                for specs in kernel_specs.values():
-                    for spec in specs.values():
-                        if 'argv' in spec:
-                            if spec.get('argv')[0] in {'python', 
-                                                       'python%i' % sys.version_info[0], 
-                                                       'python%i.%i' % sys.version_info[:2]}:
-                                spec.get('argv')[0] = sys.executable
-                                key = " ".join(spec.get('argv')[:-1])
-                                if key in " ".join(proc.cmdline()):
-                                    yield proc
+                for key in keys:
+                    if key[0] in {'python',
+                                  'python%i' % sys.version_info[0],
+                                  'python%i.%i' % sys.version_info[:2]}:
+                        key[0] = sys.executable
+                    key = " ".join(key[:-1])
+                    if key in " ".join(proc.cmdline()):
+                        yield proc
             except (AccessDenied, NoSuchProcess, OSError):
                 pass
