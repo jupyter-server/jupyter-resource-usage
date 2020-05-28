@@ -27,7 +27,7 @@ class PrometheusHandler(Callable):
         gauge_names = ["total_memory", "max_memory", "total_cpu", "max_cpu", "kernel_memory"]
         for name in gauge_names:
             phrase = name + "_usage"
-            if name is "kernel_memory":
+            if name == "kernel_memory":
                 label = ['kernel_id']
             else:
                 label = []
