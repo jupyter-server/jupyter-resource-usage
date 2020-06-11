@@ -5,13 +5,13 @@ define([
     function setupDOM() {
         $('#maintoolbar-container').append(
             $('<div>').attr('id', 'nbresuse-display')
-                      .addClass('btn-group')
-                      .addClass('pull-right')
-            .append(
-                $('<strong>').text('Memory: ')
-            ).append(
+                .addClass('btn-group')
+                .addClass('pull-right')
+                .append(
+                    $('<strong>').text('Memory: ')
+                ).append(
                 $('<span>').attr('id', 'nbresuse-mem')
-                           .attr('title', 'Actively used Memory (updates every 5s)')
+                    .attr('title', 'Actively used Memory (updates every 5s)')
             )
         );
         // FIXME: Do something cleaner to get styles in here?
@@ -24,49 +24,35 @@ define([
     }
 
     function humanFileSize(size) {
-        var i = Math.floor( Math.log(size) / Math.log(1024) );
-        return ( size / Math.pow(1024, i) ).toFixed(1) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+        var i = Math.floor(Math.log(size) / Math.log(1024));
+        return (size / Math.pow(1024, i)).toFixed(1) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
     }
 
-
-    function metric(metric_name, text, multiple=false) {
-        var regex = new RegExp("^" + metric_name + "\{?([^ \}]*)\}? (.*)$", "gm");
-        var matches = [];
-        var match;
-
-        do{
-            match = regex.exec(text);
-            if (match){
-                matches.push(match)
-            }
-        }
-        while (match);
-
-        if (!multiple) {
-            if (matches.length > 0)
-                return matches[0];
-            return null;
-        }else
-            return matches;
-    }
-
-    var displayMetrics = function() {
+    var displayMetrics = function () {
         if (document.hidden) {
             // Don't poll when nobody is looking
             return;
         }
-        $.ajax({
-            url: utils.get_body_data('baseUrl') + 'metrics',
-            success: function(data) {
-                let totalMemoryUsage = metric("total_memory_usage", data);
-                let maxMemoryUsage = metric("max_memory_usage", data);
+        $.getJSON({
+            url: utils.get_body_data('baseUrl') + 'api/nbresuse/v1',
+            success: function (data) {
+                totalMemoryUsage = humanFileSize(data['rss']);
 
-                if (maxMemoryUsage[2] <= 0)
-                    return;
-                totalMemoryUsage = humanFileSize(parseFloat(totalMemoryUsage[2]));
-                maxMemoryUsage = humanFileSize(parseFloat(maxMemoryUsage[2]));
+                var limits = data['limits'];
+                var display = totalMemoryUsage;
 
-                var display = totalMemoryUsage + "/" + maxMemoryUsage;
+                if (limits['memory']) {
+                    if (limits['memory']['rss']) {
+                        maxMemoryUsage = humanFileSize(limits['memory']['rss']);
+                        display += "/" + maxMemoryUsage
+                    }
+                    if (limits['memory']['warn']) {
+                        $('#nbresuse-display').addClass('nbresuse-warn');
+                    } else {
+                        $('#nbresuse-display').removeClass('nbresuse-warn');
+                    }
+                }
+
                 $('#nbresuse-mem').text(display);
             }
         });
@@ -78,7 +64,7 @@ define([
         // Update every five seconds, eh?
         setInterval(displayMetrics, 1000 * 5);
 
-        document.addEventListener("visibilitychange", function() {
+        document.addEventListener("visibilitychange", function () {
             // Update instantly when user activates notebook tab
             // FIXME: Turn off update timer completely when tab not in focus
             if (!document.hidden) {
