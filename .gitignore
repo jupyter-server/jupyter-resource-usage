@@ -24,3 +24,10 @@ var/
 .installed.cfg
 *.egg
 *.ipynb
+
+# IDE and code editors
+*.iml
+.idea
+.vscode
+*.code-workspace
+.history
