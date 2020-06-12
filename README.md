@@ -9,9 +9,6 @@
 [![PyPI](https://img.shields.io/pypi/v/nbresuse)](https://pypi.python.org/pypi/nbresuse)
 [![PyPI](https://img.shields.io/pypi/l/nbresuse)](https://pypi.python.org/pypi/nbresuse)
 [![GitHub](https://img.shields.io/badge/issue_tracking-github-blue?logo=github)](https://github.com/yuvipanda/nbresuse/issues)
-[![TravisCI build status](https://img.shields.io/travis/jupyter/nbviewer/master?logo=travis)](https://travis-ci.org/yuvipanda/nbresuse)
-[![Coverage](https://img.shields.io/azure-devops/coverage/tpaine154/jupyter/17)](https://dev.azure.com/tpaine154/jupyter/_build?definitionId=17&_a=summary)
-
 
 ![Screenshot with memory limit](screenshot.png)
 
