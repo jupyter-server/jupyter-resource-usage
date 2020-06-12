@@ -17,7 +17,7 @@ We recommend using [pipenv](https://docs.pipenv.org/) to make development easier
    ```
 
 2. Create an environment that will hold our dependencies.
-   
+
    ```bash
    cd nbresuse
    pipenv --python 3.6
@@ -32,10 +32,8 @@ We recommend using [pipenv](https://docs.pipenv.org/) to make development easier
 4. Do a dev install of nbresuse and its dependencies
 
    ```bash
-   pip install --editable .[resources]
+   pip install --editable .[dev]
    ```
-
-   To test the behavior of NBResuse without `psutil` installed, run `pip install --editable .` instead.
 
 5. Install and enable the nbextension for use with Jupyter Classic Notebook.
 
@@ -73,7 +71,7 @@ the pre-commit hook should take care of how it should look. Here is how to set u
     ```bash
     pre-commit run
     ```
-	
+
 which should run any autoformatting on your code
 and tell you about any errors it couldn't fix automatically.
 You may also install [black integration](https://github.com/ambv/black#editor-integration)
