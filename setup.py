@@ -11,7 +11,7 @@ README = (HERE / "README.md").read_text()
 
 setuptools.setup(
     name="nbresuse",
-    version="0.3.4",
+    version="0.3.5",
     url="https://github.com/yuvipanda/nbresuse",
     author="Yuvi Panda",
     description="Simple Jupyter extension to show how much resources (RAM) your notebook is using",
