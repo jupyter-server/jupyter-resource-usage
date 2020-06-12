@@ -5,11 +5,11 @@
 
 # NBResuse
 
+![Github Actions Status](https://github.com/yuvipanda/nbresuse/workflows/Tests/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/nbresuse)](https://pypi.python.org/pypi/nbresuse)
 [![PyPI](https://img.shields.io/pypi/l/nbresuse)](https://pypi.python.org/pypi/nbresuse)
 [![GitHub](https://img.shields.io/badge/issue_tracking-github-blue?logo=github)](https://github.com/yuvipanda/nbresuse/issues)
 [![TravisCI build status](https://img.shields.io/travis/jupyter/nbviewer/master?logo=travis)](https://travis-ci.org/yuvipanda/nbresuse)
-[![Build Status](https://dev.azure.com/tpaine154/jupyter/_apis/build/status/timkpaine.nbresuse?branchName=master)](https://dev.azure.com/tpaine154/jupyter/_build/latest?definitionId=17&branchName=master)
 [![Coverage](https://img.shields.io/azure-devops/coverage/tpaine154/jupyter/17)](https://dev.azure.com/tpaine154/jupyter/_build?definitionId=17&_a=summary)
 
 
