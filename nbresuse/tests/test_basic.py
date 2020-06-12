@@ -25,7 +25,7 @@ class TestBasic:
 
         # mock a notebook app
         nbapp_mock = MagicMock()
-        nbapp_mock.web_app.settings = {}
+        nbapp_mock.web_app.settings = {"base_url": ""}
 
         # mock these out for unit test
         with patch("tornado.ioloop.PeriodicCallback") as periodic_callback_mock, patch(
