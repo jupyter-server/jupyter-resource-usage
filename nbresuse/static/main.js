@@ -44,7 +44,7 @@ define([
                 if (limits['memory']) {
                     if (limits['memory']['rss']) {
                         maxMemoryUsage = humanFileSize(limits['memory']['rss']);
-                        display += "/" + maxMemoryUsage
+                        display += " / " + maxMemoryUsage
                     }
                     if (limits['memory']['warn']) {
                         $('#nbresuse-display').addClass('nbresuse-warn');
