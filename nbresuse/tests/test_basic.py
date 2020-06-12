@@ -32,7 +32,9 @@ class TestBasic:
             "nbresuse.ResourceUseDisplay"
         ) as resource_use_display_mock, patch(
             "nbresuse.PrometheusHandler"
-        ) as prometheus_handler_mock:
+        ) as prometheus_handler_mock, patch(
+            "nbresuse.PSUtilMetricsLoader"
+        ) as psutil_metrics_loader:
 
             # load up with mock
             load_jupyter_server_extension(nbapp_mock)
@@ -45,4 +47,6 @@ class TestBasic:
             # prometheus
             assert periodic_callback_mock.return_value.start.call_count == 1
             assert prometheus_handler_mock.call_count == 1
-            prometheus_handler_mock.assert_called_with(nbapp_mock)
+            prometheus_handler_mock.assert_called_with(
+                psutil_metrics_loader(nbapp_mock)
+            )
