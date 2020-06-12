@@ -24,7 +24,7 @@ setuptools.setup(
     ],
     packages=setuptools.find_packages(),
     install_requires=["notebook>=5.6.0", "prometheus_client", "psutil>=5.6.0"],
-    extres_require={
+    extras_require={
         "dev": ["autopep8", "black", "pytest", "flake8", "pytest-cov>=2.6.1", "mock"]
     },
     data_files=[
