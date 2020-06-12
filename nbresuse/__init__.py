@@ -36,11 +36,7 @@ def load_jupyter_server_extension(nbapp):
     nbapp.web_app.settings["nbresuse_display_config"] = resuseconfig
     base_url = nbapp.web_app.settings["base_url"]
     nbapp.web_app.add_handlers(
-        ".*",
-        [
-            (url_path_join(base_url, "/api/nbresuse/v1"), ApiHandler),
-            (url_path_join(base_url, "/metrics"), ApiHandler),
-        ],
+        ".*", [(url_path_join(base_url, "/metrics"), ApiHandler)]
     )
     callback = ioloop.PeriodicCallback(
         PrometheusHandler(PSUtilMetricsLoader(nbapp)), 1000
