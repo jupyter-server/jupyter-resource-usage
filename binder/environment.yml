@@ -1,0 +1,8 @@
+name: nbresuse
+channels:
+- conda-forge
+dependencies:
+- python=3
+- jupyterlab=2
+- nbresuse=0.3.5
+- nodejs
