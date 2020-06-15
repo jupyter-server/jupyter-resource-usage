@@ -51,7 +51,7 @@ class ApiHandler(IPythonHandler):
             if config.cpu_limit != 0:
                 limits["cpu"] = {"cpu": config.cpu_limit}
                 if config.cpu_warning_threshold != 0:
-                    limits["cpu"]["warn"] = (config.cpu_limit - self.cpu_percent) < (
+                    limits["cpu"]["warn"] = (config.cpu_limit - cpu_percent) < (
                         config.cpu_limit * config.cpu_warning_threshold
                     )
 
