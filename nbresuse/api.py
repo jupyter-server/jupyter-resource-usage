@@ -36,7 +36,7 @@ class ApiHandler(IPythonHandler):
             mem_limit = config.mem_limit
 
         limits = {"memory": {"rss": mem_limit}}
-        if config.mem_limit:
+        if config.mem_limit and config.mem_warning_threshold != 0:
             limits["memory"]["warn"] = (mem_limit - rss) < (
                 mem_limit * config.mem_warning_threshold
             )
