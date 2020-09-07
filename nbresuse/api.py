@@ -5,6 +5,7 @@ import psutil
 from notebook.base.handlers import IPythonHandler
 from tornado import web
 from tornado.concurrent import run_on_executor
+import os
 
 try:
     # Traitlets >= 4.3.3
