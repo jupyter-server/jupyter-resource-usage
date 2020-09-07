@@ -28,12 +28,25 @@ class ApiHandler(IPythonHandler):
         all_processes = [cur_process] + cur_process.children(recursive=True)
 
         # Get memory information
-        rss = sum([p.memory_info().rss for p in all_processes])
-
-        if callable(config.mem_limit):
-            mem_limit = config.mem_limit(rss=rss)
-        else:  # mem_limit is an Int
-            mem_limit = config.mem_limit
+        dockerized = self.__if_dockerized()
+        if not dockerized:
+            # if running on physical server
+            rss = sum([p.memory_info().rss for p in all_processes])
+            # unused rss, use system avail memory instead
+        else:
+            # if running in docker container or pod
+            with open('/sys/fs/cgroup/memory/memory.usage_in_bytes') as usage:
+                rss = int(usage.read().strip())
+                
+        if not dockerized:
+            if callable(config.mem_limit):
+                mem_limit = config.mem_limit(rss=rss)
+            else:  # mem_limit is an Int
+                mem_limit = config.mem_limit
+        else:
+            # for docker use only
+            with open('/sys/fs/cgroup/memory/memory.limit_in_bytes') as limit:
+                mem_limit = int(limit.read().strip())
 
         limits = {"memory": {"rss": mem_limit}}
         if config.mem_limit and config.mem_warning_threshold != 0:
@@ -45,8 +58,14 @@ class ApiHandler(IPythonHandler):
 
         # Optionally get CPU information
         if config.track_cpu_percent:
-            cpu_count = psutil.cpu_count()
-            cpu_percent = await self._get_cpu_percent(all_processes)
+            if not dockerized:
+                # original nbresuse
+                cpu_count = psutil.cpu_count()
+                cpu_percent = await self._get_cpu_percent(all_processes)
+            else:
+                # for docker use only
+                cpu_count = int(open('/sys/fs/cgroup/cpu/cpu.cfs_quota_us').read().strip()) / 100000
+                cpu_percent = await self._get_cpu_percent(all_processes) / cpu_count
 
             if config.cpu_limit != 0:
                 limits["cpu"] = {"cpu": config.cpu_limit}
@@ -70,3 +89,12 @@ class ApiHandler(IPythonHandler):
                 return 0
 
         return sum([get_cpu_percent(p) for p in all_processes])
+    
+    @staticmethod
+    def __if_dockerized():
+        if os.path.exists('/.dockerenv'):
+            # running in docker or pod
+            return True
+        else:
+            # running on physical server
+            return False
