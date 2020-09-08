@@ -109,25 +109,6 @@ class ApiHandler(IPythonHandler):
                     real_rss = real_rss + int(stat[1])
         return real_rss
 
-    def _check_mem_used(self):
-        memory_limit = 20 * 1024 * 1024 * 1024
-        sysmem = self.__get_docker_physical_memory()
-        rss = self.__get_docker_memory_usage()
-
-        real_rss = self.__get_docker_real_rss_memory()
-
-        avail_mem = rss - real_rss
-        if sysmem < memory_limit:
-            if round(avail_mem / sysmem * 100) < 20:
-                return True
-            else:
-                return False
-        else:
-            if avail_mem < 5 * 1024 * 1024 * 1024:
-                return True
-            else:
-                return False
-
     @staticmethod
     def __if_dockerized():
         if os.path.exists('/.dockerenv'):
