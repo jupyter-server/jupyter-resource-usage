@@ -42,9 +42,8 @@ class ApiHandler(IPythonHandler):
         else:
             # if running in docker container or pod
             mem_limit = self.__get_docker_physical_memory()
-            rss = self.__get_docker_memory_usage()
             real_rss = self.__get_docker_real_rss_memory()
-            rss = rss - real_rss
+            rss = real_rss
 
         limits = {"memory": {"rss": mem_limit}}
         if config.mem_limit:
