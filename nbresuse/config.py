@@ -36,6 +36,15 @@ class ResourceUseDisplay(Configurable):
     """
     Holds server-side configuration for nbresuse
     """
+    disable_legacy_endpoint = Bool(
+        True,
+        help="""
+        Disable legacy /metrics endpoint
+
+        This prevents nbresuse from shadowing the prometheus /metrics endpoint.
+        """,
+        config=True
+    )
 
     process_memory_metrics = List(
         trait=PSUtilMetric(),

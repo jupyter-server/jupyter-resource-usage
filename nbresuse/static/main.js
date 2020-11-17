@@ -34,7 +34,7 @@ define([
             return;
         }
         $.getJSON({
-            url: utils.get_body_data('baseUrl') + 'metrics',
+            url: utils.get_body_data('baseUrl') + 'api/metrics/v1',
             success: function (data) {
                 totalMemoryUsage = humanFileSize(data['rss']);
 
