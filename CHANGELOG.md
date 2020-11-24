@@ -37,12 +37,16 @@ jupyter lab --ResourceUseDisplay.disable_legacy_endpoint=False
 
 - Adding support for jupyterlab statusbar-extension [#45](https://github.com/yuvipanda/jupyter-resource-usage/pull/45) [#36](https://github.com/yuvipanda/jupyter-resource-usage/issues/36)
 
+**Note**: this release restores the `/metrics` endpoint returning a JSON response, that was removed in `0.3.4`.
+
 ## 0.3.4
 
 - Autoformatting and documentation [#33](https://github.com/yuvipanda/jupyter-resource-usage/pull/33)
 - Add section about CPU usage to the README [#30](https://github.com/yuvipanda/jupyter-resource-usage/pull/30)
 - Make psutil optional dependency of NBResuse [#25](https://github.com/yuvipanda/jupyter-resource-usage/pull/25)
 - Report the memory usage metrics as prometheus metrics [#22](https://github.com/yuvipanda/jupyter-resource-usage/pull/22)
+
+**Note**: this release removed the `/metrics` endpoint that was returning a JSON response. As a result, JupyterLab does not display the memory usage indicator in the status bar with `nbresuse==0.3.4`.
 
 ## 0.3.3
 
