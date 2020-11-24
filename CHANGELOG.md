@@ -2,8 +2,8 @@
 
 ## 0.4.0
 
-- Soft-deprecate `/metrics` endpoint: https://github.com/yuvipanda/nbresuse/pull/68 
-- `nbresuse` now exposes a new endpoint: `/api/metrics/v1`: https://github.com/yuvipanda/nbresuse/pull/68 
+- Soft-deprecate `/metrics` endpoint: [#68](https://github.com/yuvipanda/jupyter-resource-usage/pull/68)
+- `nbresuse` now exposes a new endpoint: `/api/metrics/v1`: [#68](https://github.com/yuvipanda/jupyter-resource-usage/pull/68)
 
 ### Migrating to 0.4.0
 
@@ -27,3 +27,24 @@ Two options:
 ```bash
 jupyter lab --ResourceUseDisplay.disable_legacy_endpoint=False
 ```
+
+## 0.3.6
+
+- Fix handling of cpu percent in the API endpoint [#56](https://github.com/yuvipanda/jupyter-resource-usage/pull/56)
+- Added Binder  [#53](https://github.com/yuvipanda/jupyter-resource-usage/pull/53) & RELEASE.md [#54](https://github.com/yuvipanda/jupyter-resource-usage/pull/54)
+
+## 0.3.5
+
+- Adding support for jupyterlab statusbar-extension [#45](https://github.com/yuvipanda/jupyter-resource-usage/pull/45) [#36](https://github.com/yuvipanda/jupyter-resource-usage/issues/36)
+
+## 0.3.4
+
+- Autoformatting and documentation [#33](https://github.com/yuvipanda/jupyter-resource-usage/pull/33)
+- Add section about CPU usage to the README [#30](https://github.com/yuvipanda/jupyter-resource-usage/pull/30)
+- Make psutil optional dependency of NBResuse [#25](https://github.com/yuvipanda/jupyter-resource-usage/pull/25)
+- Report the memory usage metrics as prometheus metrics [#22](https://github.com/yuvipanda/jupyter-resource-usage/pull/22)
+
+## 0.3.3
+
+- Made memory limit possibly dynamic via passing a callable in the config. [#23](https://github.com/yuvipanda/jupyter-resource-usage/pull/23)
+- Track CPU usage [#21](https://github.com/yuvipanda/jupyter-resource-usage/pull/21)
