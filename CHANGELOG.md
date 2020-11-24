@@ -48,3 +48,21 @@ jupyter lab --ResourceUseDisplay.disable_legacy_endpoint=False
 
 - Made memory limit possibly dynamic via passing a callable in the config. [#23](https://github.com/yuvipanda/jupyter-resource-usage/pull/23)
 - Track CPU usage [#21](https://github.com/yuvipanda/jupyter-resource-usage/pull/21)
+
+## 0.3.2
+
+- Require authentication for /metrics API Handler [#18](https://github.com/yuvipanda/jupyter-resource-usage/pull/18)
+
+## 0.3.1
+
+- Don't poll in background, since user does not see it [#15](https://github.com/yuvipanda/jupyter-resource-usage/pull/15)
+- Poll instantly once page is foregrounded [#15](https://github.com/yuvipanda/jupyter-resource-usage/pull/15)
+
+This should reduce the number of /metrics requests massively, with minimal interruption to user experience.
+
+## 0.3.0
+
+- Automatically install & enable extensions [#9](https://github.com/yuvipanda/jupyter-resource-usage/pull/9)
+- Put nbextension / serverextension enables in different places
+- Put nbresuse js files in appropriate path
+
