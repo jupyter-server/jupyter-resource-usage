@@ -70,9 +70,14 @@ This should reduce the number of /metrics requests massively, with minimal inter
 
 - Change 'Mem' prefix in display to less cryptic 'Memory'
 - Fix primary screenshot to show memory limit too
-- Distribute static files via package_data
+- Distribute static files via package_data [#1](https://github.com/yuvipanda/jupyter-resource-usage/pull/1)
 - Add screenshot for memory usage warning
 - Configurable memory usage warnings
+- More configurability via traitlets
+- Consolidate code into single file
+- Document memory limit behavior
+- Add CONTRIBUTING.md doc
+- Updated README
 
 ## 0.1.0
 
