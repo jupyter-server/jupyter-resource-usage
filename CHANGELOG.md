@@ -66,3 +66,14 @@ This should reduce the number of /metrics requests massively, with minimal inter
 - Put nbextension / serverextension enables in different places
 - Put nbresuse js files in appropriate path
 
+## 0.2.0
+
+- Change 'Mem' prefix in display to less cryptic 'Memory'
+- Fix primary screenshot to show memory limit too
+- Distribute static files via package_data
+- Add screenshot for memory usage warning
+- Configurable memory usage warnings
+
+## 0.1.0
+
+- Initial Commits for memory usage display
