@@ -1,12 +1,12 @@
-# Making a new release of nbresuse
+# Making a new release of jupyter-resource-usage
 
 ## Getting a clean environment
 
 Creating a new environment can help avoid pushing local changes and any extra tag.
 
 ```bash
-conda create -n nbresuse-release -c conda-forge twine keyring
-conda activate nbresuse-release
+conda create -n jupyter-resource-usage-release -c conda-forge twine keyring
+conda activate jupyter-resource-usage-release
 ```
 
 Alternatively, the local repository can be cleaned with:
@@ -23,7 +23,7 @@ Make sure the `dist/` folder is empty.
 2. `python setup.py sdist bdist_wheel`
 3. Double check the size of the bundles in the `dist/` folder
 4. Run the tests
-  - `pip install "dist/nbresuse-X.Y.Z-py3-none-any.whl[dev]"`
+  - `pip install "dist/jupyter-resource-usage-X.Y.Z-py3-none-any.whl[dev]"`
   - `python -m pytest`
 5. `export TWINE_USERNAME=mypypi_username`
 6. `twine upload dist/*`
@@ -34,7 +34,7 @@ The easiest is to wait for the bot to open the PR automatically.
 
 To do the release manually:
 
-1. Open a new PR on https://github.com/conda-forge/nbresuse-feedstock to update the `version` and the `sha256` hash
+1. Open a new PR on https://github.com/conda-forge/jupyter-resource-usage-feedstock to update the `version` and the `sha256` hash
 2. Wait for the tests
 3. Merge the PR
 

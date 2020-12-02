@@ -1,8 +1,8 @@
-name: nbresuse
+name: jupyter-resource-usage
 channels:
 - conda-forge
 dependencies:
 - python=3
 - jupyterlab=2
-- nbresuse=0.3.6
+- jupyter_resource_usage=0.3.6
 - nodejs
