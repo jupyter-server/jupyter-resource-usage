@@ -12,10 +12,11 @@ from jupyter_packaging import install_npm
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 # The name of the project
-name = "jupyter-resource-usage"
+NAME = "jupyter-resource-usage"
+PACKAGE_NAME = NAME.replace("-", "_")
 
 src_path = os.path.join(HERE, "packages", "labextension")
-lab_path = os.path.join(HERE, name, "labextension")
+lab_path = os.path.join(HERE, PACKAGE_NAME, "labextension")
 
 # Representative files that should exist after a successful build
 jstargets = [
@@ -23,7 +24,7 @@ jstargets = [
     os.path.join(lab_path, "package.json"),
 ]
 
-package_data_spec = {name: ["*"]}
+package_data_spec = {PACKAGE_NAME: ["*"]}
 
 labext_name = "@jupyter-server/resource-usage"
 
@@ -45,7 +46,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name=name,
+    name=NAME,
     version="0.4.0",
     url="https://github.com/jupyter-server/jupyter-resource-usage",
     author="Jupyter Development Team",
@@ -61,15 +62,15 @@ setuptools.setup(
     data_files=[
         (
             "share/jupyter/nbextensions/jupyter-resource-usage",
-            glob("jupyter-resource-usage/static/*"),
+            glob("jupyter_resource_usage/static/*"),
         ),
         (
             "etc/jupyter/jupyter_notebook_config.d",
-            ["jupyter-resource-usage/etc/serverextension.json"],
+            ["jupyter_resource_usage/etc/serverextension.json"],
         ),
         (
             "etc/jupyter/nbconfig/notebook.d",
-            ["jupyter-resource-usage/etc/nbextension.json"],
+            ["jupyter_resource_usage/etc/nbextension.json"],
         ),
     ],
     zip_safe=False,
