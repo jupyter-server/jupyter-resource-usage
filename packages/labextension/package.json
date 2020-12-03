@@ -19,7 +19,6 @@
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "style": "style/index.css",
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyter-server/jupyter-resource-usage.git"
@@ -67,9 +66,6 @@
     "rimraf": "^3.0.2",
     "typescript": "~4.0.3"
   },
-  "sideEffects": [
-    "style/*.css"
-  ],
   "jupyterlab": {
     "extension": true,
     "outputDir": "../../jupyter_resource_usage/labextension"
