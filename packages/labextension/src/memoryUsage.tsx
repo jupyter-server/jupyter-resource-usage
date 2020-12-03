@@ -19,7 +19,7 @@ import { Poll } from '@lumino/polling';
 
 import React from 'react';
 
-import { nbresuse } from './text';
+import { resourceItem } from './text';
 
 /**
  * A VDomRenderer for showing memory usage by a kernel.
@@ -65,7 +65,7 @@ export class MemoryUsage extends VDomRenderer<MemoryUsage.Model> {
         <TextItem
           title={this._trans.__('Current mem usage')}
           source={text}
-          className={nbresuse}
+          className={resourceItem}
         />
       );
     }

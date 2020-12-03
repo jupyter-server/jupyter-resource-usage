@@ -12,7 +12,7 @@
     "url": "https://github.com/jupyter-server/jupyter-resource-usage/issues"
   },
   "license": "BSD-3-Clause",
-  "author": "nbresuse contributors",
+  "author": "Jupyter Development Team",
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
     "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
@@ -32,7 +32,7 @@
     "build:lib": "tsc",
     "clean": "jlpm run clean:lib",
     "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
-    "clean:labextension": "rimraf ../nbresuse/labextension",
+    "clean:labextension": "rimraf ../../jupyter-resource-usage/labextension",
     "clean:all": "jlpm run clean:lib && jlpm run clean:labextension",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
@@ -72,6 +72,6 @@
   ],
   "jupyterlab": {
     "extension": true,
-    "outputDir": "../../nbresuse/labextension"
+    "outputDir": "../../jupyter-resource-usage/labextension"
   }
 }

@@ -3,7 +3,7 @@
 
 import { style } from 'typestyle';
 
-export const nbresuse = style(
+export const resourceItem = style(
   {
     fontSize: 'var(--jp-ui-font-size1)',
     fontFamily: 'var(--jp-ui-font-family)',
