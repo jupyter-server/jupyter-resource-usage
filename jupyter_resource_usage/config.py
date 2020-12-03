@@ -34,7 +34,7 @@ class PSUtilMetric(TraitType):
 
 class ResourceUseDisplay(Configurable):
     """
-    Holds server-side configuration for nbresuse
+    Holds server-side configuration for jupyter-resource-usage
     """
 
     disable_legacy_endpoint = Bool(
@@ -42,7 +42,7 @@ class ResourceUseDisplay(Configurable):
         help="""
         Disable legacy /metrics endpoint
 
-        This prevents nbresuse from shadowing the prometheus /metrics endpoint.
+        This prevents jupyter-resource-usage from shadowing the prometheus /metrics endpoint.
         """,
         config=True,
     )

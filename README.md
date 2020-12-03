@@ -3,17 +3,17 @@
 **[Resources Displayed](#resources-displayed)** |
 **[Contributing](#contributing)**
 
-# NBResuse
+# jupyter-resource-usage
 
-![Github Actions Status](https://github.com/yuvipanda/nbresuse/workflows/Tests/badge.svg)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/yuvipanda/nbresuse/stable)
-[![PyPI](https://img.shields.io/pypi/v/nbresuse)](https://pypi.python.org/pypi/nbresuse)
-[![PyPI](https://img.shields.io/pypi/l/nbresuse)](https://pypi.python.org/pypi/nbresuse)
-[![GitHub](https://img.shields.io/badge/issue_tracking-github-blue?logo=github)](https://github.com/yuvipanda/nbresuse/issues)
+![Github Actions Status](https://github.com/jupyter-server/jupyter-resource-usage/workflows/Tests/badge.svg)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-server/jupyter-resource-usage/stable)
+[![PyPI](https://img.shields.io/pypi/v/jupyter-resource-usage)](https://pypi.python.org/pypi/jupyter-resource-usage)
+[![PyPI](https://img.shields.io/pypi/l/jupyter-resource-usage)](https://pypi.python.org/pypi/jupyter-resource-usage)
+[![GitHub](https://img.shields.io/badge/issue_tracking-github-blue?logo=github)](https://github.com/jupyter-server/jupyter-resource-usage/issues)
 
 ![Screenshot with memory limit](screenshot.png)
 
-NB Resource Usage (NBResuse) is a small extension for Jupyter Notebooks that
+Jupyter Resource Usage is an extension for Jupyter Notebooks and JupyterLab that
 displays an indication of how much resources your current notebook server and
 its children (kernels, terminals, etc) are using. This is displayed in the
 main toolbar in the notebook itself, refreshing every 5s.
@@ -23,22 +23,22 @@ main toolbar in the notebook itself, refreshing every 5s.
 You can currently install this package from PyPI.
 
 ```bash
-pip install nbresuse
+pip install jupyter-resource-usage
 ```
 
 **If your notebook version is < 5.3**, you need to enable the extension manually.
 
 ```
-jupyter serverextension enable --py nbresuse --sys-prefix
-jupyter nbextension install --py nbresuse --sys-prefix
-jupyter nbextension enable --py nbresuse --sys-prefix
+jupyter serverextension enable --py jupyter-resource-usage --sys-prefix
+jupyter nbextension install --py jupyter-resource-usage --sys-prefix
+jupyter nbextension enable --py jupyter-resource-usage --sys-prefix
 ```
 
 ## Configuration
 
 ### Memory Limit
 
-`nbresuse` can display a memory limit (but not enforce it). You can set this
+`jupyter-resource-usage` can display a memory limit (but not enforce it). You can set this
 in several ways:
 
 1. `MEM_LIMIT` environment variable. This is set by [JupyterHub](https://github.com/jupyterhub/jupyterhub/)
@@ -61,7 +61,7 @@ can set the parameter `--ResourceUseDisplay.mem_warning_threshold=0.1`.
 
 ### CPU Usage
 
-`nbresuse` can also track CPU usage and report a `cpu_percent` value as part of the `/metrics` response.
+`jupyter-resource-usage` can also track CPU usage and report a `cpu_percent` value as part of the `/metrics` response.
 
 You can set the `cpu_limit` in several ways:
 

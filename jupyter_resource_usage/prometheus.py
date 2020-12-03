@@ -1,9 +1,8 @@
 from typing import Optional
 
+from jupyter_resource_usage.metrics import PSUtilMetricsLoader
 from notebook.notebookapp import NotebookApp
 from prometheus_client import Gauge
-
-from nbresuse.metrics import PSUtilMetricsLoader
 
 try:
     # Traitlets >= 4.3.3

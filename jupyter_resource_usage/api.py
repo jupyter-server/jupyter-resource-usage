@@ -22,7 +22,7 @@ class ApiHandler(IPythonHandler):
         """
         Calculate and return current resource usage metrics
         """
-        config = self.settings["nbresuse_display_config"]
+        config = self.settings["jupyter_resource_usage_display_config"]
 
         cur_process = psutil.Process()
         all_processes = [cur_process] + cur_process.children(recursive=True)

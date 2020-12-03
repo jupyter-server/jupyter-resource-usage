@@ -10,10 +10,10 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setuptools.setup(
-    name="nbresuse",
+    name="jupyter-resource-usage",
     version="0.4.0",
-    url="https://github.com/yuvipanda/nbresuse",
-    author="Yuvi Panda",
+    url="https://github.com/jupyter-server/jupyter-resource-usage",
+    author="Jupyter Development Team",
     description="Simple Jupyter extension to show how much resources (RAM) your notebook is using",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -28,12 +28,18 @@ setuptools.setup(
         "dev": ["autopep8", "black", "pytest", "flake8", "pytest-cov>=2.6.1", "mock"]
     },
     data_files=[
-        ("share/jupyter/nbextensions/nbresuse", glob("nbresuse/static/*")),
+        (
+            "share/jupyter/nbextensions/jupyter-resource-usage",
+            glob("jupyter-resource-usage/static/*"),
+        ),
         (
             "etc/jupyter/jupyter_notebook_config.d",
-            ["nbresuse/etc/serverextension.json"],
+            ["jupyter-resource-usage/etc/serverextension.json"],
         ),
-        ("etc/jupyter/nbconfig/notebook.d", ["nbresuse/etc/nbextension.json"]),
+        (
+            "etc/jupyter/nbconfig/notebook.d",
+            ["jupyter-resource-usage/etc/nbextension.json"],
+        ),
     ],
     zip_safe=False,
     include_package_data=True,

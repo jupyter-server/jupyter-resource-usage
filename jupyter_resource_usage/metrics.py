@@ -8,7 +8,7 @@ from notebook.notebookapp import NotebookApp
 
 class PSUtilMetricsLoader:
     def __init__(self, nbapp: NotebookApp):
-        self.config = nbapp.web_app.settings["nbresuse_display_config"]
+        self.config = nbapp.web_app.settings["jupyter_resource_usage_display_config"]
         self.nbapp = nbapp
 
     def get_process_metric_value(self, process, name, kwargs, attribute=None):

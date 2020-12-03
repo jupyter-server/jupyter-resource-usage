@@ -1,7 +1,7 @@
 {
   "NotebookApp": {
     "nbserver_extensions": {
-      "nbresuse": true
+      "jupyter_resource_usage": true
     }
   }
 }

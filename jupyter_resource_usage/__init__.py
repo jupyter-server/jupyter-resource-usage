@@ -1,17 +1,16 @@
+from jupyter_resource_usage.api import ApiHandler
+from jupyter_resource_usage.config import ResourceUseDisplay
+from jupyter_resource_usage.metrics import PSUtilMetricsLoader
+from jupyter_resource_usage.prometheus import PrometheusHandler
 from notebook.utils import url_path_join
 from tornado import ioloop
-
-from nbresuse.api import ApiHandler
-from nbresuse.config import ResourceUseDisplay
-from nbresuse.metrics import PSUtilMetricsLoader
-from nbresuse.prometheus import PrometheusHandler
 
 
 def _jupyter_server_extension_paths():
     """
     Set up the server extension for collecting metrics
     """
-    return [{"module": "nbresuse"}]
+    return [{"module": "jupyter_resource_usage"}]
 
 
 def _jupyter_nbextension_paths():
@@ -21,9 +20,9 @@ def _jupyter_nbextension_paths():
     return [
         {
             "section": "notebook",
-            "dest": "nbresuse",
+            "dest": "jupyter_resource_usage",
             "src": "static",
-            "require": "nbresuse/main",
+            "require": "jupyter_resource_usage/main",
         }
     ]
 
@@ -33,7 +32,7 @@ def load_jupyter_server_extension(nbapp):
     Called during notebook start
     """
     resuseconfig = ResourceUseDisplay(parent=nbapp)
-    nbapp.web_app.settings["nbresuse_display_config"] = resuseconfig
+    nbapp.web_app.settings["jupyter_resource_usage_display_config"] = resuseconfig
     base_url = nbapp.web_app.settings["base_url"]
 
     if not resuseconfig.disable_legacy_endpoint:
