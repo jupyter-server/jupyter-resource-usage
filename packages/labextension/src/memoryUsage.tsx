@@ -58,12 +58,15 @@ export class MemoryUsage extends VDomRenderer<MemoryUsage.Model> {
     }
     if (!this.model.usageWarning) {
       return (
-        <TextItem title={this._trans.__('Current mem usage')} source={text} />
+        <TextItem
+          title={this._trans.__('Current memory usage')}
+          source={text}
+        />
       );
     } else {
       return (
         <TextItem
-          title={this._trans.__('Current mem usage')}
+          title={this._trans.__('Current memory usage')}
           source={text}
           className={resourceItem}
         />
