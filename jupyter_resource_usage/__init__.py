@@ -1,9 +1,22 @@
+import json
+import os.path as osp
+
+from notebook.utils import url_path_join
+from tornado import ioloop
+
 from jupyter_resource_usage.api import ApiHandler
 from jupyter_resource_usage.config import ResourceUseDisplay
 from jupyter_resource_usage.metrics import PSUtilMetricsLoader
 from jupyter_resource_usage.prometheus import PrometheusHandler
-from notebook.utils import url_path_join
-from tornado import ioloop
+
+HERE = osp.abspath(osp.dirname(__file__))
+
+with open(osp.join(HERE, "labextension", "package.json")) as fid:
+    data = json.load(fid)
+
+
+def _jupyter_labextension_paths():
+    return [{"src": "labextension", "dest": data["name"]}]
 
 
 def _jupyter_server_extension_paths():

@@ -24,6 +24,7 @@ var/
 .installed.cfg
 *.egg
 *.ipynb
+MANIFEST
 
 # IDE and code editors
 *.iml
@@ -31,3 +32,13 @@ var/
 .vscode
 *.code-workspace
 .history
+
+# Labextension
+*.bundle.*
+lib/
+node_modules/
+*.egg-info/
+.ipynb_checkpoints
+*.tsbuildinfo
+jupyter_resource_usage/labextension
+yarn-error.log
