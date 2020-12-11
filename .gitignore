@@ -24,6 +24,7 @@ var/
 .installed.cfg
 *.egg
 *.ipynb
+MANIFEST
 
 # IDE and code editors
 *.iml
