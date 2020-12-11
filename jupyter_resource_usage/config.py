@@ -37,16 +37,6 @@ class ResourceUseDisplay(Configurable):
     Holds server-side configuration for jupyter-resource-usage
     """
 
-    disable_legacy_endpoint = Bool(
-        True,
-        help="""
-        Disable legacy /metrics endpoint
-
-        This prevents jupyter-resource-usage from shadowing the prometheus /metrics endpoint.
-        """,
-        config=True,
-    )
-
     process_memory_metrics = List(
         trait=PSUtilMetric(),
         default_value=[{"name": "memory_info", "attribute": "rss"}],

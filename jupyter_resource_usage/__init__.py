@@ -48,11 +48,6 @@ def load_jupyter_server_extension(nbapp):
     nbapp.web_app.settings["jupyter_resource_usage_display_config"] = resuseconfig
     base_url = nbapp.web_app.settings["base_url"]
 
-    if not resuseconfig.disable_legacy_endpoint:
-        nbapp.web_app.add_handlers(
-            ".*", [(url_path_join(base_url, "/metrics"), ApiHandler)]
-        )
-
     nbapp.web_app.add_handlers(
         ".*", [(url_path_join(base_url, "/api/metrics/v1"), ApiHandler)]
     )
