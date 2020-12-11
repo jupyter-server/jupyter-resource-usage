@@ -17,6 +17,7 @@ PACKAGE_NAME = NAME.replace("-", "_")
 
 src_path = os.path.join(HERE, "packages", "labextension")
 lab_path = os.path.join(HERE, PACKAGE_NAME, "labextension")
+nb_path = os.path.join(HERE, PACKAGE_NAME, "static")
 
 # Representative files that should exist after a successful build
 jstargets = [
@@ -27,10 +28,27 @@ jstargets = [
 package_data_spec = {PACKAGE_NAME: ["*"]}
 
 labext_name = "@jupyter-server/resource-usage"
+nbext_name = "jupyter_resource_usage"
 
 data_files_spec = [
+    ("share/jupyter/nbextensions/%s" % nbext_name, nb_path, "**"),
     ("share/jupyter/labextensions/%s" % labext_name, lab_path, "**"),
     ("share/jupyter/labextensions/%s" % labext_name, HERE, "install.json"),
+    (
+        "etc/jupyter/jupyter_server_config.d",
+        "jupyter-config/jupyter_server_config.d",
+        "jupyter_resource_usage.json",
+    ),
+    (
+        "etc/jupyter/jupyter_notebook_config.d",
+        "jupyter-config/jupyter_notebook_config.d",
+        "jupyter_resource_usage.json",
+    ),
+    (
+        "etc/jupyter/nbconfig/notebook.d",
+        "jupyter-config/nbconfig/notebook.d",
+        "jupyter_resource_usage.json",
+    ),
 ]
 
 cmdclass = create_cmdclass(
@@ -59,20 +77,6 @@ setuptools.setup(
     extras_require={
         "dev": ["autopep8", "black", "pytest", "flake8", "pytest-cov>=2.6.1", "mock"]
     },
-    data_files=[
-        (
-            "share/jupyter/nbextensions/jupyter-resource-usage",
-            glob("jupyter_resource_usage/static/*"),
-        ),
-        (
-            "etc/jupyter/jupyter_notebook_config.d",
-            ["jupyter_resource_usage/etc/serverextension.json"],
-        ),
-        (
-            "etc/jupyter/nbconfig/notebook.d",
-            ["jupyter_resource_usage/etc/nbextension.json"],
-        ),
-    ],
     zip_safe=False,
     include_package_data=True,
     license="BSD",

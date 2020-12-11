@@ -6,7 +6,8 @@ include package.json
 include install.json
 include ts*.json
 
-graft jupyter_resource_usage/etc
+recursive-include jupyter-config *.json
+
 graft jupyter_resource_usage/labextension
 graft jupyter_resource_usage/static
 
