@@ -61,7 +61,7 @@ can set the parameter `--ResourceUseDisplay.mem_warning_threshold=0.1`.
 
 ### CPU Usage
 
-`jupyter-resource-usage` can also track CPU usage and report a `cpu_percent` value as part of the `/metrics` response.
+`jupyter-resource-usage` can also track CPU usage and report a `cpu_percent` value as part of the `/api/metrics/v1` response.
 
 You can set the `cpu_limit` in several ways:
 
