@@ -65,7 +65,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name=NAME,
-    version="0.4.0",
+    version="0.5.0",
     url="https://github.com/jupyter-server/jupyter-resource-usage",
     author="Jupyter Development Team",
     description="Simple Jupyter extension to show how much resources (RAM) your notebook is using",
