@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.5.0
+
+The repository has now moved to the [`jupyter-server`](https://github.com/jupyter-server) organization on GitHub.
+
+It was also renamed to `jupyter-resource-usage`.
+
+To install the package with `pip`:
+
+```bash
+pip install jupyter-resource-usage
+```
+
+### Other changes
+
+- Add a JupyterLab extension for the memory usage status bar item: [#69](https://github.com/jupyter-server/jupyter-resource-usage/pull/69)
+- Drop the deprecated `/metrics` endpoint: [#77](https://github.com/jupyter-server/jupyter-resource-usage/pull/77)
+
+
+### Migrating to 0.5.0
+
+For classic notebook users, there shouldn't be any major change or action to take. The classic notebook extension is still distributed with the Python package as before.
+
+For JupyterLab 2.x users you will still need to use the previous `nbresuse` package. See below for more information.
+
+For JupyterLab 3.x, the status bar item is now packaged in its own extension and distributed with the `jupyter-resource-usage` package. This means that a single `pip install jupyter-resource-usage` is enough to install the server extension, the classic notebook extension and the JupyterLab extension all at once.
+
 ## 0.4.0
 
 - Soft-deprecate `/metrics` endpoint: [#68](https://github.com/jupyter-server/jupyter-resource-usage/pull/68)
