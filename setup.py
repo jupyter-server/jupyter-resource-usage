@@ -1,12 +1,11 @@
 import os
-from glob import glob
 
 import setuptools
 from jupyter_packaging import combine_commands
 from jupyter_packaging import create_cmdclass
 from jupyter_packaging import ensure_targets
-from jupyter_packaging import get_version
 from jupyter_packaging import install_npm
+from jupyter_packaging import skip_if_exists
 
 # The directory containing this file
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -20,10 +19,7 @@ lab_path = os.path.join(HERE, PACKAGE_NAME, "labextension")
 nb_path = os.path.join(HERE, PACKAGE_NAME, "static")
 
 # Representative files that should exist after a successful build
-jstargets = [
-    os.path.join(src_path, "lib", "index.js"),
-    os.path.join(lab_path, "package.json"),
-]
+jstargets = [os.path.join(lab_path, "package.json")]
 
 package_data_spec = {PACKAGE_NAME: ["*"]}
 
@@ -55,10 +51,16 @@ cmdclass = create_cmdclass(
     "jsdeps", package_data_spec=package_data_spec, data_files_spec=data_files_spec
 )
 
-cmdclass["jsdeps"] = combine_commands(
+js_command = combine_commands(
     install_npm(src_path, build_cmd="build:prod", npm=["jlpm"]),
     ensure_targets(jstargets),
 )
+
+is_repo = os.path.exists(os.path.join(HERE, ".git"))
+if is_repo:
+    cmdclass["jsdeps"] = js_command
+else:
+    cmdclass["jsdeps"] = skip_if_exists(jstargets, js_command)
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
