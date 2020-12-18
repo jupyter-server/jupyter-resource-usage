@@ -19,10 +19,7 @@ lab_path = os.path.join(HERE, PACKAGE_NAME, "labextension")
 nb_path = os.path.join(HERE, PACKAGE_NAME, "static")
 
 # Representative files that should exist after a successful build
-jstargets = [
-    os.path.join(src_path, "lib", "index.js"),
-    os.path.join(lab_path, "package.json"),
-]
+jstargets = [os.path.join(lab_path, "package.json")]
 
 package_data_spec = {PACKAGE_NAME: ["*"]}
 
