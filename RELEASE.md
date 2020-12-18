@@ -5,8 +5,11 @@
 Creating a new environment can help avoid pushing local changes and any extra tag.
 
 ```bash
-conda create -n jupyter-resource-usage-release -c conda-forge twine keyring
+conda create -n jupyter-resource-usage-release -c conda-forge twine keyring jupyter-packaging python
 conda activate jupyter-resource-usage-release
+
+# install JupyterLab to build the extension
+python -m pip install --pre jupyterlab
 ```
 
 Alternatively, the local repository can be cleaned with:
