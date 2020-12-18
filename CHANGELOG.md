@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+- Skip building js assets if they already exist: [#81](https://github.com/jupyter-server/jupyter-resource-usage/pull/81)
+
 ## 0.5.0
 
 The repository has now moved to the [`jupyter-server`](https://github.com/jupyter-server) organization on GitHub.
