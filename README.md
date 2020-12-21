@@ -8,6 +8,7 @@
 ![Github Actions Status](https://github.com/jupyter-server/jupyter-resource-usage/workflows/Tests/badge.svg)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-server/jupyter-resource-usage/stable)
 [![PyPI](https://img.shields.io/pypi/v/jupyter-resource-usage)](https://pypi.python.org/pypi/jupyter-resource-usage)
+[![conda-forge](https://img.shields.io/conda/vn/conda-forge/jupyter-resource-usage.svg)](https://anaconda.org/conda-forge/jupyter-resource-usage)
 [![PyPI](https://img.shields.io/pypi/l/jupyter-resource-usage)](https://pypi.python.org/pypi/jupyter-resource-usage)
 [![GitHub](https://img.shields.io/badge/issue_tracking-github-blue?logo=github)](https://github.com/jupyter-server/jupyter-resource-usage/issues)
 
@@ -24,6 +25,12 @@ You can currently install this package from PyPI.
 
 ```bash
 pip install jupyter-resource-usage
+```
+
+Or with `conda`:
+
+```bash
+conda install -c conda-forge jupyter-resource-usage
 ```
 
 **If your notebook version is < 5.3**, you need to enable the extension manually.
