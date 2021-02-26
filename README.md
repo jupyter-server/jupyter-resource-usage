@@ -83,7 +83,7 @@ Additionally, you can set the `track_cpu_percent` trait to enable CPU usage trac
 
 ```python
 c = get_config()
-c.NotebookApp.ResourceUseDisplay.track_cpu_percent = True
+c.ResourceUseDisplay.track_cpu_percent = True
 ```
 
 As a command line argument:
