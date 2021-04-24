@@ -1,8 +1,8 @@
 from typing import Optional
 
-from jupyter_resource_usage.metrics import PSUtilMetricsLoader
-from notebook.notebookapp import NotebookApp
 from prometheus_client import Gauge
+
+from jupyter_resource_usage.metrics import PSUtilMetricsLoader
 
 try:
     # Traitlets >= 4.3.3
@@ -16,7 +16,7 @@ class PrometheusHandler(Callable):
         super().__init__()
         self.metricsloader = metricsloader
         self.config = metricsloader.config
-        self.session_manager = metricsloader.nbapp.session_manager
+        self.session_manager = metricsloader.server_app.session_manager
 
         gauge_names = ["total_memory", "max_memory", "total_cpu", "max_cpu"]
         for name in gauge_names:

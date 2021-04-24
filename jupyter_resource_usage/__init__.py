@@ -1,7 +1,7 @@
 import json
 import os.path as osp
 
-from notebook.utils import url_path_join
+from jupyter_server.utils import url_path_join
 from tornado import ioloop
 
 from jupyter_resource_usage.api import ApiHandler
@@ -19,7 +19,7 @@ def _jupyter_labextension_paths():
     return [{"src": "labextension", "dest": data["name"]}]
 
 
-def _jupyter_server_extension_paths():
+def _jupyter_server_extension_points():
     """
     Set up the server extension for collecting metrics
     """
@@ -40,19 +40,22 @@ def _jupyter_nbextension_paths():
     ]
 
 
-def load_jupyter_server_extension(nbapp):
+def _load_jupyter_server_extension(server_app):
     """
     Called during notebook start
     """
-    resuseconfig = ResourceUseDisplay(parent=nbapp)
-    nbapp.web_app.settings["jupyter_resource_usage_display_config"] = resuseconfig
-    base_url = nbapp.web_app.settings["base_url"]
+    resuseconfig = ResourceUseDisplay(parent=server_app)
+    server_app.web_app.settings["jupyter_resource_usage_display_config"] = resuseconfig
+    base_url = server_app.web_app.settings["base_url"]
 
-    nbapp.web_app.add_handlers(
+    server_app.web_app.add_handlers(
         ".*", [(url_path_join(base_url, "/api/metrics/v1"), ApiHandler)]
     )
 
     callback = ioloop.PeriodicCallback(
-        PrometheusHandler(PSUtilMetricsLoader(nbapp)), 1000
+        PrometheusHandler(PSUtilMetricsLoader(server_app)), 1000
     )
     callback.start()
+
+
+load_jupyter_server_extension = _load_jupyter_server_extension

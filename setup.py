@@ -75,7 +75,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     cmdclass=cmdclass,
     packages=setuptools.find_packages(),
-    install_requires=["notebook>=5.6.0", "prometheus_client", "psutil>=5.6.0"],
+    install_requires=["jupyter_server>=1.0.0", "prometheus_client", "psutil>=5.6.0"],
     extras_require={
         "dev": ["autopep8", "black", "pytest", "flake8", "pytest-cov>=2.6.1", "mock"]
     },
