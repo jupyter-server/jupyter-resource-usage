@@ -2,7 +2,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 
 import psutil
-from notebook.base.handlers import IPythonHandler
+from jupyter_server.base.handlers import APIHandler
 from tornado import web
 from tornado.concurrent import run_on_executor
 
@@ -13,9 +13,14 @@ except ImportError:
     from .utils import Callable
 
 
-class ApiHandler(IPythonHandler):
+class ApiHandler(APIHandler):
+    def initialize(self):
+        self.executor = ThreadPoolExecutor(max_workers=5)
 
-    executor = ThreadPoolExecutor(max_workers=5)
+    def __del__(self):
+        # Ensure the executor is properly shutdown
+        self.executor.shutdown(wait=False)
+        super().__del__()
 
     @web.authenticated
     async def get(self):

@@ -8,12 +8,12 @@ class TestBasic:
     def test_import_serverextension(self):
         """Check that serverextension hooks are available"""
         from jupyter_resource_usage import (
-            _jupyter_server_extension_paths,
+            _jupyter_server_extension_points,
             _jupyter_nbextension_paths,
-            load_jupyter_server_extension,
+            _load_jupyter_server_extension,
         )
 
-        assert _jupyter_server_extension_paths() == [
+        assert _jupyter_server_extension_points() == [
             {"module": "jupyter_resource_usage"}
         ]
         assert _jupyter_nbextension_paths() == [
@@ -39,7 +39,7 @@ class TestBasic:
         ) as psutil_metrics_loader:
 
             # load up with mock
-            load_jupyter_server_extension(nbapp_mock)
+            _load_jupyter_server_extension(nbapp_mock)
 
             # assert that we installed the application in settings
             print(nbapp_mock.web_app.settings)

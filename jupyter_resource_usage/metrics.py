@@ -3,13 +3,15 @@ try:
 except ImportError:
     psutil = None
 
-from notebook.notebookapp import NotebookApp
+from jupyter_server.serverapp import ServerApp
 
 
 class PSUtilMetricsLoader:
-    def __init__(self, nbapp: NotebookApp):
-        self.config = nbapp.web_app.settings["jupyter_resource_usage_display_config"]
-        self.nbapp = nbapp
+    def __init__(self, server_app: ServerApp):
+        self.config = server_app.web_app.settings[
+            "jupyter_resource_usage_display_config"
+        ]
+        self.server_app = server_app
 
     def get_process_metric_value(self, process, name, kwargs, attribute=None):
         try:
