@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.0
+
+- `executor` as ApiHandle class attribute [\#95](https://github.com/jupyter-server/jupyter-resource-usage/pull/95) ([jtpio](https://github.com/jtpio))
+- Update RELEASE.md [\#94](https://github.com/jupyter-server/jupyter-resource-usage/pull/94) ([jtpio](https://github.com/jtpio))
+- Clarify notebook/jupyter\_server usage [\#93](https://github.com/jupyter-server/jupyter-resource-usage/pull/93) ([fcollonval](https://github.com/fcollonval))
+- Bump ssri from 8.0.0 to 8.0.1 in /packages/labextension [\#90](https://github.com/jupyter-server/jupyter-resource-usage/pull/90) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update to JupyterLab 3.0 final packages [\#87](https://github.com/jupyter-server/jupyter-resource-usage/pull/87) ([jtpio](https://github.com/jtpio))
+- Add instructions to install with conda [\#83](https://github.com/jupyter-server/jupyter-resource-usage/pull/83) ([jtpio](https://github.com/jtpio))
+- Add Changelog for 0.5.1 [\#82](https://github.com/jupyter-server/jupyter-resource-usage/pull/82) ([jtpio](https://github.com/jtpio))
+
 ## 0.5.1
 
 - Skip building js assets if they already exist: [#81](https://github.com/jupyter-server/jupyter-resource-usage/pull/81)
