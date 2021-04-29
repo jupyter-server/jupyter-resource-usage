@@ -4,5 +4,5 @@ channels:
 dependencies:
 - python=3
 - jupyterlab=3
-- jupyter_resource_usage=0.5.1
+- jupyter_resource_usage=0.6.0
 - nodejs
