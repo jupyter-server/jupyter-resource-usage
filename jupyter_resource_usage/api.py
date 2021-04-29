@@ -14,13 +14,7 @@ except ImportError:
 
 
 class ApiHandler(APIHandler):
-    def initialize(self):
-        self.executor = ThreadPoolExecutor(max_workers=5)
-
-    def __del__(self):
-        # Ensure the executor is properly shutdown
-        self.executor.shutdown(wait=False)
-        super().__del__()
+    executor = ThreadPoolExecutor(max_workers=5)
 
     @web.authenticated
     async def get(self):
