@@ -336,10 +336,6 @@ namespace Private {
     );
     const response = await request;
 
-    if (response.ok) {
-      return await response.json();
-    }
-
-    return null;
+    return await response.json();
   }
 }
