@@ -17,6 +17,7 @@ define([
         $('#maintoolbar-container').append(
             $('<div>').attr('id', 'jupyter-resource-usage-display-cpu')
                 .addClass('btn-group')
+                .addClass('jupyter-resource-usage-hide')
                 .addClass('pull-right').append(
                     $('<strong>').text(' CPU: ')
                 ).append(
@@ -27,6 +28,9 @@ define([
         // FIXME: Do something cleaner to get styles in here?
         $('head').append(
             $('<style>').html('.jupyter-resource-usage-warn { background-color: #FFD2D2; color: #D8000C; }')
+        );
+        $('head').append(
+            $('<style>').html('.jupyter-resource-usage-hide { display: none; }')
         );
         $('head').append(
             $('<style>').html('#jupyter-resource-usage-display { padding: 2px 8px; }')
@@ -67,28 +71,29 @@ define([
                 }
 
                 $('#jupyter-resource-usage-mem').text(display);
-            }
-        });
-        $.getJSON({
-            url: utils.get_body_data('baseUrl') + 'api/metrics/v1',
-            success: function (data) {
+
+                // Handle CPU display
                 var cpuPercent = data['cpu_percent'];
-                var maxCpu = data['cpu_count'];
-                var limits = data['limits'];
-                var display = parseFloat(cpuPercent).toFixed(0) + "% (";
-
-                if (limits['cpu']) {
-                    if (limits['cpu']['cpu']) {
-                        display += (Math.round(parseFloat(cpuPercent) / 100)).toString() + " / " + maxCpu + ")";
+                if (cpuPercent) {
+                    // Remove hide CSS class if the metrics API gives us a CPU percent to display
+                    $('#jupyter-resource-usage-display-cpu').removeClass('jupyter-resource-usage-hide');
+                    var maxCpu = data['cpu_count'];
+                    var limits = data['limits'];
+                    // Display CPU usage as "{percent}% ({usedCpu} / {maxCPU})" e.g. "123% (1 / 8)"
+                    var percentString = parseFloat(cpuPercent).toFixed(0);
+                    var usedCpu = Math.round(parseFloat(cpuPercent) / 100).toString();
+                    var display = `${percentString}% (${usedCpu} / ${maxCpu})`;
+                    // Handle limit warning
+                    if (limits['cpu']) {
+                        if (limits['cpu']['warn']) {
+                            $('#jupyter-resource-usage-display-cpu').addClass('jupyter-resource-usage-warn');
+                        } else {
+                            $('#jupyter-resource-usage-display-cpu').removeClass('jupyter-resource-usage-warn');
+                        }
                     }
-                    if (limits['cpu']['warn']) {
-                        $('#jupyter-resource-usage-display-cpu').addClass('jupyter-resource-usage-warn');
-                    } else {
-                        $('#jupyter-resource-usage-display-cpu').removeClass('jupyter-resource-usage-warn');
-                    }
+    
+                    $('#jupyter-resource-usage-cpu').text(display);    
                 }
-
-                $('#jupyter-resource-usage-cpu').text(display);
             }
         });
     };
