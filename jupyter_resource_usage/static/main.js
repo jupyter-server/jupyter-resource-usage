@@ -14,12 +14,25 @@ define([
                     .attr('title', 'Actively used Memory (updates every 5s)')
             )
         );
+        $('#maintoolbar-container').append(
+            $('<div>').attr('id', 'jupyter-resource-usage-display-cpu')
+                .addClass('btn-group')
+                .addClass('pull-right').append(
+                    $('<strong>').text(' CPU: ')
+                ).append(
+                    $('<span>').attr('id', 'jupyter-resource-usage-cpu')
+                        .attr('title', 'Actively used CPU (updates every 5s)')
+            )
+        );
         // FIXME: Do something cleaner to get styles in here?
         $('head').append(
             $('<style>').html('.jupyter-resource-usage-warn { background-color: #FFD2D2; color: #D8000C; }')
         );
         $('head').append(
             $('<style>').html('#jupyter-resource-usage-display { padding: 2px 8px; }')
+        );
+        $('head').append(
+            $('<style>').html('#jupyter-resource-usage-display-cpu { padding: 2px 8px; }')
         );
     }
 
@@ -54,6 +67,28 @@ define([
                 }
 
                 $('#jupyter-resource-usage-mem').text(display);
+            }
+        });
+        $.getJSON({
+            url: utils.get_body_data('baseUrl') + 'api/metrics/v1',
+            success: function (data) {
+                var cpuPercent = data['cpu_percent'];
+                var maxCpu = data['cpu_count'];
+                var limits = data['limits'];
+                var display = parseFloat(cpuPercent).toFixed(0) + "% (";
+
+                if (limits['cpu']) {
+                    if (limits['cpu']['cpu']) {
+                        display += (Math.round(parseFloat(cpuPercent) / 100)).toString() + " / " + maxCpu + ")";
+                    }
+                    if (limits['cpu']['warn']) {
+                        $('#jupyter-resource-usage-display-cpu').addClass('jupyter-resource-usage-warn');
+                    } else {
+                        $('#jupyter-resource-usage-display-cpu').removeClass('jupyter-resource-usage-warn');
+                    }
+                }
+
+                $('#jupyter-resource-usage-cpu').text(display);
             }
         });
     };
