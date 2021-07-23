@@ -93,7 +93,7 @@ export namespace MemoryUsage {
      */
     constructor(options: Model.IOptions) {
       super();
-      this._poll = new Poll<Private.IMetricRequestResult | null>({
+      this._poll = new Poll<Private.IMetricRequestResult>({
         factory: () => Private.factory(),
         frequency: {
           interval: options.refreshRate,
@@ -216,7 +216,7 @@ export namespace MemoryUsage {
     private _currentMemory = 0;
     private _memoryLimit: number | null = null;
     private _metricsAvailable = false;
-    private _poll: Poll<Private.IMetricRequestResult | null>;
+    private _poll: Poll<Private.IMetricRequestResult>;
     private _units: MemoryUnit = 'B';
     private _warn = false;
   }
@@ -328,7 +328,7 @@ namespace Private {
   /**
    * Make a request to the backend.
    */
-  export async function factory(): Promise<IMetricRequestResult | null> {
+  export async function factory(): Promise<IMetricRequestResult> {
     const request = ServerConnection.makeRequest(
       METRIC_URL,
       {},
@@ -336,10 +336,6 @@ namespace Private {
     );
     const response = await request;
 
-    if (response.ok) {
-      return await response.json();
-    }
-
-    return null;
+    return await response.json();
   }
 }
