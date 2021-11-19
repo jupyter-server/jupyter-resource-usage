@@ -27,7 +27,12 @@ class ApiHandler(APIHandler):
         all_processes = [cur_process] + cur_process.children(recursive=True)
 
         # Get memory information
-        rss = sum([p.memory_info().rss for p in all_processes])
+        rss = 0
+        for p in all_processes:
+            try:
+               rss += p.memory_info().rss
+            except (psutil.NoSuchProcess, AccessDenied) as e:
+               pass
 
         if callable(config.mem_limit):
             mem_limit = config.mem_limit(rss=rss)
