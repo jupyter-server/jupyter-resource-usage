@@ -30,9 +30,9 @@ class ApiHandler(APIHandler):
         rss = 0
         for p in all_processes:
             try:
-               rss += p.memory_info().rss
+                rss += p.memory_info().rss
             except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-               pass
+                pass
 
         if callable(config.mem_limit):
             mem_limit = config.mem_limit(rss=rss)
