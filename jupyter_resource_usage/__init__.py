@@ -9,6 +9,8 @@ from jupyter_resource_usage.config import ResourceUseDisplay
 from jupyter_resource_usage.metrics import PSUtilMetricsLoader
 from jupyter_resource_usage.prometheus import PrometheusHandler
 
+from ._version import __version__
+
 HERE = osp.abspath(osp.dirname(__file__))
 
 with open(osp.join(HERE, "labextension", "package.json")) as fid:

@@ -77,7 +77,7 @@ try:
         get_data_files
     )
     post_develop = npm_builder(
-        build_cmd="build:prod", source_dir="src", build_dir=lab_path
+        build_cmd="build:prod", source_dir=src_path, build_dir=lab_path
     )
     setup_args['cmdclass'] = wrap_installers(post_develop=post_develop, ensured_targets=ensured_targets)
     setup_args['data_files'] = get_data_files(data_files_spec)
