@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- <START NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0
 
 - `executor` as ApiHandle class attribute [\#95](https://github.com/jupyter-server/jupyter-resource-usage/pull/95) ([jtpio](https://github.com/jtpio))
@@ -9,6 +11,8 @@
 - Update to JupyterLab 3.0 final packages [\#87](https://github.com/jupyter-server/jupyter-resource-usage/pull/87) ([jtpio](https://github.com/jtpio))
 - Add instructions to install with conda [\#83](https://github.com/jupyter-server/jupyter-resource-usage/pull/83) ([jtpio](https://github.com/jtpio))
 - Add Changelog for 0.5.1 [\#82](https://github.com/jupyter-server/jupyter-resource-usage/pull/82) ([jtpio](https://github.com/jtpio))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.5.1
 
