@@ -10,7 +10,7 @@ class TestBasic:
         from jupyter_resource_usage import (
             _jupyter_server_extension_points,
             _jupyter_nbextension_paths,
-            _load_jupyter_server_extension,
+            load_jupyter_server_extension,
         )
 
         assert _jupyter_server_extension_points() == [
@@ -39,7 +39,7 @@ class TestBasic:
         ) as psutil_metrics_loader:
 
             # load up with mock
-            _load_jupyter_server_extension(nbapp_mock)
+            load_jupyter_server_extension(nbapp_mock)
 
             # assert that we installed the application in settings
             print(nbapp_mock.web_app.settings)
