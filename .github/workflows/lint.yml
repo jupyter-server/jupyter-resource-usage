@@ -2,27 +2,31 @@ name: Lint
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - '*'
   pull_request:
-    branches: [ master ]
+    branches:
+      - '*'
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Install Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install black
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip black
 
-    - name: Lint Python
-      run: |
-        black --check .
+      - name: Lint Python
+        run: |
+          black --check .
+
+      - name: Lint JS
+        run: |
+          jlpm
+          jlpm run lint:check

@@ -33,9 +33,3 @@ jobs:
         jupyter nbextension list 2>&1 | grep -ie "jupyter_resource_usage/main.*enabled"
         jupyter labextension list 2>&1 | grep -ie "@jupyter-server/resource-usage.*OK"
         python -m jupyterlab.browser_check
-
-    - name: Lint
-      run: |
-        cd packages/labextension/
-        jlpm
-        jlpm run lint:check
