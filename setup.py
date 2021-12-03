@@ -43,7 +43,7 @@ data_files_spec = [
 try:
     from jupyter_packaging import wrap_installers, npm_builder, get_data_files
 
-    builder = npm_builder(build_cmd="build:prod", force=True)
+    builder = npm_builder(build_cmd="build:prod", npm="jlpm", force=True)
     cmdclass = wrap_installers(post_develop=builder, ensured_targets=ensured_targets)
     setup_args = dict(cmdclass=cmdclass, data_files=get_data_files(data_files_spec))
 except ImportError:
