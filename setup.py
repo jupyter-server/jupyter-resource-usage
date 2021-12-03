@@ -40,45 +40,14 @@ data_files_spec = [
     ),
 ]
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
-setup_args = dict(
-    name=NAME,
-    version="0.6.0",
-    url="https://github.com/jupyter-server/jupyter-resource-usage",
-    author="Jupyter Development Team",
-    description="Jupyter Extension to show resource usage",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    packages=setuptools.find_packages(),
-    install_requires=["jupyter_server>=1.0.0", "prometheus_client", "psutil>=5.6.0"],
-    extras_require={
-        "dev": ["autopep8", "black", "pytest", "flake8", "pytest-cov>=2.6.1", "mock"]
-    },
-    zip_safe=False,
-    include_package_data=True,
-    license="BSD",
-    classifiers=[
-        "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python :: 3",
-        "Framework :: Jupyter :: JupyterLab :: Extensions",
-        "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
-    ],
-)
-
 try:
     from jupyter_packaging import wrap_installers, npm_builder, get_data_files
 
-    post_develop = npm_builder(
-        build_cmd="build:prod", source_dir=src_path, build_dir=lab_path
-    )
-    setup_args["cmdclass"] = wrap_installers(
-        post_develop=post_develop, ensured_targets=ensured_targets
-    )
-    setup_args["data_files"] = get_data_files(data_files_spec)
-except ImportError as e:
-    pass
+    builder = npm_builder(build_cmd="build:prod", force=True)
+    cmdclass = wrap_installers(post_develop=builder, ensured_targets=ensured_targets)
+    setup_args = dict(cmdclass=cmdclass, data_files=get_data_files(data_files_spec))
+except ImportError:
+    setup_args = dict()
 
 
 if __name__ == "__main__":
