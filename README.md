@@ -65,7 +65,6 @@ The threshold for this warning can be configured as a fraction of the memory lim
 If you want to flash the warning to the user when they are within 10% of the memory limit, you
 can set the parameter `--ResourceUseDisplay.mem_warning_threshold=0.1`.
 
-
 ### CPU Usage
 
 `jupyter-resource-usage` can also track CPU usage and report a `cpu_percent` value as part of the `/api/metrics/v1` response.
