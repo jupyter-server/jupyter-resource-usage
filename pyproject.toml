@@ -15,6 +15,7 @@ factory = "jupyter_packaging.npm_builder"
 [tool.jupyter-packaging.build-args]
 build_cmd = "build:prod"
 npm = ["jlpm"]
+source_dir = "packages/labextension"
 
 [tool.tbump.version]
 current = "0.6.0"
@@ -41,3 +42,8 @@ default = ""
 name = "release"
 default = ""
 
+[tool.jupyter-releaser]
+skip = ["check-links"]
+
+[tool.jupyter-releaser.hooks]
+before-build-npm = ["python -m pip install jupyterlab~=3.0", "jlpm clean", "jlpm build:prod"]

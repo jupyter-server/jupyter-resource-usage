@@ -12,15 +12,12 @@ LABEXT_NAME = "@jupyter-server/resource-usage"
 NBEXT_NAME = "jupyter_resource_usage"
 
 
-lab_path = (HERE / PACKAGE_NAME / "labextension")
-nb_path = (HERE / PACKAGE_NAME / "static")
-src_path = (HERE / "packages" / "labextension")
+lab_path = HERE / PACKAGE_NAME / "labextension"
+nb_path = HERE / PACKAGE_NAME / "static"
+src_path = HERE / "packages" / "labextension"
 
 # Representative files that should exist after a successful build
-ensured_targets = [
-    str(lab_path / "package.json"),
-    str(lab_path / "static/style.js"),
-]
+ensured_targets = [str(lab_path / "package.json"), str(lab_path / "static/style.js")]
 
 data_files_spec = [
     ("share/jupyter/nbextensions/%s" % NBEXT_NAME, nb_path, "**"),
@@ -71,16 +68,15 @@ setup_args = dict(
 )
 
 try:
-    from jupyter_packaging import (
-        wrap_installers,
-        npm_builder,
-        get_data_files
-    )
+    from jupyter_packaging import wrap_installers, npm_builder, get_data_files
+
     post_develop = npm_builder(
         build_cmd="build:prod", source_dir=src_path, build_dir=lab_path
     )
-    setup_args['cmdclass'] = wrap_installers(post_develop=post_develop, ensured_targets=ensured_targets)
-    setup_args['data_files'] = get_data_files(data_files_spec)
+    setup_args["cmdclass"] = wrap_installers(
+        post_develop=post_develop, ensured_targets=ensured_targets
+    )
+    setup_args["data_files"] = get_data_files(data_files_spec)
 except ImportError as e:
     pass
 
