@@ -31,11 +31,11 @@ class TestBasic:
 
         # mock these out for unit test
         with patch("tornado.ioloop.PeriodicCallback") as periodic_callback_mock, patch(
-            "jupyter_resource_usage.ResourceUseDisplay"
+            "jupyter_resource_usage.server_extension.ResourceUseDisplay"
         ) as resource_use_display_mock, patch(
-            "jupyter_resource_usage.PrometheusHandler"
+            "jupyter_resource_usage.server_extension.PrometheusHandler"
         ) as prometheus_handler_mock, patch(
-            "jupyter_resource_usage.PSUtilMetricsLoader"
+            "jupyter_resource_usage.server_extension.PSUtilMetricsLoader"
         ) as psutil_metrics_loader:
 
             # load up with mock
