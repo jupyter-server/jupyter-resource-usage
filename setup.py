@@ -1,35 +1,28 @@
-import os
+from pathlib import Path
 
 import setuptools
-from jupyter_packaging import combine_commands
-from jupyter_packaging import create_cmdclass
-from jupyter_packaging import ensure_targets
-from jupyter_packaging import install_npm
-from jupyter_packaging import skip_if_exists
 
 # The directory containing this file
-HERE = os.path.abspath(os.path.dirname(__file__))
+HERE = Path(__file__).parent.resolve()
 
 # The name of the project
 NAME = "jupyter-resource-usage"
 PACKAGE_NAME = NAME.replace("-", "_")
+LABEXT_NAME = "@jupyter-server/resource-usage"
+NBEXT_NAME = "jupyter_resource_usage"
 
-src_path = os.path.join(HERE, "packages", "labextension")
-lab_path = os.path.join(HERE, PACKAGE_NAME, "labextension")
-nb_path = os.path.join(HERE, PACKAGE_NAME, "static")
+
+lab_path = HERE / PACKAGE_NAME / "labextension"
+nb_path = HERE / PACKAGE_NAME / "static"
+src_path = HERE / "packages" / "labextension"
 
 # Representative files that should exist after a successful build
-jstargets = [os.path.join(lab_path, "package.json")]
-
-package_data_spec = {PACKAGE_NAME: ["*"]}
-
-labext_name = "@jupyter-server/resource-usage"
-nbext_name = "jupyter_resource_usage"
+ensured_targets = [str(lab_path / "package.json"), str(lab_path / "static/style.js")]
 
 data_files_spec = [
-    ("share/jupyter/nbextensions/%s" % nbext_name, nb_path, "**"),
-    ("share/jupyter/labextensions/%s" % labext_name, lab_path, "**"),
-    ("share/jupyter/labextensions/%s" % labext_name, HERE, "install.json"),
+    ("share/jupyter/nbextensions/%s" % NBEXT_NAME, nb_path, "**"),
+    ("share/jupyter/labextensions/%s" % LABEXT_NAME, lab_path, "**"),
+    ("share/jupyter/labextensions/%s" % LABEXT_NAME, HERE, "install.json"),
     (
         "etc/jupyter/jupyter_server_config.d",
         "jupyter-config/jupyter_server_config.d",
@@ -47,43 +40,15 @@ data_files_spec = [
     ),
 ]
 
-cmdclass = create_cmdclass(
-    "jsdeps", package_data_spec=package_data_spec, data_files_spec=data_files_spec
-)
+try:
+    from jupyter_packaging import wrap_installers, npm_builder, get_data_files
 
-js_command = combine_commands(
-    install_npm(src_path, build_cmd="build:prod", npm=["jlpm"]),
-    ensure_targets(jstargets),
-)
+    builder = npm_builder(build_cmd="build:prod", npm="jlpm", force=True)
+    cmdclass = wrap_installers(post_develop=builder, ensured_targets=ensured_targets)
+    setup_args = dict(cmdclass=cmdclass, data_files=get_data_files(data_files_spec))
+except ImportError:
+    setup_args = dict()
 
-is_repo = os.path.exists(os.path.join(HERE, ".git"))
-if is_repo:
-    cmdclass["jsdeps"] = js_command
-else:
-    cmdclass["jsdeps"] = skip_if_exists(jstargets, js_command)
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
-setuptools.setup(
-    name=NAME,
-    version="0.6.0",
-    url="https://github.com/jupyter-server/jupyter-resource-usage",
-    author="Jupyter Development Team",
-    description="Simple Jupyter extension to show how much resources (RAM) your notebook is using",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    cmdclass=cmdclass,
-    packages=setuptools.find_packages(),
-    install_requires=["jupyter_server>=1.0.0", "prometheus_client", "psutil>=5.6.0"],
-    extras_require={
-        "dev": ["autopep8", "black", "pytest", "flake8", "pytest-cov>=2.6.1", "mock"]
-    },
-    zip_safe=False,
-    include_package_data=True,
-    license="BSD",
-    classifiers=[
-        "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python :: 3",
-    ],
-)
+if __name__ == "__main__":
+    setuptools.setup(**setup_args)

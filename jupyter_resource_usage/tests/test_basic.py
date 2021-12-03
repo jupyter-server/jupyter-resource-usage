@@ -10,7 +10,7 @@ class TestBasic:
         from jupyter_resource_usage import (
             _jupyter_server_extension_points,
             _jupyter_nbextension_paths,
-            _load_jupyter_server_extension,
+            load_jupyter_server_extension,
         )
 
         assert _jupyter_server_extension_points() == [
@@ -31,15 +31,15 @@ class TestBasic:
 
         # mock these out for unit test
         with patch("tornado.ioloop.PeriodicCallback") as periodic_callback_mock, patch(
-            "jupyter_resource_usage.ResourceUseDisplay"
+            "jupyter_resource_usage.server_extension.ResourceUseDisplay"
         ) as resource_use_display_mock, patch(
-            "jupyter_resource_usage.PrometheusHandler"
+            "jupyter_resource_usage.server_extension.PrometheusHandler"
         ) as prometheus_handler_mock, patch(
-            "jupyter_resource_usage.PSUtilMetricsLoader"
+            "jupyter_resource_usage.server_extension.PSUtilMetricsLoader"
         ) as psutil_metrics_loader:
 
             # load up with mock
-            _load_jupyter_server_extension(nbapp_mock)
+            load_jupyter_server_extension(nbapp_mock)
 
             # assert that we installed the application in settings
             print(nbapp_mock.web_app.settings)

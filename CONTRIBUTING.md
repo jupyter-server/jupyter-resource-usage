@@ -55,7 +55,7 @@ Enable the server extension:
 jupyter serverextension enable --py jupyter_resource_usage  --sys-prefix
 ```
 
-*Note: if you're using Jupyter Server:*
+_Note: if you're using Jupyter Server:_
 
 ```bash
 jupyter server extension enable --py jupyter_resource_usage  --sys-prefix
@@ -150,7 +150,7 @@ into your text editor to format code automatically.
 
 If you have already committed files before setting up the pre-commit
 hook with `pre-commit install`, you can fix everything up using
-`pre-commit run --all-files`.  You need to make the fixing commit
+`pre-commit run --all-files`. You need to make the fixing commit
 yourself after that.
 
 ## Tests

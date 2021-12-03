@@ -1,0 +1,7 @@
+node_modules
+**/node_modules
+**/lib
+**/package.json
+
+jupyter_resource_usage/labextension
+jupyter_resource_usage/static

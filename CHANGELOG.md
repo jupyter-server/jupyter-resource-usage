@@ -1,14 +1,18 @@
 # Changelog
 
+<!-- <START NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0
 
 - `executor` as ApiHandle class attribute [\#95](https://github.com/jupyter-server/jupyter-resource-usage/pull/95) ([jtpio](https://github.com/jtpio))
 - Update RELEASE.md [\#94](https://github.com/jupyter-server/jupyter-resource-usage/pull/94) ([jtpio](https://github.com/jtpio))
-- Clarify notebook/jupyter\_server usage [\#93](https://github.com/jupyter-server/jupyter-resource-usage/pull/93) ([fcollonval](https://github.com/fcollonval))
+- Clarify notebook/jupyter_server usage [\#93](https://github.com/jupyter-server/jupyter-resource-usage/pull/93) ([fcollonval](https://github.com/fcollonval))
 - Bump ssri from 8.0.0 to 8.0.1 in /packages/labextension [\#90](https://github.com/jupyter-server/jupyter-resource-usage/pull/90) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Update to JupyterLab 3.0 final packages [\#87](https://github.com/jupyter-server/jupyter-resource-usage/pull/87) ([jtpio](https://github.com/jtpio))
 - Add instructions to install with conda [\#83](https://github.com/jupyter-server/jupyter-resource-usage/pull/83) ([jtpio](https://github.com/jtpio))
 - Add Changelog for 0.5.1 [\#82](https://github.com/jupyter-server/jupyter-resource-usage/pull/82) ([jtpio](https://github.com/jtpio))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.5.1
 
@@ -30,7 +34,6 @@ pip install jupyter-resource-usage
 
 - Add a JupyterLab extension for the memory usage status bar item: [#69](https://github.com/jupyter-server/jupyter-resource-usage/pull/69)
 - Drop the deprecated `/metrics` endpoint: [#77](https://github.com/jupyter-server/jupyter-resource-usage/pull/77)
-
 
 ### Migrating to 0.5.0
 
@@ -71,7 +74,7 @@ jupyter lab --ResourceUseDisplay.disable_legacy_endpoint=False
 ## 0.3.6
 
 - Fix handling of cpu percent in the API endpoint [#56](https://github.com/jupyter-server/jupyter-resource-usage/pull/56)
-- Added Binder  [#53](https://github.com/jupyter-server/jupyter-resource-usage/pull/53) & RELEASE.md [#54](https://github.com/jupyter-server/jupyter-resource-usage/pull/54)
+- Added Binder [#53](https://github.com/jupyter-server/jupyter-resource-usage/pull/53) & RELEASE.md [#54](https://github.com/jupyter-server/jupyter-resource-usage/pull/54)
 
 ## 0.3.5
 
