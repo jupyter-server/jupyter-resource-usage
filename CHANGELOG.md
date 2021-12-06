@@ -2,6 +2,45 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.1
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/0.6.0...42df870ca30c1373fd7c5e48b00d1bb3f383c10a))
+
+### Enhancements made
+
+- catch psutil exceptions [#113](https://github.com/jupyter-server/jupyter-resource-usage/pull/113) ([@jhgoebbert](https://github.com/jhgoebbert))
+- Add CPU display to extension [#105](https://github.com/jupyter-server/jupyter-resource-usage/pull/105) ([@stevenstetzler](https://github.com/stevenstetzler))
+
+### Bugs fixed
+
+- Ensure we use backoff when request fails [#104](https://github.com/jupyter-server/jupyter-resource-usage/pull/104) ([@vidartf](https://github.com/vidartf))
+
+### Maintenance and upkeep improvements
+
+- Adopt the Jupyter Releaser, update Jupyter Packaging [#115](https://github.com/jupyter-server/jupyter-resource-usage/pull/115) ([@jtpio](https://github.com/jtpio))
+
+### Other merged PRs
+
+- Bump tar from 6.1.5 to 6.1.11 in /packages/labextension [#111](https://github.com/jupyter-server/jupyter-resource-usage/pull/111) ([@dependabot](https://github.com/dependabot))
+- Bump url-parse from 1.5.1 to 1.5.3 in /packages/labextension [#110](https://github.com/jupyter-server/jupyter-resource-usage/pull/110) ([@dependabot](https://github.com/dependabot))
+- Bump path-parse from 1.0.6 to 1.0.7 in /packages/labextension [#108](https://github.com/jupyter-server/jupyter-resource-usage/pull/108) ([@dependabot](https://github.com/dependabot))
+- Bump tar from 6.1.0 to 6.1.5 in /packages/labextension [#106](https://github.com/jupyter-server/jupyter-resource-usage/pull/106) ([@dependabot](https://github.com/dependabot))
+- Bump normalize-url from 4.5.0 to 4.5.1 in /packages/labextension [#103](https://github.com/jupyter-server/jupyter-resource-usage/pull/103) ([@dependabot](https://github.com/dependabot))
+- Bump ws from 7.4.5 to 7.4.6 in /packages/labextension [#102](https://github.com/jupyter-server/jupyter-resource-usage/pull/102) ([@dependabot](https://github.com/dependabot))
+- Update to 3.0.16 packages [#101](https://github.com/jupyter-server/jupyter-resource-usage/pull/101) ([@jtpio](https://github.com/jtpio))
+- Update dependencies [#100](https://github.com/jupyter-server/jupyter-resource-usage/pull/100) ([@jtpio](https://github.com/jtpio))
+- Bump lodash from 4.17.20 to 4.17.21 in /packages/labextension [#99](https://github.com/jupyter-server/jupyter-resource-usage/pull/99) ([@dependabot](https://github.com/dependabot))
+- Bump hosted-git-info from 2.8.8 to 2.8.9 in /packages/labextension [#98](https://github.com/jupyter-server/jupyter-resource-usage/pull/98) ([@dependabot](https://github.com/dependabot))
+- Add changelog for 0.6.0 [#96](https://github.com/jupyter-server/jupyter-resource-usage/pull/96) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2021-04-29&to=2021-12-06&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2021-04-29..2021-12-06&type=Issues) | [@jhgoebbert](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajhgoebbert+updated%3A2021-04-29..2021-12-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2021-04-29..2021-12-06&type=Issues) | [@stevenstetzler](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Astevenstetzler+updated%3A2021-04-29..2021-12-06&type=Issues) | [@vidartf](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Avidartf+updated%3A2021-04-29..2021-12-06&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2021-04-29..2021-12-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0
 
 - `executor` as ApiHandle class attribute [\#95](https://github.com/jupyter-server/jupyter-resource-usage/pull/95) ([jtpio](https://github.com/jtpio))
@@ -11,8 +50,6 @@
 - Update to JupyterLab 3.0 final packages [\#87](https://github.com/jupyter-server/jupyter-resource-usage/pull/87) ([jtpio](https://github.com/jtpio))
 - Add instructions to install with conda [\#83](https://github.com/jupyter-server/jupyter-resource-usage/pull/83) ([jtpio](https://github.com/jtpio))
 - Add Changelog for 0.5.1 [\#82](https://github.com/jupyter-server/jupyter-resource-usage/pull/82) ([jtpio](https://github.com/jtpio))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.5.1
 
