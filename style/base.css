@@ -1,0 +1,24 @@
+.jp-kernelusage-view {
+  overflow: scroll !important;
+  padding: 10px;
+  background-color: white;
+  min-width: 250px !important;
+}
+
+.jp-kernelusage-separator {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.jp-kernelusage-button {
+  background-color: green;
+  border-radius: 12px;
+  border: none;
+  color: white;
+  padding: 5px 5px;
+  margin: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+}
