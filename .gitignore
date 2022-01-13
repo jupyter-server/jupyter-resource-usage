@@ -110,3 +110,9 @@ dmypy.json
 
 # OSX files
 .DS_Store
+
+# Notebook
+*.ipynb
+
+# Locks
+*.lock

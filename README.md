@@ -14,6 +14,35 @@ for the frontend extension.
 
 ## Contributing
 
+### Develop
+
+Use the provided `environment.yaml` to install the conda environment.
+
+```base
+conda deactivate && \
+  make env-rm && \
+  make env
+conda activate jupyterlab-kernel-usage
+```
+
+```python
+# Install the server and frontend in dev mode.
+make install-dev
+```
+
+```python
+# In terminal 1, Start the jupyterlab.
+# open http://localhost:8234?token=...
+make jlab
+```
+
+```python
+# In terminal 2, start the extension building in watch mode.
+make watch
+```
+
+When making changes to the extension you will need to issue a `jupyter labextension build`, or, start `jlpm run watch` in the root of the repository to rebuild on every changes. You do not need to restart or rebuild JupyterLab for changes on the frontend extensions, but do need to restart the server for changes to the Python code.
+
 ### Development install
 
 Note: You will need NodeJS to build the extension package.

@@ -1,0 +1,13 @@
+name: jupyterlab-kernel-usage
+channels:
+  - conda-forge
+dependencies:
+  - pip
+  - psutil
+  - setuptools
+  - tornado
+  - twine
+  - yarn
+  - pip:
+    - jupyterlab==4.0.0a19
+    - jupyter_packaging==0.10.4
