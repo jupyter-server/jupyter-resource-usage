@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Poll } from '@lumino/polling';
 import { ISignal } from '@lumino/signaling';
-import { ReactWidget } from '@jupyterlab/apputils';
+import { ReactWidget, ISessionContext } from '@jupyterlab/apputils';
+import { IChangedArgs } from '@jupyterlab/coreutils';
+import { Kernel } from '@jupyterlab/services';
 import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
 
@@ -42,14 +44,14 @@ const POLL_INTERVAL_SEC = 5;
 const POLL_MAX_INTERVAL_SEC = 300;
 
 type KernelPoll = {
-  poll: Poll;
+  poll: Poll<void, any, 'stand-by'>;
   usage: Usage;
 };
 
-const polls = new Map<string, KernelPoll>();
+const kernelPools = new Map<string, KernelPoll>();
 
 const getUsage = (kernelId: string) => {
-  const kernelPoll = polls.get(kernelId);
+  const kernelPoll = kernelPools.get(kernelId);
   if (kernelPoll) {
     return kernelPoll.usage;
   }
@@ -57,57 +59,74 @@ const getUsage = (kernelId: string) => {
 };
 
 const KernelUsage = (props: {
-  signal: ISignal<INotebookTracker, NotebookPanel | null>;
+  widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
+  currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
 }) => {
   const [kernelId, setKernelId] = useState<string>();
-  const [refresh, setRefresh] = useState<boolean>(true);
-  useEffect(() => {
-    if (kernelId) {
-      const poll = polls.get(kernelId);
-      if (!poll) {
-        const requestUsage = async (kernelId: string) => {
-          requestAPI<any>(`get_usage/${kernelId}`)
-            .then(data => {
-              const kernelPoll = polls.get(kernelId);
-              if (kernelPoll) {
-                kernelPoll.usage = data.content;
-                polls.set(kernelId, kernelPoll);
-              }
-              setRefresh(!refresh);
-            })
-            .catch(reason => {
-              console.error(
-                `The kernelusage server extension has returned an error.\n${reason}`
-              );
-              const kernelPoll = polls.get(kernelId);
-              kernelPoll?.poll.stop().then(() => {
-                polls.delete(kernelId);
-              });
-            });
-        };
-        const newPoll = new Poll({
-          auto: true,
-          factory: () => requestUsage(kernelId),
-          frequency: {
-            interval: POLL_INTERVAL_SEC * 1000,
-            backoff: true,
-            max: POLL_MAX_INTERVAL_SEC * 1000
-          },
-          name: `@jupyterlab/kernel:KernelUsage#${kernelId}`,
-          standby: 'when-hidden'
+
+  const requestUsage = async (kernelId: string) => {
+    requestAPI<any>(`get_usage/${kernelId}`)
+      .then(data => {
+        const kernelPoll = kernelPools.get(kernelId);
+        if (kernelPoll) {
+          kernelPoll.usage = data.content;
+          kernelPools.set(kernelId, kernelPoll);
+        }
+      })
+      .catch(reason => {
+        console.error(
+          `The kernelusage server extension has returned an error.\n${reason}`
+        );
+        const kernelPoll = kernelPools.get(kernelId);
+        kernelPoll?.poll.stop().then(() => {
+          kernelPools.delete(kernelId);
         });
-        polls.set(kernelId, {
-          poll: newPoll,
-          usage: UNKONWN_USAGE
-        });
-      }
+      });
+  };
+
+  const doPoll = (kernelId: string) => {
+    let kernelPoll = kernelPools.get(kernelId);
+    if (!kernelPoll) {
+      const poll = new Poll<void, any, 'stand-by'>({
+        auto: true,
+        factory: () => requestUsage(kernelId),
+        frequency: {
+          interval: POLL_INTERVAL_SEC * 1000,
+          backoff: true,
+          max: POLL_MAX_INTERVAL_SEC * 1000
+        },
+        name: `@jupyterlab/kernel:KernelUsage#${kernelId}`,
+        standby: 'when-hidden'
+      });
+      kernelPoll = {
+        poll,
+        usage: UNKONWN_USAGE
+      };
+      kernelPools.set(kernelId, kernelPoll);
     }
-  }, [kernelId]);
-  props.signal.connect(
+  };
+
+  props.currentNotebookChanged.connect(
     (sender: INotebookTracker, panel: NotebookPanel | null) => {
+      panel?.sessionContext.kernelChanged.connect(
+        (
+          _sender: ISessionContext,
+          args: IChangedArgs<
+            Kernel.IKernelConnection | null,
+            Kernel.IKernelConnection | null,
+            'kernel'
+          >
+        ) => {
+          const kernelId = args.newValue?.id;
+          setKernelId(kernelId);
+          doPoll(kernelId as string);
+        }
+      );
       if (panel?.sessionContext.session?.id !== kernelId) {
         if (panel?.sessionContext.session?.kernel?.id) {
-          setKernelId(panel?.sessionContext.session?.kernel?.id);
+          const kernelId = panel?.sessionContext.session?.kernel?.id;
+          setKernelId(kernelId);
+          doPoll(kernelId as string);
         }
       }
     }
@@ -158,15 +177,26 @@ const KernelUsage = (props: {
 };
 
 export class KernelUsageWidget extends ReactWidget {
-  private _signal: ISignal<INotebookTracker, NotebookPanel | null>;
+  private _widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
+  private _currentNotebookChanged: ISignal<
+    INotebookTracker,
+    NotebookPanel | null
+  >;
   constructor(props: {
-    signal: ISignal<INotebookTracker, NotebookPanel | null>;
+    widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
+    currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
   }) {
     super();
-    this._signal = props.signal;
+    this._widgetAdded = props.widgetAdded;
+    this._currentNotebookChanged = props.currentNotebookChanged;
   }
 
   protected render(): React.ReactElement<any> {
-    return <KernelUsage signal={this._signal} />;
+    return (
+      <KernelUsage
+        widgetAdded={this._widgetAdded}
+        currentNotebookChanged={this._currentNotebookChanged}
+      />
+    );
   }
 }

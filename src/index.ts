@@ -23,7 +23,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
   activate: (
     app: JupyterFrontEnd,
     palette: ICommandPalette,
-    notebooks: INotebookTracker,
+    notebookTracker: INotebookTracker,
     launcher: ILauncher | null
   ) => {
     const { commands, shell } = app;
@@ -37,7 +37,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
     }
 
     async function createPanel(): Promise<KernelUsagePanel> {
-      const panel = new KernelUsagePanel({ signal: notebooks.currentChanged });
+      const panel = new KernelUsagePanel({
+        widgetAdded: notebookTracker.widgetAdded,
+        currentNotebookChanged: notebookTracker.currentChanged
+      });
       shell.add(panel, 'right', { rank: 200 });
       return panel;
     }

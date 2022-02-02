@@ -51,6 +51,7 @@ jlab:
 		jupyter lab \
 			--ServerApp.jpserver_extensions="{'jupyterlab': True, 'jupyterlab_kernel_usage': True}" \
 			--no-browser \
+			--notebook-dir=./notebooks \
 			--port 8234)
 
 jlab-dev:

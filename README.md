@@ -2,15 +2,13 @@
 
 [![Github Actions Status](https://github.com/quansight/jupyterlab-kernel-usage/workflows/Build/badge.svg)](https://github.com/quansight/jupyterlab-kernel-usage/actions/workflows/build.yml)
 
-Get kernel usage in a JupyerLab sidebar.
+This is an extension for JupyterLab which allows to get kernel usage in a JupyerLab sidebar.
 
 ![JupyterLab Kernel Usage](./images/preview.gif)
 
 > For now, you will need to "bootstrap" the sidebar clicking between 2 notebooks so the values show up and refresh. Do that only the first time you make the sidebar visible.
 
-This extension is composed of a Python package named `jupyterlab_kernel_usage`
-for the server extension and a NPM package named `jupyterlab-kernel-usage`
-for the frontend extension.
+This extension is composed of a Python package named `jupyterlab_kernel_usage` for the server extension and a NPM package named `jupyterlab-kernel-usage` for the frontend extension.
 
 ## Contributing
 
@@ -112,7 +110,6 @@ To remove the extension, execute:
 ```bash
 pip uninstall jupyterlab_kernel_usage
 ```
-
 
 ## Troubleshoot
 

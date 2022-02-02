@@ -9,7 +9,8 @@ const PANEL_CLASS = 'jp-kernelusage-view';
 
 export class KernelUsagePanel extends StackedPanel {
   constructor(props: {
-    signal: ISignal<INotebookTracker, NotebookPanel | null>;
+    widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
+    currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
   }) {
     super();
     this.addClass(PANEL_CLASS);
@@ -17,7 +18,10 @@ export class KernelUsagePanel extends StackedPanel {
     this.title.caption = 'Kernel Usage';
     this.title.icon = icon;
     this.title.closable = true;
-    const widget = new KernelUsageWidget({ signal: props.signal });
+    const widget = new KernelUsageWidget({
+      widgetAdded: props.widgetAdded,
+      currentNotebookChanged: props.currentNotebookChanged
+    });
     this.addWidget(widget);
   }
 
