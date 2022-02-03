@@ -29,13 +29,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const { commands, shell } = app;
     const category = 'Kernel Resource';
 
-    if (launcher) {
-      launcher.add({
-        command: CommandIDs.getKernelUsage,
-        category: category
-      });
-    }
-
     async function createPanel(): Promise<KernelUsagePanel> {
       const panel = new KernelUsagePanel({
         widgetAdded: notebookTracker.widgetAdded,

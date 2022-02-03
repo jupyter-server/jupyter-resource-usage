@@ -6,8 +6,11 @@ import { IChangedArgs } from '@jupyterlab/coreutils';
 import { Kernel } from '@jupyterlab/services';
 import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
+import useInterval from './useInterval';
 
 type Usage = {
+  timestamp: Date | null;
+  kernelId: string;
   kernel_cpu: number;
   kernel_memory: number;
   host_cpu_percent: number;
@@ -24,6 +27,8 @@ type Usage = {
 };
 
 const UNKONWN_USAGE: Usage = {
+  timestamp: null,
+  kernelId: '',
   kernel_cpu: -1,
   kernel_memory: -1,
   host_cpu_percent: -1,
@@ -63,13 +68,22 @@ const KernelUsage = (props: {
   currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
 }) => {
   const [kernelId, setKernelId] = useState<string>();
+  const [refresh, setRefresh] = useState<boolean>(true);
+
+  useInterval(async () => {
+    setRefresh(!refresh);
+  }, POLL_INTERVAL_SEC * 1000);
 
   const requestUsage = async (kernelId: string) => {
     requestAPI<any>(`get_usage/${kernelId}`)
       .then(data => {
         const kernelPoll = kernelPools.get(kernelId);
         if (kernelPoll) {
-          kernelPoll.usage = data.content;
+          kernelPoll.usage = {
+            ...data.content,
+            kernelId,
+            timestamp: new Date()
+          };
           kernelPools.set(kernelId, kernelPoll);
         }
       })
@@ -96,7 +110,7 @@ const KernelUsage = (props: {
           max: POLL_MAX_INTERVAL_SEC * 1000
         },
         name: `@jupyterlab/kernel:KernelUsage#${kernelId}`,
-        standby: 'when-hidden'
+        standby: 'never'
       });
       kernelPoll = {
         poll,
@@ -135,6 +149,9 @@ const KernelUsage = (props: {
     <>
       <h3 className="jp-kernelusage-separator">Kernel Usage</h3>
       <div className="jp-kernelusage-separator">Kernel ID: {kernelId}</div>
+      <div className="jp-kernelusage-separator">
+        Timestamp: {kernelId && getUsage(kernelId).timestamp?.toLocaleString()}
+      </div>
       <div className="jp-kernelusage-separator">
         CPU: {kernelId && getUsage(kernelId).kernel_cpu}
       </div>

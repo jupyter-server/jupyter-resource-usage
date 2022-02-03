@@ -3,6 +3,7 @@ lib/
 node_modules/
 *.egg-info/
 .ipynb_checkpoints
+.vscode
 *.tsbuildinfo
 jupyterlab_kernel_usage/labextension
 
