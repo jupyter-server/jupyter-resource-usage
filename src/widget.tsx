@@ -11,6 +11,7 @@ import useInterval from './useInterval';
 type Usage = {
   timestamp: Date | null;
   kernelId: string;
+  hostname: string;
   kernel_cpu: number;
   kernel_memory: number;
   host_cpu_percent: number;
@@ -26,42 +27,17 @@ type Usage = {
   };
 };
 
-const UNKONWN_USAGE: Usage = {
-  timestamp: null,
-  kernelId: '',
-  kernel_cpu: -1,
-  kernel_memory: -1,
-  host_cpu_percent: -1,
-  host_virtual_memory: {
-    active: -1,
-    available: -1,
-    free: -1,
-    inactive: -1,
-    percent: -1,
-    total: -1,
-    used: -1,
-    wired: -1
-  }
-};
-
 const POLL_INTERVAL_SEC = 5;
 
 const POLL_MAX_INTERVAL_SEC = 300;
 
 type KernelPoll = {
   poll: Poll<void, any, 'stand-by'>;
-  usage: Usage;
+  path: string;
+  usage: Usage | undefined;
 };
 
 const kernelPools = new Map<string, KernelPoll>();
-
-const getUsage = (kernelId: string) => {
-  const kernelPoll = kernelPools.get(kernelId);
-  if (kernelPoll) {
-    return kernelPoll.usage;
-  }
-  return UNKONWN_USAGE;
-};
 
 const KernelUsage = (props: {
   widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
@@ -98,7 +74,7 @@ const KernelUsage = (props: {
       });
   };
 
-  const doPoll = (kernelId: string) => {
+  const doPoll = (kernelId: string, path: string) => {
     let kernelPoll = kernelPools.get(kernelId);
     if (!kernelPoll) {
       const poll = new Poll<void, any, 'stand-by'>({
@@ -114,7 +90,8 @@ const KernelUsage = (props: {
       });
       kernelPoll = {
         poll,
-        usage: UNKONWN_USAGE
+        path,
+        usage: undefined
       };
       kernelPools.set(kernelId, kernelPoll);
     }
@@ -132,65 +109,83 @@ const KernelUsage = (props: {
           >
         ) => {
           const kernelId = args.newValue?.id;
-          setKernelId(kernelId);
-          doPoll(kernelId as string);
+          if (kernelId) {
+            setKernelId(kernelId);
+            const path = panel?.sessionContext.session?.model.path;
+            doPoll(kernelId as string, path as string);
+          }
         }
       );
       if (panel?.sessionContext.session?.id !== kernelId) {
         if (panel?.sessionContext.session?.kernel?.id) {
           const kernelId = panel?.sessionContext.session?.kernel?.id;
-          setKernelId(kernelId);
-          doPoll(kernelId as string);
+          if (kernelId) {
+            setKernelId(kernelId);
+            const path = panel?.sessionContext.session?.model.path;
+            doPoll(kernelId as string, path);
+          }
         }
       }
     }
   );
-  return (
-    <>
-      <h3 className="jp-kernelusage-separator">Kernel Usage</h3>
-      <div className="jp-kernelusage-separator">Kernel ID: {kernelId}</div>
-      <div className="jp-kernelusage-separator">
-        Timestamp: {kernelId && getUsage(kernelId).timestamp?.toLocaleString()}
-      </div>
-      <div className="jp-kernelusage-separator">
-        CPU: {kernelId && getUsage(kernelId).kernel_cpu}
-      </div>
-      <div className="jp-kernelusage-separator">
-        Memory: {kernelId && getUsage(kernelId).kernel_memory}
-      </div>
-      <hr></hr>
-      <h4 className="jp-kernelusage-separator">Host CPU</h4>
-      <div className="jp-kernelusage-separator">
-        Percentage {kernelId && getUsage(kernelId).host_cpu_percent}
-      </div>
-      <h4 className="jp-kernelusage-separator">Host Virtual Memory</h4>
-      <div className="jp-kernelusage-separator">
-        Active: {kernelId && getUsage(kernelId).host_virtual_memory.active}
-      </div>
-      <div className="jp-kernelusage-separator">
-        Available:{' '}
-        {kernelId && getUsage(kernelId).host_virtual_memory.available}
-      </div>
-      <div className="jp-kernelusage-separator">
-        Free: {kernelId && getUsage(kernelId).host_virtual_memory.free}
-      </div>
-      <div className="jp-kernelusage-separator">
-        Inactive: {kernelId && getUsage(kernelId).host_virtual_memory.inactive}
-      </div>
-      <div className="jp-kernelusage-separator">
-        Percent: {kernelId && getUsage(kernelId).host_virtual_memory.percent}
-      </div>
-      <div className="jp-kernelusage-separator">
-        Total: {kernelId && getUsage(kernelId).host_virtual_memory.total}
-      </div>
-      <div className="jp-kernelusage-separator">
-        Used: {kernelId && getUsage(kernelId).host_virtual_memory.used}
-      </div>
-      <div className="jp-kernelusage-separator">
-        Wired: {kernelId && getUsage(kernelId).host_virtual_memory.wired}
-      </div>
-    </>
-  );
+
+  if (kernelId) {
+    const kernelPoll = kernelPools.get(kernelId);
+    if (kernelPoll) {
+      return (
+        <>
+          <h3 className="jp-kernelusage-separator">Kernel Usage</h3>
+          <div className="jp-kernelusage-separator">
+            Kernel Host: {kernelPoll.usage?.hostname}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Notebook: {kernelPoll.path}
+          </div>
+          <div className="jp-kernelusage-separator">Kernel ID: {kernelId}</div>
+          <div className="jp-kernelusage-separator">
+            Timestamp: {kernelPoll.usage?.timestamp?.toLocaleString()}
+          </div>
+          <div className="jp-kernelusage-separator">
+            CPU: {kernelPoll.usage?.kernel_cpu}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Memory: {kernelPoll.usage?.kernel_memory}
+          </div>
+          <hr></hr>
+          <h4 className="jp-kernelusage-separator">Host CPU</h4>
+          <div className="jp-kernelusage-separator">
+            Percentage {kernelPoll.usage?.host_cpu_percent}
+          </div>
+          <h4 className="jp-kernelusage-separator">Host Virtual Memory</h4>
+          <div className="jp-kernelusage-separator">
+            Active: {kernelPoll.usage?.host_virtual_memory.active}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Available: {kernelPoll.usage?.host_virtual_memory.available}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Free: {kernelPoll.usage?.host_virtual_memory.free}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Inactive: {kernelPoll.usage?.host_virtual_memory.inactive}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Percent: {kernelPoll.usage?.host_virtual_memory.percent}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Total: {kernelPoll.usage?.host_virtual_memory.total}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Used: {kernelPoll.usage?.host_virtual_memory.used}
+          </div>
+          <div className="jp-kernelusage-separator">
+            Wired: {kernelPoll.usage?.host_virtual_memory.wired}
+          </div>
+        </>
+      );
+    }
+  }
+  return <h3>Kernel usage is not available</h3>;
 };
 
 export class KernelUsageWidget extends ReactWidget {

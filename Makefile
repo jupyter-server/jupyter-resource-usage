@@ -70,6 +70,9 @@ jlab-watch:
 			--ServerApp.jpserver_extensions="{'jupyterlab_resource_usage': True}" \
 			--port 8234)
 
+kill:
+	lsof -i TCP:8234 | grep LISTEN | awk '{print $2}' | xargs kill -9
+
 watch:
 	($(CONDA_ACTIVATE) ${ENV_NAME}; \
 		yarn watch )
