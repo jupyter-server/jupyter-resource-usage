@@ -7,6 +7,7 @@ import { Kernel } from '@jupyterlab/services';
 import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
 import useInterval from './useInterval';
+import { convertToLargestUnit } from './format';
 
 type Usage = {
   timestamp: Date | null;
@@ -149,7 +150,7 @@ const KernelUsage = (props: {
             CPU: {kernelPoll.usage?.kernel_cpu.toFixed(1)}
           </div>
           <div className="jp-kernelusage-separator">
-            Memory: {kernelPoll.usage?.kernel_memory}
+            Memory: {convertToLargestUnit(kernelPoll.usage?.kernel_memory)}
           </div>
           <hr></hr>
           <h4 className="jp-kernelusage-separator">Host CPU</h4>
@@ -158,28 +159,39 @@ const KernelUsage = (props: {
           </div>
           <h4 className="jp-kernelusage-separator">Host Virtual Memory</h4>
           <div className="jp-kernelusage-separator">
-            Active: {kernelPoll.usage?.host_virtual_memory.active}
+            Active:{' '}
+            {convertToLargestUnit(kernelPoll.usage?.host_virtual_memory.active)}
           </div>
           <div className="jp-kernelusage-separator">
-            Available: {kernelPoll.usage?.host_virtual_memory.available}
+            Available:{' '}
+            {convertToLargestUnit(
+              kernelPoll.usage?.host_virtual_memory.available
+            )}
           </div>
           <div className="jp-kernelusage-separator">
-            Free: {kernelPoll.usage?.host_virtual_memory.free}
+            Free:{' '}
+            {convertToLargestUnit(kernelPoll.usage?.host_virtual_memory.free)}
           </div>
           <div className="jp-kernelusage-separator">
-            Inactive: {kernelPoll.usage?.host_virtual_memory.inactive}
+            Inactive:{' '}
+            {convertToLargestUnit(
+              kernelPoll.usage?.host_virtual_memory.inactive
+            )}
           </div>
           <div className="jp-kernelusage-separator">
-            Percent: {kernelPoll.usage?.host_virtual_memory.percent}
+            Percent: {kernelPoll.usage?.host_virtual_memory.percent.toFixed(1)}
           </div>
           <div className="jp-kernelusage-separator">
-            Total: {kernelPoll.usage?.host_virtual_memory.total}
+            Total:{' '}
+            {convertToLargestUnit(kernelPoll.usage?.host_virtual_memory.total)}
           </div>
           <div className="jp-kernelusage-separator">
-            Used: {kernelPoll.usage?.host_virtual_memory.used}
+            Used:{' '}
+            {convertToLargestUnit(kernelPoll.usage?.host_virtual_memory.used)}
           </div>
           <div className="jp-kernelusage-separator">
-            Wired: {kernelPoll.usage?.host_virtual_memory.wired}
+            Wired:{' '}
+            {convertToLargestUnit(kernelPoll.usage?.host_virtual_memory.wired)}
           </div>
         </>
       );
