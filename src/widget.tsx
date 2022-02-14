@@ -146,7 +146,7 @@ const KernelUsage = (props: {
             Timestamp: {kernelPoll.usage?.timestamp?.toLocaleString()}
           </div>
           <div className="jp-kernelusage-separator">
-            CPU: {kernelPoll.usage?.kernel_cpu}
+            CPU: {kernelPoll.usage?.kernel_cpu.toFixed(1)}
           </div>
           <div className="jp-kernelusage-separator">
             Memory: {kernelPoll.usage?.kernel_memory}
@@ -154,7 +154,7 @@ const KernelUsage = (props: {
           <hr></hr>
           <h4 className="jp-kernelusage-separator">Host CPU</h4>
           <div className="jp-kernelusage-separator">
-            Percentage {kernelPoll.usage?.host_cpu_percent}
+            Percentage {kernelPoll.usage?.host_cpu_percent.toFixed(1)}
           </div>
           <h4 className="jp-kernelusage-separator">Host Virtual Memory</h4>
           <div className="jp-kernelusage-separator">
