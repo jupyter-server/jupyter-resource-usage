@@ -3,10 +3,11 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { INotebookTracker } from '@jupyterlab/notebook';
+import { LabIcon } from '@jupyterlab/ui-components';
 import { ICommandPalette } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
-import { jupyterIcon as icon } from '@jupyterlab/ui-components';
 import { KernelUsagePanel } from './panel';
+import tachometer from '../style/tachometer.svg';
 
 namespace CommandIDs {
   export const getKernelUsage = 'kernel-usage:get';
@@ -41,7 +42,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
     commands.addCommand(CommandIDs.getKernelUsage, {
       label: 'Kernel Usage',
       caption: 'Kernel Usage',
-      icon: icon,
+      icon: new LabIcon({
+        name: 'jupyterlab-kernel-usage:icon',
+        svgstr: tachometer
+      }),
       execute: createPanel
     });
 
