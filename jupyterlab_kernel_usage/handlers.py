@@ -1,6 +1,7 @@
+import asyncio
+import ipykernel
 import json
 import tornado
-import asyncio
 import zmq
 
 from functools import partial
@@ -9,11 +10,20 @@ from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join, ensure_async
 from jupyter_client.jsonutil import date_default
 
+from packaging import version
+
+
+USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(ipykernel.__version__)
+
 
 class RouteHandler(APIHandler):
 
     @tornado.web.authenticated
     async def get(self, matched_part=None, *args, **kwargs):
+
+        if not USAGE_IS_SUPPORTED:
+            self.write(json.dumps({}))
+            return
 
         kernel_id = matched_part
         km = self.kernel_manager
