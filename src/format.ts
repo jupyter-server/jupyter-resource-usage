@@ -13,12 +13,17 @@ const MEMORY_UNIT_LIMITS: {
   PB: 1125899906842624
 };
 
+export function formatForDisplay(numBytes: number | undefined): string {
+  const lu = convertToLargestUnit(numBytes);
+  return lu[0].toFixed(2) + ' ' + lu[1];
+}
+
 /**
  * Given a number of bytes, convert to the most human-readable
  * format, (GB, TB, etc).
  * Taken from https://github.com/jupyter-server/jupyter-resource-usage/blob/e6ec53fa69fdb6de8e878974bcff006310658408/packages/labextension/src/memoryUsage.tsx#L272
  */
-export function convertToLargestUnit(
+function convertToLargestUnit(
   numBytes: number | undefined
 ): [number, MemoryUnit] {
   if (!numBytes) {
@@ -34,8 +39,7 @@ export function convertToLargestUnit(
   } else if (
     MEMORY_UNIT_LIMITS.MB === numBytes ||
     numBytes < MEMORY_UNIT_LIMITS.GB
-    // eslint-disable-next-line prettier/prettier
-) {
+  ) {
     return [numBytes / MEMORY_UNIT_LIMITS.MB, 'MB'];
   } else if (
     MEMORY_UNIT_LIMITS.GB === numBytes ||
