@@ -147,7 +147,7 @@ const KernelUsage = (props: {
             Timestamp: {kernelPoll.usage?.timestamp?.toLocaleString()}
           </div>
           <div className="jp-kernelusage-separator">
-            CPU: {kernelPoll.usage?.kernel_cpu.toFixed(1)}
+            CPU: {kernelPoll.usage?.kernel_cpu}
           </div>
           <div className="jp-kernelusage-separator">
             Memory: {formatForDisplay(kernelPoll.usage?.kernel_memory)}
@@ -164,19 +164,14 @@ const KernelUsage = (props: {
           </div>
           <div className="jp-kernelusage-separator">
             Available:{' '}
-            {formatForDisplay(
-              kernelPoll.usage?.host_virtual_memory.available
-            )}
+            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.available)}
           </div>
           <div className="jp-kernelusage-separator">
-            Free:{' '}
-            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.free)}
+            Free: {formatForDisplay(kernelPoll.usage?.host_virtual_memory.free)}
           </div>
           <div className="jp-kernelusage-separator">
             Inactive:{' '}
-            {formatForDisplay(
-              kernelPoll.usage?.host_virtual_memory.inactive
-            )}
+            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.inactive)}
           </div>
           <div className="jp-kernelusage-separator">
             Percent: {kernelPoll.usage?.host_virtual_memory.percent.toFixed(1)}
@@ -186,8 +181,7 @@ const KernelUsage = (props: {
             {formatForDisplay(kernelPoll.usage?.host_virtual_memory.total)}
           </div>
           <div className="jp-kernelusage-separator">
-            Used:{' '}
-            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.used)}
+            Used: {formatForDisplay(kernelPoll.usage?.host_virtual_memory.used)}
           </div>
           <div className="jp-kernelusage-separator">
             Wired:{' '}
