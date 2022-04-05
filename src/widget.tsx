@@ -131,63 +131,73 @@ const KernelUsage = (props: {
   );
 
   if (kernelId) {
-    const kernelPoll = kernelPools.get(kernelId);
-    if (kernelPoll) {
-      return (
+    const kernelPool = kernelPools.get(kernelId);
+    if (kernelPool && kernelPool.usage) {
+      return !kernelPool.usage.hostname ? (
         <>
-          <h3 className="jp-KernelUsage-section-separator">Kernel Usage</h3>
+          <h3 className="jp-KernelUsage-section-separator">
+            Kernel usage details are not available
+          </h3>
+          <div className="jp-KernelUsage-section-separator">
+            Please check with your system administrator that you running
+            IPyKernel version 6.10.0 or above.
+          </div>
+        </>
+      ) : (
+        <>
+          <h3 className="jp-KernelUsage-section-separator">Kernel usage</h3>
           <div className="jp-KernelUsage-separator">
-            Kernel Host: {kernelPoll.usage?.hostname}
+            Kernel Host: {kernelPool.usage.hostname}
           </div>
           <div className="jp-KernelUsage-separator">
-            Notebook: {kernelPoll.path}
+            Notebook: {kernelPool.path}
           </div>
           <div className="jp-KernelUsage-separator">Kernel ID: {kernelId}</div>
           <div className="jp-KernelUsage-separator">
-            Timestamp: {kernelPoll.usage?.timestamp?.toLocaleString()}
+            Timestamp: {kernelPool.usage.timestamp?.toLocaleString()}
           </div>
           <div className="jp-KernelUsage-separator">
-            CPU: {kernelPoll.usage?.kernel_cpu}
+            CPU: {kernelPool.usage.kernel_cpu}
           </div>
           <div className="jp-KernelUsage-separator">
-            Memory: {formatForDisplay(kernelPoll.usage?.kernel_memory)}
+            Memory: {formatForDisplay(kernelPool.usage.kernel_memory)}
           </div>
           <hr className="jp-KernelUsage-section-separator"></hr>
           <h4 className="jp-KernelUsage-section-separator">Host CPU</h4>
           <div className="jp-KernelUsage-separator">
-            Percentage {kernelPoll.usage?.host_cpu_percent.toFixed(1)}
+            Percentage {kernelPool.usage.host_cpu_percent.toFixed(1)}
           </div>
           <h4 className="jp-KernelUsage-section-separator">
             Host Virtual Memory
           </h4>
           <div className="jp-KernelUsage-separator">
             Active:{' '}
-            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.active)}
+            {formatForDisplay(kernelPool.usage.host_virtual_memory.active)}
           </div>
           <div className="jp-KernelUsage-separator">
             Available:{' '}
-            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.available)}
+            {formatForDisplay(kernelPool.usage.host_virtual_memory.available)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Free: {formatForDisplay(kernelPoll.usage?.host_virtual_memory.free)}
+            Free: {formatForDisplay(kernelPool.usage.host_virtual_memory.free)}
           </div>
           <div className="jp-KernelUsage-separator">
             Inactive:{' '}
-            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.inactive)}
+            {formatForDisplay(kernelPool.usage.host_virtual_memory.inactive)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Percent: {kernelPoll.usage?.host_virtual_memory.percent.toFixed(1)}
+            Percent: {kernelPool.usage.host_virtual_memory.percent.toFixed(1)}
           </div>
           <div className="jp-KernelUsage-separator">
             Total:{' '}
-            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.total)}
+            {formatForDisplay(kernelPool.usage.host_virtual_memory.total)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Used: {formatForDisplay(kernelPoll.usage?.host_virtual_memory.used)}
+            Used: {formatForDisplay(kernelPool.usage.host_virtual_memory.used)}
           </div>
           <div className="jp-KernelUsage-separator">
             Wired:{' '}
-            {formatForDisplay(kernelPoll.usage?.host_virtual_memory.wired)}
+            {formatForDisplay(kernelPool.usage.host_virtual_memory.wired)}
           </div>
         </>
       );
