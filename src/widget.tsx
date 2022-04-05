@@ -15,6 +15,7 @@ type Usage = {
   hostname: string;
   kernel_cpu: number;
   kernel_memory: number;
+  pid: number;
   host_cpu_percent: number;
   host_virtual_memory: {
     active: number;
@@ -155,6 +156,9 @@ const KernelUsage = (props: {
           <div className="jp-KernelUsage-separator">Kernel ID: {kernelId}</div>
           <div className="jp-KernelUsage-separator">
             Timestamp: {kernelPool.usage.timestamp?.toLocaleString()}
+          </div>
+          <div className="jp-KernelUsage-separator">
+            Process ID: {kernelPool.usage.pid}
           </div>
           <div className="jp-KernelUsage-separator">
             CPU: {kernelPool.usage.kernel_cpu}
