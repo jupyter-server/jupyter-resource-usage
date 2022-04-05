@@ -6,7 +6,7 @@ import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { KernelUsageWidget } from './widget';
 import tachometer from '../style/tachometer.svg';
 
-const PANEL_CLASS = 'jp-kernelusage-view';
+const PANEL_CLASS = 'jp-KernelUsage-view';
 
 export class KernelUsagePanel extends StackedPanel {
   constructor(props: {

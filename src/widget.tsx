@@ -135,55 +135,57 @@ const KernelUsage = (props: {
     if (kernelPoll) {
       return (
         <>
-          <h3 className="jp-kernelusage-separator">Kernel Usage</h3>
-          <div className="jp-kernelusage-separator">
+          <h3 className="jp-KernelUsage-section-separator">Kernel Usage</h3>
+          <div className="jp-KernelUsage-separator">
             Kernel Host: {kernelPoll.usage?.hostname}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Notebook: {kernelPoll.path}
           </div>
-          <div className="jp-kernelusage-separator">Kernel ID: {kernelId}</div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">Kernel ID: {kernelId}</div>
+          <div className="jp-KernelUsage-separator">
             Timestamp: {kernelPoll.usage?.timestamp?.toLocaleString()}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             CPU: {kernelPoll.usage?.kernel_cpu}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Memory: {formatForDisplay(kernelPoll.usage?.kernel_memory)}
           </div>
-          <hr></hr>
-          <h4 className="jp-kernelusage-separator">Host CPU</h4>
-          <div className="jp-kernelusage-separator">
+          <hr className="jp-KernelUsage-section-separator"></hr>
+          <h4 className="jp-KernelUsage-section-separator">Host CPU</h4>
+          <div className="jp-KernelUsage-separator">
             Percentage {kernelPoll.usage?.host_cpu_percent.toFixed(1)}
           </div>
-          <h4 className="jp-kernelusage-separator">Host Virtual Memory</h4>
-          <div className="jp-kernelusage-separator">
+          <h4 className="jp-KernelUsage-section-separator">
+            Host Virtual Memory
+          </h4>
+          <div className="jp-KernelUsage-separator">
             Active:{' '}
             {formatForDisplay(kernelPoll.usage?.host_virtual_memory.active)}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Available:{' '}
             {formatForDisplay(kernelPoll.usage?.host_virtual_memory.available)}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Free: {formatForDisplay(kernelPoll.usage?.host_virtual_memory.free)}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Inactive:{' '}
             {formatForDisplay(kernelPoll.usage?.host_virtual_memory.inactive)}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Percent: {kernelPoll.usage?.host_virtual_memory.percent.toFixed(1)}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Total:{' '}
             {formatForDisplay(kernelPoll.usage?.host_virtual_memory.total)}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Used: {formatForDisplay(kernelPoll.usage?.host_virtual_memory.used)}
           </div>
-          <div className="jp-kernelusage-separator">
+          <div className="jp-KernelUsage-separator">
             Wired:{' '}
             {formatForDisplay(kernelPoll.usage?.host_virtual_memory.wired)}
           </div>
