@@ -6,6 +6,10 @@ This is an extension for [JupyterLab](https://github.com/jupyterlab/jupyterlab) 
 
 This extension is composed of a Python package named `jupyterlab_kernel_usage` for the server extension and a NPM package named `jupyterlab-kernel-usage` for the frontend extension.
 
+## Requirements
+
+This usage is only show for IPython kernels with [ipykernel](https://github.com/ipython/ipykerne) >= 6.11.0.
+
 ## Contributing
 
 ### Develop
