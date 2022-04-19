@@ -110,11 +110,17 @@ const KernelUsage = (props: {
             'kernel'
           >
         ) => {
-          const kernelId = args.newValue?.id;
-          if (kernelId) {
-            setKernelId(kernelId);
+          const oldKernelId = args.oldValue?.id;
+          if (oldKernelId) {
+            const poll = kernelPools.get(oldKernelId);
+            poll?.poll.dispose();
+            kernelPools.delete(oldKernelId);
+          }
+          const newKernelId = args.newValue?.id;
+          if (newKernelId) {
+            setKernelId(newKernelId);
             const path = panel?.sessionContext.session?.model.path;
-            doPoll(kernelId as string, path as string);
+            doPoll(newKernelId as string, path as string);
           }
         }
       );
