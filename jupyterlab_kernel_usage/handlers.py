@@ -12,6 +12,10 @@ from jupyter_client.jsonutil import date_default
 
 from packaging import version
 
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 
 USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(ipykernel.__version__)
 
@@ -43,7 +47,8 @@ class RouteHandler(APIHandler):
             timeout_ms = int(1000 * timeout)
             events = dict(poller.poll(timeout_ms))
             if not events:
-                raise TimeoutError("Timeout waiting for response")
+                self.write(json.dumps({}))
+                break
             if control_socket not in events:
                 continue
             res = await client.control_channel.get_msg(timeout=0)
