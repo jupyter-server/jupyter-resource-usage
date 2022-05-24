@@ -12,10 +12,6 @@ from jupyter_client.jsonutil import date_default
 
 from packaging import version
 
-import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
 
 USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(ipykernel.__version__)
 
