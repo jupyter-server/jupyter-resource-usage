@@ -5,7 +5,7 @@ import { IChangedArgs } from '@jupyterlab/coreutils';
 import { Kernel } from '@jupyterlab/services';
 import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
-import { KernelUsagePanel } from "./panel";
+import { KernelUsagePanel } from './panel';
 import useInterval from './useInterval';
 import { formatForDisplay } from './format';
 
