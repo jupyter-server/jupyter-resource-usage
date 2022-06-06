@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Poll } from '@lumino/polling';
 import { ISignal } from '@lumino/signaling';
 import { ReactWidget, ISessionContext } from '@jupyterlab/apputils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
 import { Kernel } from '@jupyterlab/services';
 import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
+import { KernelUsagePanel } from "./panel";
 import useInterval from './useInterval';
 import { formatForDisplay } from './format';
 
@@ -31,73 +31,31 @@ type Usage = {
 
 const POLL_INTERVAL_SEC = 5;
 
-const POLL_MAX_INTERVAL_SEC = 300;
-
-type KernelPoll = {
-  poll: Poll<void, any, 'stand-by'>;
-  path: string;
-  usage: Usage | undefined;
-};
-
-const kernelPools = new Map<string, KernelPoll>();
-
 const KernelUsage = (props: {
   widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
   currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
+  panel: KernelUsagePanel;
 }) => {
+  const { panel } = props;
   const [kernelId, setKernelId] = useState<string>();
-  const [refresh, setRefresh] = useState<boolean>(true);
+  const [path, setPath] = useState<string>();
+  const [usage, setUsage] = useState<Usage | undefined>();
 
   useInterval(async () => {
-    setRefresh(!refresh);
+    if (kernelId && panel.isVisible) {
+      requestUsage(kernelId).then(usage => setUsage(usage));
+    }
   }, POLL_INTERVAL_SEC * 1000);
 
-  const requestUsage = async (kernelId: string) => {
-    requestAPI<any>(`get_usage/${kernelId}`)
-      .then(data => {
-        const kernelPoll = kernelPools.get(kernelId);
-        if (kernelPoll) {
-          kernelPoll.usage = {
-            ...data.content,
-            kernelId,
-            timestamp: new Date()
-          };
-          kernelPools.set(kernelId, kernelPoll);
-        }
-      })
-      .catch(reason => {
-        console.error(
-          `The kernelusage server extension has returned an error.\n${reason}`
-        );
-        const kernelPoll = kernelPools.get(kernelId);
-        kernelPoll?.poll.stop().then(() => {
-          kernelPools.delete(kernelId);
-        });
-      });
-  };
-
-  const doPoll = (kernelId: string, path: string) => {
-    let kernelPoll = kernelPools.get(kernelId);
-    if (!kernelPoll) {
-      const poll = new Poll<void, any, 'stand-by'>({
-        auto: true,
-        factory: () => requestUsage(kernelId),
-        frequency: {
-          interval: POLL_INTERVAL_SEC * 1000,
-          backoff: true,
-          max: POLL_MAX_INTERVAL_SEC * 1000
-        },
-        name: `@jupyterlab/kernel:KernelUsage#${kernelId}`,
-        standby: 'never'
-      });
-      kernelPoll = {
-        poll,
-        path,
-        usage: undefined
+  const requestUsage = (kid: string) =>
+    requestAPI<any>(`get_usage/${kid}`).then(data => {
+      const usage: Usage = {
+        ...data.content,
+        kernelId: kid,
+        timestamp: new Date()
       };
-      kernelPools.set(kernelId, kernelPoll);
-    }
-  };
+      return usage;
+    });
 
   props.currentNotebookChanged.connect(
     (sender: INotebookTracker, panel: NotebookPanel | null) => {
@@ -110,17 +68,20 @@ const KernelUsage = (props: {
             'kernel'
           >
         ) => {
+          /*
           const oldKernelId = args.oldValue?.id;
           if (oldKernelId) {
             const poll = kernelPools.get(oldKernelId);
             poll?.poll.dispose();
             kernelPools.delete(oldKernelId);
           }
+          */
           const newKernelId = args.newValue?.id;
           if (newKernelId) {
             setKernelId(newKernelId);
             const path = panel?.sessionContext.session?.model.path;
-            doPoll(newKernelId as string, path as string);
+            setPath(path);
+            requestUsage(newKernelId).then(usage => setUsage(usage));
           }
         }
       );
@@ -130,7 +91,8 @@ const KernelUsage = (props: {
           if (kernelId) {
             setKernelId(kernelId);
             const path = panel?.sessionContext.session?.model.path;
-            doPoll(kernelId as string, path);
+            setPath(path);
+            requestUsage(kernelId).then(usage => setUsage(usage));
           }
         }
       }
@@ -138,9 +100,8 @@ const KernelUsage = (props: {
   );
 
   if (kernelId) {
-    const kernelPool = kernelPools.get(kernelId);
-    if (kernelPool && kernelPool.usage) {
-      return !kernelPool.usage.hostname ? (
+    if (usage) {
+      return !usage.hostname ? (
         <>
           <h3 className="jp-KernelUsage-section-separator">
             Kernel usage details are not available
@@ -154,60 +115,57 @@ const KernelUsage = (props: {
         <>
           <h3 className="jp-KernelUsage-section-separator">Kernel usage</h3>
           <div className="jp-KernelUsage-separator">
-            Kernel Host: {kernelPool.usage.hostname}
+            Kernel Host: {usage.hostname}
           </div>
-          <div className="jp-KernelUsage-separator">
-            Notebook: {kernelPool.path}
-          </div>
+          <div className="jp-KernelUsage-separator">Notebook: {path}</div>
           <div className="jp-KernelUsage-separator">Kernel ID: {kernelId}</div>
           <div className="jp-KernelUsage-separator">
-            Timestamp: {kernelPool.usage.timestamp?.toLocaleString()}
+            Timestamp: {usage.timestamp?.toLocaleString()}
           </div>
           <div className="jp-KernelUsage-separator">
-            Process ID: {kernelPool.usage.pid}
+            Process ID: {usage.pid}
           </div>
           <div className="jp-KernelUsage-separator">
-            CPU: {kernelPool.usage.kernel_cpu}
+            CPU: {usage.kernel_cpu}
           </div>
           <div className="jp-KernelUsage-separator">
-            Memory: {formatForDisplay(kernelPool.usage.kernel_memory)}
+            Memory: {formatForDisplay(usage.kernel_memory)}
           </div>
           <hr className="jp-KernelUsage-section-separator"></hr>
           <h4 className="jp-KernelUsage-section-separator">Host CPU</h4>
-          <div className="jp-KernelUsage-separator">
-            Percentage {kernelPool.usage.host_cpu_percent.toFixed(1)}
-          </div>
+          {usage.host_cpu_percent && (
+            <div className="jp-KernelUsage-separator">
+              Percentage {usage.host_cpu_percent.toFixed(1)}
+            </div>
+          )}
           <h4 className="jp-KernelUsage-section-separator">
             Host Virtual Memory
           </h4>
           <div className="jp-KernelUsage-separator">
-            Active:{' '}
-            {formatForDisplay(kernelPool.usage.host_virtual_memory.active)}
+            Active: {formatForDisplay(usage.host_virtual_memory.active)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Available:{' '}
-            {formatForDisplay(kernelPool.usage.host_virtual_memory.available)}
+            Available: {formatForDisplay(usage.host_virtual_memory.available)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Free: {formatForDisplay(kernelPool.usage.host_virtual_memory.free)}
+            Free: {formatForDisplay(usage.host_virtual_memory.free)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Inactive:{' '}
-            {formatForDisplay(kernelPool.usage.host_virtual_memory.inactive)}
+            Inactive: {formatForDisplay(usage.host_virtual_memory.inactive)}
+          </div>
+          {usage.host_virtual_memory.percent && (
+            <div className="jp-KernelUsage-separator">
+              Percent: {usage.host_virtual_memory.percent.toFixed(1)}
+            </div>
+          )}
+          <div className="jp-KernelUsage-separator">
+            Total: {formatForDisplay(usage.host_virtual_memory.total)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Percent: {kernelPool.usage.host_virtual_memory.percent.toFixed(1)}
+            Used: {formatForDisplay(usage.host_virtual_memory.used)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Total:{' '}
-            {formatForDisplay(kernelPool.usage.host_virtual_memory.total)}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            Used: {formatForDisplay(kernelPool.usage.host_virtual_memory.used)}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            Wired:{' '}
-            {formatForDisplay(kernelPool.usage.host_virtual_memory.wired)}
+            Wired: {formatForDisplay(usage.host_virtual_memory.wired)}
           </div>
         </>
       );
@@ -222,13 +180,16 @@ export class KernelUsageWidget extends ReactWidget {
     INotebookTracker,
     NotebookPanel | null
   >;
+  private _panel: KernelUsagePanel;
   constructor(props: {
     widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
     currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
+    panel: KernelUsagePanel;
   }) {
     super();
     this._widgetAdded = props.widgetAdded;
     this._currentNotebookChanged = props.currentNotebookChanged;
+    this._panel = props.panel;
   }
 
   protected render(): React.ReactElement<any> {
@@ -236,6 +197,7 @@ export class KernelUsageWidget extends ReactWidget {
       <KernelUsage
         widgetAdded={this._widgetAdded}
         currentNotebookChanged={this._currentNotebookChanged}
+        panel={this._panel}
       />
     );
   }
