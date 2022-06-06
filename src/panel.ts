@@ -24,7 +24,8 @@ export class KernelUsagePanel extends StackedPanel {
     this.title.closable = true;
     const widget = new KernelUsageWidget({
       widgetAdded: props.widgetAdded,
-      currentNotebookChanged: props.currentNotebookChanged
+      currentNotebookChanged: props.currentNotebookChanged,
+      panel: this
     });
     this.addWidget(widget);
   }
