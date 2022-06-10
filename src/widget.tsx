@@ -17,6 +17,7 @@ type Usage = {
   kernel_memory: number;
   pid: number;
   host_cpu_percent: number;
+  cpu_count: number;
   host_virtual_memory: {
     active: number;
     available: number;
@@ -126,7 +127,7 @@ const KernelUsage = (props: {
             Process ID: {usage.pid}
           </div>
           <div className="jp-KernelUsage-separator">
-            CPU: {usage.kernel_cpu}
+            CPU: {usage.kernel_cpu}% used
           </div>
           <div className="jp-KernelUsage-separator">
             Memory: {formatForDisplay(usage.kernel_memory)}
@@ -135,7 +136,8 @@ const KernelUsage = (props: {
           <h4 className="jp-KernelUsage-section-separator">Host CPU</h4>
           {usage.host_cpu_percent && (
             <div className="jp-KernelUsage-separator">
-              Percentage {usage.host_cpu_percent.toFixed(1)}
+              {usage.host_cpu_percent.toFixed(1)}% used on {usage.cpu_count}{' '}
+              CPUs
             </div>
           )}
           <h4 className="jp-KernelUsage-section-separator">
@@ -155,7 +157,7 @@ const KernelUsage = (props: {
           </div>
           {usage.host_virtual_memory.percent && (
             <div className="jp-KernelUsage-separator">
-              Percent: {usage.host_virtual_memory.percent.toFixed(1)}
+              Percent used: {usage.host_virtual_memory.percent.toFixed(1)}%
             </div>
           )}
           <div className="jp-KernelUsage-separator">
