@@ -34,6 +34,6 @@ def _jupyter_nbextension_paths():
         }
     ]
 
-# For backwards compatibility
+# For backward compatibility
 _load_jupyter_server_extension = load_jupyter_server_extension
 _jupyter_server_extension_paths = _jupyter_server_extension_points
