@@ -19,7 +19,12 @@ def load_jupyter_server_extension(server_app):
         ".*", [(url_path_join(base_url, "/api/metrics/v1"), ApiHandler)]
     )
 
-    callback = ioloop.PeriodicCallback(
-        PrometheusHandler(PSUtilMetricsLoader(server_app)), 1000
-    )
-    callback.start()
+    if resuseconfig.enable_prometheus_metrics:
+        callback = ioloop.PeriodicCallback(
+            PrometheusHandler(PSUtilMetricsLoader(server_app)), 1000
+        )
+        callback.start()
+    else:
+        server_app.log.info(
+            "Prometheus metrics reporting disabled in jupyter_resource_usage."
+        )
