@@ -1,10 +1,8 @@
 import json
 from concurrent.futures import ThreadPoolExecutor
 
-from jupyter_server.base.handlers import APIHandler
-
 import psutil
-
+from jupyter_server.base.handlers import APIHandler
 from tornado import web
 from tornado.concurrent import run_on_executor
 
