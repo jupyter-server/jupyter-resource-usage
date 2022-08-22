@@ -1,10 +1,11 @@
 from jupyter_server.utils import url_path_join
-from tornado import ioloop
 
 from jupyter_resource_usage.api import ApiHandler
 from jupyter_resource_usage.config import ResourceUseDisplay
 from jupyter_resource_usage.metrics import PSUtilMetricsLoader
 from jupyter_resource_usage.prometheus import PrometheusHandler
+
+from tornado import ioloop
 
 
 def load_jupyter_server_extension(server_app):

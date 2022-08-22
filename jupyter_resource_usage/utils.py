@@ -1,4 +1,5 @@
 import six
+
 from traitlets import TraitType
 
 # copy-pasted from the master of Traitlets source
