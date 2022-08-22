@@ -93,7 +93,7 @@ jupyter notebook --ResourceUseDisplay.track_cpu_percent=True
 
 ### Disable Prometheus Metrics
 There is a [known bug](https://github.com/jupyter-server/jupyter-resource-usage/issues/123) with Prometheus metrics which
-causes "lag"/pauses in the UI. To fix this you can disable Prometheus metric reporting using:
+causes "lag"/pauses in the UI. To workaround this you can disable Prometheus metric reporting using:
 ```
 --ResourceUseDisplay.enable_prometheus_metrics=False
 ```
