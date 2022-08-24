@@ -2,6 +2,42 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.2
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.6.1...d6edf6a8a94b5740670368c6ad91299049e5a34f))
+
+### Enhancements made
+
+- Allow users to opt out of prometheus metrics [#124](https://github.com/jupyter-server/jupyter-resource-usage/pull/124) ([@dleen](https://github.com/dleen))
+
+### Maintenance and upkeep improvements
+
+- Fix lint configuration and failures [#138](https://github.com/jupyter-server/jupyter-resource-usage/pull/138) ([@kevin-bates](https://github.com/kevin-bates))
+- [pre-commit.ci] pre-commit autoupdate [#137](https://github.com/jupyter-server/jupyter-resource-usage/pull/137) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- [pre-commit.ci] pre-commit autoupdate [#135](https://github.com/jupyter-server/jupyter-resource-usage/pull/135) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Bump parse-url from 6.0.0 to 6.0.2 [#133](https://github.com/jupyter-server/jupyter-resource-usage/pull/133) ([@dependabot](https://github.com/dependabot))
+- [pre-commit.ci] pre-commit autoupdate [#132](https://github.com/jupyter-server/jupyter-resource-usage/pull/132) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- [pre-commit.ci] pre-commit autoupdate [#131](https://github.com/jupyter-server/jupyter-resource-usage/pull/131) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- [pre-commit.ci] pre-commit autoupdate [#129](https://github.com/jupyter-server/jupyter-resource-usage/pull/129) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Bump nanoid from 3.1.30 to 3.3.3 [#128](https://github.com/jupyter-server/jupyter-resource-usage/pull/128) ([@dependabot](https://github.com/dependabot))
+- [pre-commit.ci] pre-commit autoupdate [#126](https://github.com/jupyter-server/jupyter-resource-usage/pull/126) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Bump moment from 2.29.1 to 2.29.2 [#125](https://github.com/jupyter-server/jupyter-resource-usage/pull/125) ([@dependabot](https://github.com/dependabot))
+- [pre-commit.ci] pre-commit autoupdate [#122](https://github.com/jupyter-server/jupyter-resource-usage/pull/122) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Bump minimist from 1.2.5 to 1.2.6 [#121](https://github.com/jupyter-server/jupyter-resource-usage/pull/121) ([@dependabot](https://github.com/dependabot))
+- Bump url-parse from 1.5.3 to 1.5.10 [#120](https://github.com/jupyter-server/jupyter-resource-usage/pull/120) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Point the Binder link to the default branch [#117](https://github.com/jupyter-server/jupyter-resource-usage/pull/117) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2021-12-06&to=2022-08-24&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2021-12-06..2022-08-24&type=Issues) | [@dleen](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adleen+updated%3A2021-12-06..2022-08-24&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2021-12-06..2022-08-24&type=Issues) | [@kevin-bates](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akevin-bates+updated%3A2021-12-06..2022-08-24&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2021-12-06..2022-08-24&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2021-12-06..2022-08-24&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.1
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/0.6.0...42df870ca30c1373fd7c5e48b00d1bb3f383c10a))
@@ -38,8 +74,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2021-04-29&to=2021-12-06&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2021-04-29..2021-12-06&type=Issues) | [@jhgoebbert](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajhgoebbert+updated%3A2021-04-29..2021-12-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2021-04-29..2021-12-06&type=Issues) | [@stevenstetzler](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Astevenstetzler+updated%3A2021-04-29..2021-12-06&type=Issues) | [@vidartf](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Avidartf+updated%3A2021-04-29..2021-12-06&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2021-04-29..2021-12-06&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0
 
