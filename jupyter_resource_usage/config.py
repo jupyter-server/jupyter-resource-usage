@@ -122,3 +122,10 @@ class ResourceUseDisplay(Configurable):
     @default("cpu_limit")
     def _cpu_limit_default(self):
         return float(os.environ.get("CPU_LIMIT", 0))
+
+    enable_prometheus_metrics = Bool(
+        default_value=True,
+        help="""
+        Set to False in order to disable reporting of Prometheus style metrics.
+        """,
+    ).tag(config=True)
