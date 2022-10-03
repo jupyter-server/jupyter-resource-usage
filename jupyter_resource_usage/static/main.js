@@ -74,7 +74,7 @@ define([
 
                 // Handle CPU display
                 var cpuPercent = data['cpu_percent'];
-                if (cpuPercent) {
+                if (cpuPercent !== undefined) {
                     // Remove hide CSS class if the metrics API gives us a CPU percent to display
                     $('#jupyter-resource-usage-display-cpu').removeClass('jupyter-resource-usage-hide');
                     var maxCpu = data['cpu_count'];
