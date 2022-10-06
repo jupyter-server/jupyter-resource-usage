@@ -8,7 +8,7 @@
 
 ### Bugs fixed
 
-- Define _jupyter_server_extension_paths for backward compatibility [#148](https://github.com/jupyter-server/jupyter-resource-usage/pull/148) ([@casparvl](https://github.com/casparvl))
+- Define \_jupyter_server_extension_paths for backward compatibility [#148](https://github.com/jupyter-server/jupyter-resource-usage/pull/148) ([@casparvl](https://github.com/casparvl))
 - Fix update at zero cpu [#147](https://github.com/jupyter-server/jupyter-resource-usage/pull/147) ([@casparvl](https://github.com/casparvl))
 
 ### Maintenance and upkeep improvements
