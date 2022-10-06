@@ -2,6 +2,29 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.3
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.6.2...f2366db3a26109832ad0e2ff1f2a8d3488c9dee7))
+
+### Bugs fixed
+
+- Define _jupyter_server_extension_paths for backward compatibility [#148](https://github.com/jupyter-server/jupyter-resource-usage/pull/148) ([@casparvl](https://github.com/casparvl))
+- Fix update at zero cpu [#147](https://github.com/jupyter-server/jupyter-resource-usage/pull/147) ([@casparvl](https://github.com/casparvl))
+
+### Maintenance and upkeep improvements
+
+- Remove `prepare` script [#145](https://github.com/jupyter-server/jupyter-resource-usage/pull/145) ([@jtpio](https://github.com/jtpio))
+- Bump terser from 5.10.0 to 5.15.0 [#141](https://github.com/jupyter-server/jupyter-resource-usage/pull/141) ([@dependabot](https://github.com/dependabot))
+- Bump moment from 2.29.2 to 2.29.4 [#140](https://github.com/jupyter-server/jupyter-resource-usage/pull/140) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2022-08-24&to=2022-10-06&type=c))
+
+[@casparvl](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Acasparvl+updated%3A2022-08-24..2022-10-06&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2022-08-24..2022-10-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2022-08-24..2022-10-06&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2022-08-24..2022-10-06&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2022-08-24..2022-10-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.2
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.6.1...d6edf6a8a94b5740670368c6ad91299049e5a34f))
@@ -35,8 +58,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2021-12-06&to=2022-08-24&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2021-12-06..2022-08-24&type=Issues) | [@dleen](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adleen+updated%3A2021-12-06..2022-08-24&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2021-12-06..2022-08-24&type=Issues) | [@kevin-bates](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akevin-bates+updated%3A2021-12-06..2022-08-24&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2021-12-06..2022-08-24&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2021-12-06..2022-08-24&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.1
 
