@@ -19,7 +19,7 @@ source_dir = "packages/labextension"
 build_dir = "jupyter_resource_usage/labextension"
 
 [tool.tbump.version]
-current = "0.6.3"
+current = "0.6.4"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?

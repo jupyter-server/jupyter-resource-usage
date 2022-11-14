@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-server/resource-usage",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "JupyterLab extension to add resource usage UI items",
   "keywords": [
     "jupyter",
