@@ -33,3 +33,10 @@ jobs:
     - name: Test with pytest
       run: |
         python -m pytest -vvv jupyter_resource_usage --cov=jupyter_resource_usage --junitxml=python_junit.xml --cov-report=xml --cov-branch
+
+  check_links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - uses: jupyterlab/maintainer-tools/.github/actions/check-links@v1
