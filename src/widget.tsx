@@ -92,6 +92,9 @@ const KernelUsage = (props: {
           const path = panel?.sessionContext.session?.model.path;
           setPath(path);
           requestUsage(newKernelId).then(usage => setUsage(usage));
+        } else {
+          // Kernel was disposed
+          setKernelId(newKernelId);
         }
       };
     };
