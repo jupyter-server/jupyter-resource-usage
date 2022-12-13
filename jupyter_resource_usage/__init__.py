@@ -1,13 +1,12 @@
 import json
-import os.path as osp
+from pathlib import Path
 
 from ._version import __version__
 from .server_extension import load_jupyter_server_extension
 
-HERE = osp.abspath(osp.dirname(__file__))
+HERE = Path(__file__).parent.resolve()
 
-with open(osp.join(HERE, "labextension", "package.json")) as fid:
-    data = json.load(fid)
+data = json.loads((HERE / "labextension" / "package.json").read_text())
 
 
 def _jupyter_labextension_paths():

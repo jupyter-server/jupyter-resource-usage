@@ -96,7 +96,7 @@ python -m pip install -e ".[dev]"
 jupyter labextension develop . --overwrite
 
 # go to the labextension directory
-cd labextension/
+cd packages/labextension/
 
 # Rebuild extension Typescript source after making changes
 jlpm run build
