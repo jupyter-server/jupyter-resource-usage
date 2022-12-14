@@ -5,7 +5,6 @@ import {
 import { INotebookTracker } from '@jupyterlab/notebook';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { ICommandPalette } from '@jupyterlab/apputils';
-import { ILauncher } from '@jupyterlab/launcher';
 import { KernelUsagePanel } from './panel';
 import tachometer from '../style/tachometer.svg';
 
@@ -26,14 +25,12 @@ const extension: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:memory-status-item',
   autoStart: true,
   requires: [IStatusBar, ITranslator, ICommandPalette, INotebookTracker],
-  optional: [ILauncher],
   activate: (
     app: JupyterFrontEnd,
     statusBar: IStatusBar,
     translator: ITranslator,
     palette: ICommandPalette,
-    notebookTracker: INotebookTracker,
-    launcher: ILauncher | null
+    notebookTracker: INotebookTracker
   ) => {
     const item = new MemoryUsage(translator);
 
@@ -48,13 +45,16 @@ const extension: JupyterFrontEndPlugin<void> = {
     const { commands, shell } = app;
     const category = 'Kernel Resource';
 
-    async function createPanel(): Promise<KernelUsagePanel> {
-      const panel = new KernelUsagePanel({
-        widgetAdded: notebookTracker.widgetAdded,
-        currentNotebookChanged: notebookTracker.currentChanged,
-      });
-      shell.add(panel, 'right', { rank: 200 });
-      return panel;
+    let panel: KernelUsagePanel | null = null;
+
+    function createPanel() {
+      if (!panel || panel.isDisposed) {
+        panel = new KernelUsagePanel({
+          widgetAdded: notebookTracker.widgetAdded,
+          currentNotebookChanged: notebookTracker.currentChanged
+        });
+        shell.add(panel, 'right', { rank: 200 });
+      }
     }
 
     commands.addCommand(CommandIDs.getKernelUsage, {
