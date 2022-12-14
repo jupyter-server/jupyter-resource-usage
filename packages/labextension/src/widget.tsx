@@ -58,7 +58,7 @@ const KernelUsage = (props: {
   useInterval(async () => {
     if (kernelId && panel.isVisible) {
       requestUsage(kernelId)
-        .then(usage => setUsage(usage))
+        .then((usage) => setUsage(usage))
         .catch(() => {
           console.warn(`Request failed for ${kernelId}. Kernel restarting?`);
         });
@@ -66,11 +66,11 @@ const KernelUsage = (props: {
   }, POLL_INTERVAL_SEC * 1000);
 
   const requestUsage = (kid: string) => {
-    return requestAPI<any>(`get_usage/${kid}`).then(data => {
+    return requestAPI<any>(`get_usage/${kid}`).then((data) => {
       const usage: Usage = {
         ...data.content,
         kernelId: kid,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
       return usage;
     });
@@ -91,7 +91,7 @@ const KernelUsage = (props: {
           setKernelId(newKernelId);
           const path = panel?.sessionContext.session?.model.path;
           setPath(path);
-          requestUsage(newKernelId).then(usage => setUsage(usage));
+          requestUsage(newKernelId).then((usage) => setUsage(usage));
         } else {
           // Kernel was disposed
           setKernelId(newKernelId);
@@ -115,7 +115,7 @@ const KernelUsage = (props: {
       }
       kernelChangeCallback = {
         callback: createKernelChangeCallback(panel),
-        panel
+        panel,
       };
       panel.sessionContext.kernelChanged.connect(kernelChangeCallback.callback);
 
@@ -125,7 +125,7 @@ const KernelUsage = (props: {
           setKernelId(kernelId);
           const path = panel.sessionContext.session?.model.path;
           setPath(path);
-          requestUsage(kernelId).then(usage => setUsage(usage));
+          requestUsage(kernelId).then((usage) => setUsage(usage));
         }
       }
     };
