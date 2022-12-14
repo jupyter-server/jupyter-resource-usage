@@ -19,6 +19,9 @@ displays an indication of how much resources your current notebook server and
 its children (kernels, terminals, etc) are using. This is displayed in the
 main toolbar in the notebook itself, refreshing every 5s.
 
+Kernel resource usage can be displayed in a sidebar for IPython kernels with
+[ipykernel](https://github.com/ipython/ipykernel) >= 6.11.0.
+
 ## Installation
 
 You can currently install this package from PyPI.
