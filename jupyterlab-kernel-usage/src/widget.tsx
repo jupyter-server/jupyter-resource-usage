@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ISignal } from '@lumino/signaling';
 import { ReactWidget, ISessionContext } from '@jupyterlab/apputils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
@@ -32,6 +32,19 @@ type Usage = {
 
 const POLL_INTERVAL_SEC = 5;
 
+type KernelChangeCallback = (
+  _sender: ISessionContext,
+  args: IChangedArgs<
+    Kernel.IKernelConnection | null,
+    Kernel.IKernelConnection | null,
+    'kernel'
+  >
+) => void;
+let kernelChangeCallback: {
+  callback: KernelChangeCallback;
+  panel: NotebookPanel;
+} | null = null;
+
 const KernelUsage = (props: {
   widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
   currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
@@ -44,12 +57,16 @@ const KernelUsage = (props: {
 
   useInterval(async () => {
     if (kernelId && panel.isVisible) {
-      requestUsage(kernelId).then(usage => setUsage(usage));
+      requestUsage(kernelId)
+        .then(usage => setUsage(usage))
+        .catch(() => {
+          console.warn(`Request failed for ${kernelId}. Kernel restarting?`);
+        });
     }
   }, POLL_INTERVAL_SEC * 1000);
 
-  const requestUsage = (kid: string) =>
-    requestAPI<any>(`get_usage/${kid}`).then(data => {
+  const requestUsage = (kid: string) => {
+    return requestAPI<any>(`get_usage/${kid}`).then(data => {
       const usage: Usage = {
         ...data.content,
         kernelId: kid,
@@ -57,48 +74,70 @@ const KernelUsage = (props: {
       };
       return usage;
     });
+  };
 
-  props.currentNotebookChanged.connect(
-    (sender: INotebookTracker, panel: NotebookPanel | null) => {
-      panel?.sessionContext.kernelChanged.connect(
-        (
-          _sender: ISessionContext,
-          args: IChangedArgs<
-            Kernel.IKernelConnection | null,
-            Kernel.IKernelConnection | null,
-            'kernel'
-          >
-        ) => {
-          /*
-          const oldKernelId = args.oldValue?.id;
-          if (oldKernelId) {
-            const poll = kernelPools.get(oldKernelId);
-            poll?.poll.dispose();
-            kernelPools.delete(oldKernelId);
-          }
-          */
-          const newKernelId = args.newValue?.id;
-          if (newKernelId) {
-            setKernelId(newKernelId);
-            const path = panel?.sessionContext.session?.model.path;
-            setPath(path);
-            requestUsage(newKernelId).then(usage => setUsage(usage));
-          }
+  useEffect(() => {
+    const createKernelChangeCallback = (panel: NotebookPanel) => {
+      return (
+        _sender: ISessionContext,
+        args: IChangedArgs<
+          Kernel.IKernelConnection | null,
+          Kernel.IKernelConnection | null,
+          'kernel'
+        >
+      ) => {
+        const newKernelId = args.newValue?.id;
+        if (newKernelId) {
+          setKernelId(newKernelId);
+          const path = panel?.sessionContext.session?.model.path;
+          setPath(path);
+          requestUsage(newKernelId).then(usage => setUsage(usage));
+        } else {
+          // Kernel was disposed
+          setKernelId(newKernelId);
         }
-      );
-      if (panel?.sessionContext.session?.id !== kernelId) {
-        if (panel?.sessionContext.session?.kernel?.id) {
-          const kernelId = panel?.sessionContext.session?.kernel?.id;
-          if (kernelId) {
-            setKernelId(kernelId);
-            const path = panel?.sessionContext.session?.model.path;
-            setPath(path);
-            requestUsage(kernelId).then(usage => setUsage(usage));
-          }
+      };
+    };
+
+    const notebookChangeCallback = (
+      sender: INotebookTracker,
+      panel: NotebookPanel | null
+    ) => {
+      if (panel === null) {
+        // Ideally we would switch to a new "select a notebook to get kernel
+        // usage" screen instead of showing outdated info.
+        return;
+      }
+      if (kernelChangeCallback) {
+        kernelChangeCallback.panel.sessionContext.kernelChanged.disconnect(
+          kernelChangeCallback.callback
+        );
+      }
+      kernelChangeCallback = {
+        callback: createKernelChangeCallback(panel),
+        panel
+      };
+      panel.sessionContext.kernelChanged.connect(kernelChangeCallback.callback);
+
+      if (panel.sessionContext.session?.kernel?.id !== kernelId) {
+        const kernelId = panel.sessionContext.session?.kernel?.id;
+        if (kernelId) {
+          setKernelId(kernelId);
+          const path = panel.sessionContext.session?.model.path;
+          setPath(path);
+          requestUsage(kernelId).then(usage => setUsage(usage));
         }
       }
-    }
-  );
+    };
+    props.currentNotebookChanged.connect(notebookChangeCallback);
+    return () => {
+      props.currentNotebookChanged.disconnect(notebookChangeCallback);
+      // In the ideal world we would disconnect kernelChangeCallback from
+      // last panel here, but this can lead to a race condition. Instead,
+      // we make sure there is ever only one callback active by holding
+      // it in a global state.
+    };
+  }, [kernelId]);
 
   if (kernelId) {
     if (usage) {

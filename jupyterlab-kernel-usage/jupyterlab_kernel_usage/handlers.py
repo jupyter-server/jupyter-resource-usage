@@ -1,19 +1,18 @@
-import asyncio
 import ipykernel
 import json
 import tornado
 import zmq
 
-from functools import partial
-
 from jupyter_server.base.handlers import APIHandler
-from jupyter_server.utils import url_path_join, ensure_async
+from jupyter_server.utils import url_path_join
 from jupyter_client.jsonutil import date_default
 
 from packaging import version
 
 
 USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(ipykernel.__version__)
+
+MAX_RETRIES = 3
 
 
 class RouteHandler(APIHandler):
@@ -38,9 +37,8 @@ class RouteHandler(APIHandler):
         poller = zmq.Poller()
         control_socket = control_channel.socket
         poller.register(control_socket, zmq.POLLIN)
-        while True:
-            timeout = 100
-            timeout_ms = int(1000 * timeout)
+        for i in range(1, MAX_RETRIES + 1):
+            timeout_ms = 1000 * i
             events = dict(poller.poll(timeout_ms))
             if not events:
                 self.write(json.dumps({}))
