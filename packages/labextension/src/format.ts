@@ -1,8 +1,12 @@
-// Taken from https://github.com/jupyter-server/jupyter-resource-usage/blob/e6ec53fa69fdb6de8e878974bcff006310658408/packages/labextension/src/memoryUsage.tsx#L272
+/**
+ * The type of unit used for reporting memory usage.
+ */
+export type MemoryUnit = 'B' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB';
 
-type MemoryUnit = 'B' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB';
-
-const MEMORY_UNIT_LIMITS: {
+/**
+ * The number of bytes in each memory unit.
+ */
+export const MEMORY_UNIT_LIMITS: {
   readonly [U in MemoryUnit]: number;
 } = {
   B: 1,
@@ -21,9 +25,8 @@ export function formatForDisplay(numBytes: number | undefined): string {
 /**
  * Given a number of bytes, convert to the most human-readable
  * format, (GB, TB, etc).
- * Taken from https://github.com/jupyter-server/jupyter-resource-usage/blob/e6ec53fa69fdb6de8e878974bcff006310658408/packages/labextension/src/memoryUsage.tsx#L272
  */
-function convertToLargestUnit(
+export function convertToLargestUnit(
   numBytes: number | undefined
 ): [number, MemoryUnit] {
   if (!numBytes) {

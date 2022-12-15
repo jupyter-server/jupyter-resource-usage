@@ -19,6 +19,8 @@ import { Poll } from '@lumino/polling';
 
 import React from 'react';
 
+import { MemoryUnit, MEMORY_UNIT_LIMITS, convertToLargestUnit } from './format';
+
 import { resourceItem } from './text';
 
 /**
@@ -188,7 +190,7 @@ export namespace MemoryUsage {
         const memoryLimit = value.limits.memory
           ? value.limits.memory.rss
           : null;
-        const [currentMemory, units] = Private.convertToLargestUnit(numBytes);
+        const [currentMemory, units] = convertToLargestUnit(numBytes);
         const usageWarning = value.limits.memory
           ? value.limits.memory.warn
           : false;
@@ -197,7 +199,7 @@ export namespace MemoryUsage {
         this._currentMemory = currentMemory;
         this._units = units;
         this._memoryLimit = memoryLimit
-          ? memoryLimit / Private.MEMORY_UNIT_LIMITS[units]
+          ? memoryLimit / MEMORY_UNIT_LIMITS[units]
           : null;
         this._warn = usageWarning;
       }
@@ -236,10 +238,6 @@ export namespace MemoryUsage {
     }
   }
 
-  /**
-   * The type of unit used for reporting memory usage.
-   */
-  export type MemoryUnit = 'B' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB';
 }
 
 /**
@@ -250,54 +248,6 @@ namespace Private {
    * The number of decimal places to use when rendering memory usage.
    */
   export const DECIMAL_PLACES = 2;
-
-  /**
-   * The number of bytes in each memory unit.
-   */
-  export const MEMORY_UNIT_LIMITS: {
-    readonly [U in MemoryUsage.MemoryUnit]: number;
-  } = {
-    B: 1,
-    KB: 1024,
-    MB: 1048576,
-    GB: 1073741824,
-    TB: 1099511627776,
-    PB: 1125899906842624,
-  };
-
-  /**
-   * Given a number of bytes, convert to the most human-readable
-   * format, (GB, TB, etc).
-   */
-  export function convertToLargestUnit(
-    numBytes: number
-  ): [number, MemoryUsage.MemoryUnit] {
-    if (numBytes < MEMORY_UNIT_LIMITS.KB) {
-      return [numBytes, 'B'];
-    } else if (
-      MEMORY_UNIT_LIMITS.KB === numBytes ||
-      numBytes < MEMORY_UNIT_LIMITS.MB
-    ) {
-      return [numBytes / MEMORY_UNIT_LIMITS.KB, 'KB'];
-    } else if (
-      MEMORY_UNIT_LIMITS.MB === numBytes ||
-      numBytes < MEMORY_UNIT_LIMITS.GB
-    ) {
-      return [numBytes / MEMORY_UNIT_LIMITS.MB, 'MB'];
-    } else if (
-      MEMORY_UNIT_LIMITS.GB === numBytes ||
-      numBytes < MEMORY_UNIT_LIMITS.TB
-    ) {
-      return [numBytes / MEMORY_UNIT_LIMITS.GB, 'GB'];
-    } else if (
-      MEMORY_UNIT_LIMITS.TB === numBytes ||
-      numBytes < MEMORY_UNIT_LIMITS.PB
-    ) {
-      return [numBytes / MEMORY_UNIT_LIMITS.TB, 'TB'];
-    } else {
-      return [numBytes / MEMORY_UNIT_LIMITS.PB, 'PB'];
-    }
-  }
 
   /**
    * Settings for making requests to the server.
