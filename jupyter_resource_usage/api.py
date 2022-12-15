@@ -1,7 +1,6 @@
 import json
 from concurrent.futures import ThreadPoolExecutor
 
-import ipykernel
 import psutil
 import zmq
 from jupyter_client.jsonutil import date_default
@@ -18,7 +17,12 @@ except ImportError:
     from .utils import Callable
 
 
-USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(ipykernel.__version__)
+try:
+    import ipykernel
+
+    USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(ipykernel.__version__)
+except ImportError:
+    USAGE_IS_SUPPORTED = False
 
 MAX_RETRIES = 3
 

@@ -32,6 +32,7 @@ const extension: JupyterFrontEndPlugin<void> = {
     palette: ICommandPalette,
     notebookTracker: INotebookTracker
   ) => {
+    const trans = translator.load('jupyterlab');
     const item = new MemoryUsage(translator);
 
     statusBar.registerStatusItem(extension.id, {
@@ -58,8 +59,8 @@ const extension: JupyterFrontEndPlugin<void> = {
     }
 
     commands.addCommand(CommandIDs.getKernelUsage, {
-      label: 'Kernel Usage',
-      caption: 'Kernel Usage',
+      label: trans.__('Kernel Usage'),
+      caption: trans.__('Kernel Usage'),
       icon: new LabIcon({
         name: 'jupyterlab-kernel-usage:icon',
         svgstr: tachometer,
