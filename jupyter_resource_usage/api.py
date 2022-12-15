@@ -19,6 +19,7 @@ except ImportError:
 
 try:
     import ipykernel
+
     USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(ipykernel.__version__)
 except ImportError:
     USAGE_IS_SUPPORTED = False
