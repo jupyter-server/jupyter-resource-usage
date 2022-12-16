@@ -23,7 +23,7 @@ namespace CommandIDs {
  * Initialization data for the jupyter-resource-usage extension.
  */
 const extension: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-server/resource-usage:memory-status-item',
+  id: '@jupyter-server/resource-usage:memory-kernel-status-item',
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
