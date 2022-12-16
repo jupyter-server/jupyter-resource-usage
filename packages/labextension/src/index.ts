@@ -5,6 +5,7 @@ import {
 import { INotebookTracker } from '@jupyterlab/notebook';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { ICommandPalette } from '@jupyterlab/apputils';
+import { nullTranslator } from '@jupyterlab/translation';
 import { KernelUsagePanel } from './panel';
 import tachometer from '../style/tachometer.svg';
 
@@ -24,24 +25,26 @@ namespace CommandIDs {
 const extension: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:memory-status-item',
   autoStart: true,
-  requires: [IStatusBar, ITranslator, ICommandPalette, INotebookTracker],
   activate: (
     app: JupyterFrontEnd,
-    statusBar: IStatusBar,
-    translator: ITranslator,
-    palette: ICommandPalette,
-    notebookTracker: INotebookTracker
+    statusBar: IStatusBar | null,
+    translator: ITranslator | null,
+    palette: ICommandPalette | null,
+    notebookTracker: INotebookTracker | null
   ) => {
+    translator = translator || nullTranslator;
     const trans = translator.load('jupyterlab');
     const item = new MemoryUsage(translator);
 
-    statusBar.registerStatusItem(extension.id, {
-      item,
-      align: 'left',
-      rank: 2,
-      isActive: () => item.model.metricsAvailable,
-      activeStateChanged: item.model.stateChanged,
-    });
+    if (statusBar) {
+      statusBar.registerStatusItem(extension.id, {
+        item,
+        align: 'left',
+        rank: 2,
+        isActive: () => item.model.metricsAvailable,
+        activeStateChanged: item.model.stateChanged,
+      });
+    }
 
     const { commands, shell } = app;
     const category = 'Kernel Resource';
@@ -49,7 +52,7 @@ const extension: JupyterFrontEndPlugin<void> = {
     let panel: KernelUsagePanel | null = null;
 
     function createPanel() {
-      if (!panel || panel.isDisposed) {
+      if ((!panel || panel.isDisposed) && notebookTracker) {
         panel = new KernelUsagePanel({
           widgetAdded: notebookTracker.widgetAdded,
           currentNotebookChanged: notebookTracker.currentChanged,
@@ -68,7 +71,9 @@ const extension: JupyterFrontEndPlugin<void> = {
       execute: createPanel,
     });
 
-    palette.addItem({ command: CommandIDs.getKernelUsage, category });
+    if (palette) {
+      palette.addItem({ command: CommandIDs.getKernelUsage, category });
+    }
 
     createPanel();
   },
