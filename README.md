@@ -39,9 +39,9 @@ conda install -c conda-forge jupyter-resource-usage
 **If your notebook version is < 5.3**, you need to enable the extension manually.
 
 ```
-jupyter serverextension enable --py jupyter-resource-usage --sys-prefix
-jupyter nbextension install --py jupyter-resource-usage --sys-prefix
-jupyter nbextension enable --py jupyter-resource-usage --sys-prefix
+jupyter serverextension enable --py jupyter_resource_usage --sys-prefix
+jupyter nbextension install --py jupyter_resource_usage --sys-prefix
+jupyter nbextension enable --py jupyter_resource_usage --sys-prefix
 ```
 
 ## Configuration
