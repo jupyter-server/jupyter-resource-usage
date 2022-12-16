@@ -25,6 +25,7 @@ namespace CommandIDs {
 const extension: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:memory-kernel-status-item',
   autoStart: true,
+  optional: [IStatusBar, ITranslator, ICommandPalette, INotebookTracker],
   activate: (
     app: JupyterFrontEnd,
     statusBar: IStatusBar | null,
