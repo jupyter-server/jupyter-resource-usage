@@ -186,7 +186,12 @@ const KernelUsage = (props: {
           </h4>
           {usage.host_cpu_percent && (
             <div className="jp-KernelUsage-separator">
-              {props.trans._n('%2%% used on %1 CPU', '%2%% used on %1 CPUs', usage.cpu_count, usage.host_cpu_percent.toFixed(1))}
+              {props.trans._n(
+                '%2%% used on %1 CPU',
+                '%2%% used on %1 CPUs',
+                usage.cpu_count,
+                usage.host_cpu_percent.toFixed(1)
+              )}
             </div>
           )}
           <h4 className="jp-KernelUsage-section-separator">
