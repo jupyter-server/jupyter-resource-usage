@@ -33,7 +33,7 @@ const memoryStatusPlugin: JupyterFrontEndPlugin<void> = {
     const trans = translator.load('jupyter-resource-usage');
     const item = new MemoryUsage(trans);
 
-    statusBar.registerStatusItem(memory_extension.id, {
+    statusBar.registerStatusItem(memoryStatusPlugin.id, {
       item,
       align: 'left',
       rank: 2,
@@ -46,12 +46,13 @@ const memoryStatusPlugin: JupyterFrontEndPlugin<void> = {
 const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:kernel-panel-item',
   autoStart: true,
-  requires: [ITranslator, ICommandPalette, INotebookTracker],
+  optional: [ICommandPalette],
+  requires: [ITranslator, INotebookTracker],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
-    palette: ICommandPalette,
-    notebookTracker: INotebookTracker
+    notebookTracker: INotebookTracker,
+    palette: ICommandPalette | null
   ) => {
     const trans = translator.load('jupyter-resource-usage');
 
@@ -90,7 +91,7 @@ const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
 };
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
-  memory_extension,
-  kernel_extension,
+  memoryStatusPlugin,
+  kernelUsagePlugin,
 ];
 export default plugins;
