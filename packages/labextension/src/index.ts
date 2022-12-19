@@ -43,7 +43,7 @@ const memoryStatusPlugin: JupyterFrontEndPlugin<void> = {
   },
 };
 
-const kernel_extension: JupyterFrontEndPlugin<void> = {
+const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:kernel-panel-item',
   autoStart: true,
   requires: [ITranslator, ICommandPalette, INotebookTracker],
