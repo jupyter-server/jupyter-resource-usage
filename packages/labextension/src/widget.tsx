@@ -3,6 +3,7 @@ import { ISignal } from '@lumino/signaling';
 import { ReactWidget, ISessionContext } from '@jupyterlab/apputils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
 import { Kernel } from '@jupyterlab/services';
+import { TranslationBundle } from '@jupyterlab/translation';
 import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
 import { KernelUsagePanel } from './panel';
@@ -49,6 +50,7 @@ const KernelUsage = (props: {
   widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
   currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
   panel: KernelUsagePanel;
+  trans: TranslationBundle;
 }) => {
   const { panel } = props;
   const [kernelId, setKernelId] = useState<string>();
@@ -144,75 +146,91 @@ const KernelUsage = (props: {
       return !usage.hostname ? (
         <>
           <h3 className="jp-KernelUsage-section-separator">
-            Kernel usage details are not available
+            props.trans.__('Kernel usage details are not available')
           </h3>
           <div className="jp-KernelUsage-section-separator">
-            Please check with your system administrator that you running
-            IPyKernel version 6.10.0 or above.
+            props.trans.__('Please check with your system administrator that you
+            running IPyKernel version 6.10.0 or above.')
           </div>
         </>
       ) : (
         <>
-          <h3 className="jp-KernelUsage-section-separator">Kernel usage</h3>
+          <h3 className="jp-KernelUsage-section-separator">
+            props.trans.__('Kernel usage')
+          </h3>
           <div className="jp-KernelUsage-separator">
-            Kernel Host: {usage.hostname}
-          </div>
-          <div className="jp-KernelUsage-separator">Notebook: {path}</div>
-          <div className="jp-KernelUsage-separator">Kernel ID: {kernelId}</div>
-          <div className="jp-KernelUsage-separator">
-            Timestamp: {usage.timestamp?.toLocaleString()}
+            props.trans.__('Kernel Host'): {usage.hostname}
           </div>
           <div className="jp-KernelUsage-separator">
-            Process ID: {usage.pid}
+            props.trans.__('Notebook'): {path}
           </div>
           <div className="jp-KernelUsage-separator">
-            CPU: {usage.kernel_cpu}% used
+            props.trans.__('Kernel ID'): {kernelId}
           </div>
           <div className="jp-KernelUsage-separator">
-            Memory: {formatForDisplay(usage.kernel_memory)}
+            props.trans.__('Timestamp'): {usage.timestamp?.toLocaleString()}
+          </div>
+          <div className="jp-KernelUsage-separator">
+            props.trans.__('Process ID'): {usage.pid}
+          </div>
+          <div className="jp-KernelUsage-separator">
+            props.trans.__('CPU'): {usage.kernel_cpu}% used
+          </div>
+          <div className="jp-KernelUsage-separator">
+            props.trans.__('Memory'): {formatForDisplay(usage.kernel_memory)}
           </div>
           <hr className="jp-KernelUsage-section-separator"></hr>
-          <h4 className="jp-KernelUsage-section-separator">Host CPU</h4>
+          <h4 className="jp-KernelUsage-section-separator">
+            props.trans.__('Host CPU')
+          </h4>
           {usage.host_cpu_percent && (
             <div className="jp-KernelUsage-separator">
-              {usage.host_cpu_percent.toFixed(1)}% used on {usage.cpu_count}{' '}
-              CPUs
+              {usage.host_cpu_percent.toFixed(1)}% props.trans.__('used on'){' '}
+              {usage.cpu_count} CPUs
             </div>
           )}
           <h4 className="jp-KernelUsage-section-separator">
-            Host Virtual Memory
+            props.trans.__('Host Virtual Memory')
           </h4>
           <div className="jp-KernelUsage-separator">
-            Active: {formatForDisplay(usage.host_virtual_memory.active)}
+            props.trans.__('Active'):{' '}
+            {formatForDisplay(usage.host_virtual_memory.active)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Available: {formatForDisplay(usage.host_virtual_memory.available)}
+            props.trans.__('Available'):{' '}
+            {formatForDisplay(usage.host_virtual_memory.available)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Free: {formatForDisplay(usage.host_virtual_memory.free)}
+            props.trans.__('Free'):{' '}
+            {formatForDisplay(usage.host_virtual_memory.free)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Inactive: {formatForDisplay(usage.host_virtual_memory.inactive)}
+            props.trans.__('Inactive'):{' '}
+            {formatForDisplay(usage.host_virtual_memory.inactive)}
           </div>
           {usage.host_virtual_memory.percent && (
             <div className="jp-KernelUsage-separator">
-              Percent used: {usage.host_virtual_memory.percent.toFixed(1)}%
+              props.trans.__('Percent used'):{' '}
+              {usage.host_virtual_memory.percent.toFixed(1)}%
             </div>
           )}
           <div className="jp-KernelUsage-separator">
-            Total: {formatForDisplay(usage.host_virtual_memory.total)}
+            props.trans.__('Total'):{' '}
+            {formatForDisplay(usage.host_virtual_memory.total)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Used: {formatForDisplay(usage.host_virtual_memory.used)}
+            props.trans.__('Used'):{' '}
+            {formatForDisplay(usage.host_virtual_memory.used)}
           </div>
           <div className="jp-KernelUsage-separator">
-            Wired: {formatForDisplay(usage.host_virtual_memory.wired)}
+            props.trans.__('Wired'):{' '}
+            {formatForDisplay(usage.host_virtual_memory.wired)}
           </div>
         </>
       );
     }
   }
-  return <h3>Kernel usage is not available</h3>;
+  return <h3>props.trans.__('Kernel usage is not available')</h3>;
 };
 
 export class KernelUsageWidget extends ReactWidget {
@@ -222,15 +240,18 @@ export class KernelUsageWidget extends ReactWidget {
     NotebookPanel | null
   >;
   private _panel: KernelUsagePanel;
+  private _trans: TranslationBundle;
   constructor(props: {
     widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
     currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
     panel: KernelUsagePanel;
+    trans: TranslationBundle;
   }) {
     super();
     this._widgetAdded = props.widgetAdded;
     this._currentNotebookChanged = props.currentNotebookChanged;
     this._panel = props.panel;
+    this._trans = props.trans;
   }
 
   protected render(): React.ReactElement<any> {
@@ -239,6 +260,7 @@ export class KernelUsageWidget extends ReactWidget {
         widgetAdded={this._widgetAdded}
         currentNotebookChanged={this._currentNotebookChanged}
         panel={this._panel}
+        trans={this._trans}
       />
     );
   }

@@ -57,6 +57,7 @@ const extension: JupyterFrontEndPlugin<void> = {
         panel = new KernelUsagePanel({
           widgetAdded: notebookTracker.widgetAdded,
           currentNotebookChanged: notebookTracker.currentChanged,
+          trans: trans,
         });
         shell.add(panel, 'right', { rank: 200 });
       }
