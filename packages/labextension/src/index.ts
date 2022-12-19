@@ -48,7 +48,7 @@ const extension: JupyterFrontEndPlugin<void> = {
     }
 
     const { commands, shell } = app;
-    const category = 'Kernel Resource';
+    const category = trans.__('Kernel Resource');
 
     let panel: KernelUsagePanel | null = null;
 
