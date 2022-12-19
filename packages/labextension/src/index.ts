@@ -34,8 +34,8 @@ const extension: JupyterFrontEndPlugin<void> = {
     notebookTracker: INotebookTracker | null
   ) => {
     translator = translator || nullTranslator;
-    const trans = translator.load('jupyterlab');
-    const item = new MemoryUsage(translator);
+    const trans = translator.load('jupyter-resource-usage');
+    const item = new MemoryUsage(trans);
 
     if (statusBar) {
       statusBar.registerStatusItem(extension.id, {

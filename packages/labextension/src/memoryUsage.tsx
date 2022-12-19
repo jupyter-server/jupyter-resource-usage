@@ -9,11 +9,7 @@ import { TextItem } from '@jupyterlab/statusbar';
 
 import { ServerConnection } from '@jupyterlab/services';
 
-import {
-  nullTranslator,
-  ITranslator,
-  TranslationBundle,
-} from '@jupyterlab/translation';
+import { TranslationBundle } from '@jupyterlab/translation';
 
 import { Poll } from '@lumino/polling';
 
@@ -30,10 +26,9 @@ export class MemoryUsage extends VDomRenderer<MemoryUsage.Model> {
   /**
    * Construct a new memory usage status item.
    */
-  constructor(translator?: ITranslator) {
+  constructor(trans: TranslationBundle) {
     super(new MemoryUsage.Model({ refreshRate: 5000 }));
-    this.translator = translator || nullTranslator;
-    this._trans = this.translator.load('jupyterlab');
+    this._trans = trans;
   }
 
   /**
@@ -76,7 +71,6 @@ export class MemoryUsage extends VDomRenderer<MemoryUsage.Model> {
     }
   }
 
-  protected translator: ITranslator;
   private _trans: TranslationBundle;
 }
 
