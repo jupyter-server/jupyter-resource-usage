@@ -5,7 +5,6 @@ import {
 import { INotebookTracker } from '@jupyterlab/notebook';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { ICommandPalette } from '@jupyterlab/apputils';
-import { nullTranslator } from '@jupyterlab/translation';
 import { KernelUsagePanel } from './panel';
 import tachometer from '../style/tachometer.svg';
 
@@ -22,30 +21,39 @@ namespace CommandIDs {
 /**
  * Initialization data for the jupyter-resource-usage extension.
  */
-const extension: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-server/resource-usage:memory-kernel-status-item',
+const memory_extension: JupyterFrontEndPlugin<void> = {
+  id: '@jupyter-server/resource-usage:memory-status-item',
   autoStart: true,
-  optional: [IStatusBar, ITranslator, ICommandPalette, INotebookTracker],
+  requires: [IStatusBar, ITranslator],
   activate: (
     app: JupyterFrontEnd,
-    statusBar: IStatusBar | null,
-    translator: ITranslator | null,
-    palette: ICommandPalette | null,
-    notebookTracker: INotebookTracker | null
+    statusBar: IStatusBar,
+    translator: ITranslator
   ) => {
-    translator = translator || nullTranslator;
     const trans = translator.load('jupyter-resource-usage');
     const item = new MemoryUsage(trans);
 
-    if (statusBar) {
-      statusBar.registerStatusItem(extension.id, {
-        item,
-        align: 'left',
-        rank: 2,
-        isActive: () => item.model.metricsAvailable,
-        activeStateChanged: item.model.stateChanged,
-      });
-    }
+    statusBar.registerStatusItem(memory_extension.id, {
+      item,
+      align: 'left',
+      rank: 2,
+      isActive: () => item.model.metricsAvailable,
+      activeStateChanged: item.model.stateChanged,
+    });
+  },
+};
+
+const kernel_extension: JupyterFrontEndPlugin<void> = {
+  id: '@jupyter-server/resource-usage:kernel-panel-item',
+  autoStart: true,
+  requires: [ITranslator, ICommandPalette, INotebookTracker],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    palette: ICommandPalette,
+    notebookTracker: INotebookTracker
+  ) => {
+    const trans = translator.load('jupyter-resource-usage');
 
     const { commands, shell } = app;
     const category = trans.__('Kernel Resource');
@@ -81,4 +89,8 @@ const extension: JupyterFrontEndPlugin<void> = {
   },
 };
 
-export default extension;
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  memory_extension,
+  kernel_extension,
+];
+export default plugins;
