@@ -19,6 +19,9 @@ displays an indication of how much resources your current notebook server and
 its children (kernels, terminals, etc) are using. This is displayed in the
 main toolbar in the notebook itself, refreshing every 5s.
 
+Kernel resource usage can be displayed in a sidebar for IPython kernels with
+[ipykernel](https://github.com/ipython/ipykernel) >= 6.11.0.
+
 ## Installation
 
 You can currently install this package from PyPI.
@@ -36,9 +39,9 @@ conda install -c conda-forge jupyter-resource-usage
 **If your notebook version is < 5.3**, you need to enable the extension manually.
 
 ```
-jupyter serverextension enable --py jupyter-resource-usage --sys-prefix
-jupyter nbextension install --py jupyter-resource-usage --sys-prefix
-jupyter nbextension enable --py jupyter-resource-usage --sys-prefix
+jupyter serverextension enable --py jupyter_resource_usage --sys-prefix
+jupyter nbextension install --py jupyter_resource_usage --sys-prefix
+jupyter nbextension enable --py jupyter_resource_usage --sys-prefix
 ```
 
 ## Configuration

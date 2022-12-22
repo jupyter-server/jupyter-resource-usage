@@ -25,6 +25,10 @@ jobs:
     - name: Install the extension
       run: |
         python -m pip install .
+        jupyter server extension enable --py jupyter_resource_usage  --sys-prefix
+        jupyter serverextension enable --py jupyter_resource_usage --sys-prefix
+        jupyter nbextension install --py jupyter_resource_usage --sys-prefix
+        jupyter nbextension enable --py jupyter_resource_usage --sys-prefix
 
     - name: Check the server, classic and lab extensions are installed
       run: |

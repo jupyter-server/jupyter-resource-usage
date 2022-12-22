@@ -19,6 +19,7 @@
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "style": "style/index.css",
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyter-server/jupyter-resource-usage.git"
@@ -41,22 +42,48 @@
     "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
-    "@jupyterlab/application": "^3.0.0",
-    "@jupyterlab/apputils": "^3.0.0",
-    "@jupyterlab/coreutils": "^5.0.0",
-    "@jupyterlab/services": "^6.0.0",
-    "@jupyterlab/statusbar": "^3.0.0",
-    "@jupyterlab/translation": "^3.0.0",
-    "@lumino/polling": "^1.3.3",
-    "typestyle": "^2.0.4"
+    "@jupyterlab/application": "^3.5.1",
+    "@jupyterlab/apputils": "^3.5.1",
+    "@jupyterlab/coreutils": "^5.5.1",
+    "@jupyterlab/notebook": "^3.5.1",
+    "@jupyterlab/services": "^6.5.1",
+    "@jupyterlab/statusbar": "^3.5.1",
+    "@jupyterlab/translation": "^3.5.1",
+    "@lumino/polling": "^1.11.3",
+    "typestyle": "^2.4.0"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "^3.0.0",
+    "@jupyterlab/builder": "^3.5.1",
+    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/parser": "^4.8.1",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "mkdirp": "^1.0.3",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.1",
     "rimraf": "^3.0.2",
-    "typescript": "~4.0.3"
+    "typescript": "~4.1.3"
+  },
+  "sideEffects": [
+    "style/*.css",
+    "style/index.js"
+  ],
+  "styleModule": "style/index.js",
+  "publishConfig": {
+    "access": "public"
   },
   "jupyterlab": {
+    "discovery": {
+      "server": {
+        "managers": [
+          "pip"
+        ],
+        "base": {
+          "name": "jupyterlab_kernel_usage"
+        }
+      }
+    },
     "extension": true,
     "outputDir": "../../jupyter_resource_usage/labextension"
   }
