@@ -15,7 +15,7 @@ export async function requestAPI<T>(
   const settings = ServerConnection.makeSettings();
   const requestUrl = URLExt.join(
     settings.baseUrl,
-    'jupyterlab_kernel_usage', // API Namespace
+    'api/metrics/v1/kernel_usage', // API Namespace
     endPoint
   );
 

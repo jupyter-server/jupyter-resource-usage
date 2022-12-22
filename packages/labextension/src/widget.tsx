@@ -150,7 +150,7 @@ const KernelUsage = (props: {
           </h3>
           <div className="jp-KernelUsage-section-separator">
             {props.trans.__(
-              'Please check with your system administrator that you running IPyKernel version 6.10.0 or above.'
+              'Please check with your system administrator that you are running IPyKernel version 6.10.0 or above.'
             )}
           </div>
         </>
@@ -160,25 +160,25 @@ const KernelUsage = (props: {
             {props.trans.__('Kernel usage')}
           </h3>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Kernel Host')}: {usage.hostname}
+            {props.trans.__('Kernel Host:')} {usage.hostname}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Notebook')}: {path}
+            {props.trans.__('Notebook:')} {path}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Kernel ID')}: {kernelId}
+            {props.trans.__('Kernel ID:')} {kernelId}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Timestamp')}: {usage.timestamp?.toLocaleString()}
+            {props.trans.__('Timestamp:')} {usage.timestamp?.toLocaleString()}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Process ID')}: {usage.pid}
+            {props.trans.__('Process ID:')} {usage.pid}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('CPU: %s %% used', usage.kernel_cpu)}
+            {props.trans.__('CPU:')} {usage.kernel_cpu}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Memory')}: {formatForDisplay(usage.kernel_memory)}
+            {props.trans.__('Memory:')} {formatForDisplay(usage.kernel_memory)}
           </div>
           <hr className="jp-KernelUsage-section-separator"></hr>
           <h4 className="jp-KernelUsage-section-separator">
@@ -198,37 +198,37 @@ const KernelUsage = (props: {
             {props.trans.__('Host Virtual Memory')}
           </h4>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Active')}:{' '}
+            {props.trans.__('Active:')}{' '}
             {formatForDisplay(usage.host_virtual_memory.active)}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Available')}:{' '}
+            {props.trans.__('Available:')}{' '}
             {formatForDisplay(usage.host_virtual_memory.available)}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Free')}:{' '}
+            {props.trans.__('Free:')}{' '}
             {formatForDisplay(usage.host_virtual_memory.free)}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Inactive')}:{' '}
+            {props.trans.__('Inactive:')}{' '}
             {formatForDisplay(usage.host_virtual_memory.inactive)}
           </div>
           {usage.host_virtual_memory.percent && (
             <div className="jp-KernelUsage-separator">
-              {props.trans.__('Percent used')}:{' '}
+              {props.trans.__('Percent used:')}{' '}
               {usage.host_virtual_memory.percent.toFixed(1)}%
             </div>
           )}
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Total')}:{' '}
+            {props.trans.__('Total:')}{' '}
             {formatForDisplay(usage.host_virtual_memory.total)}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Used')}:{' '}
+            {props.trans.__('Used:')}{' '}
             {formatForDisplay(usage.host_virtual_memory.used)}
           </div>
           <div className="jp-KernelUsage-separator">
-            {props.trans.__('Wired')}:{' '}
+            {props.trans.__('Wired:')}{' '}
             {formatForDisplay(usage.host_virtual_memory.wired)}
           </div>
         </>

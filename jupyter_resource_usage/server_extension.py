@@ -23,7 +23,9 @@ def load_jupyter_server_extension(server_app):
         ".*$",
         [
             (
-                url_path_join(base_url, "jupyterlab_kernel_usage", r"get_usage/(.+)$"),
+                url_path_join(
+                    base_url, "/api/metrics/v1/kernel_usage", r"get_usage/(.+)$"
+                ),
                 KernelUsageHandler,
             )
         ],
