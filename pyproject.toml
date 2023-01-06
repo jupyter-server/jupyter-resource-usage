@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 name = "jupyter-resource-usage"
 description = "Jupyter Extension to show resource usage"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 authors = [
     { name = "Jupyter Development Team" },
 ]
@@ -29,11 +29,11 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
     "jupyter_server>=1.0",
