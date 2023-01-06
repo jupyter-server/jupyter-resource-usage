@@ -134,3 +134,6 @@ before-build-npm = [
     "jlpm clean",
     "jlpm build:prod",
 ]
+
+[tool.check-wheel-contents]
+ignore = ["W002", "W004"]
