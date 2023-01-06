@@ -1,16 +1,11 @@
-import json
 from pathlib import Path
 
 from ._version import __version__
 from .server_extension import load_jupyter_server_extension
 
-HERE = Path(__file__).parent.resolve()
-
-data = json.loads((HERE / "labextension" / "package.json").read_text())
-
 
 def _jupyter_labextension_paths():
-    return [{"src": "labextension", "dest": data["name"]}]
+    return [{"src": "labextension", "dest": "@jupyter-server/resource-usage"}]
 
 
 def _jupyter_server_extension_points():
