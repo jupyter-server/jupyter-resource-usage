@@ -71,9 +71,8 @@ Homepage = "https://github.com/jupyter-server/jupyter-resource-usage"
 path = "jupyter_resource_usage/_version.py"
 
 [tool.hatch.build.targets.sdist]
-exclude = [
-    ".github",
-]
+artifacts = ["{{ cookiecutter.python_name }}/labextension"]
+exclude = [".github", "binder"]
 
 [tool.hatch.build.hooks.jupyter-builder]
 dependencies = [
