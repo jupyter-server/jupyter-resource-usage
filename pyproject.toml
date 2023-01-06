@@ -40,7 +40,6 @@ dependencies = [
     "prometheus_client",
     "psutil~=5.6",
 ]
-version = "0.7.0"
 
 [project.license]
 file = "LICENSE"
