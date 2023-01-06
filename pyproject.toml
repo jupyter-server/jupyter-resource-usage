@@ -67,7 +67,7 @@ Homepage = "https://github.com/jupyter-server/jupyter-resource-usage"
 "jupyter-config/jupyter_notebook_config.d" = "etc/jupyter/jupyter_notebook_config.d"
 "jupyter-config/nbconfig/notebook.d" = "etc/jupyter/nbconfig/notebook.d"
 
-[tool.hatch.build.hooks.version]
+[tool.hatch.version]
 path = "jupyter_resource_usage/_version.py"
 
 [tool.hatch.build.targets.sdist]
