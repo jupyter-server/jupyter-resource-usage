@@ -14,4 +14,3 @@ exclude =
     setup.py,
     statuspage,
     versioneer.py
-
