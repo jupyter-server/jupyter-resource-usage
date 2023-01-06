@@ -60,9 +60,9 @@ Homepage = "https://github.com/jupyter-server/jupyter-resource-usage"
 
 [tool.hatch.build.targets.wheel.shared-data]
 "jupyter_resource_usage/static" = "share/jupyter/nbextensions/jupyter_resource_usage"
+"jupyter_resource_usage/labextension/package.json" = "share/jupyter/labextensions/@jupyter-server/resource-usage/package.json"
 "jupyter_resource_usage/labextension/static" = "share/jupyter/labextensions/@jupyter-server/resource-usage/static"
 "install.json" = "share/jupyter/labextensions/@jupyter-server/resource-usage/install.json"
-"jupyter_resource_usage/labextension/package.json" = "share/jupyter/labextensions/@jupyter-server/resource-usage/package.json"
 "jupyter-config/jupyter_server_config.d" = "etc/jupyter/jupyter_server_config.d"
 "jupyter-config/jupyter_notebook_config.d" = "etc/jupyter/jupyter_notebook_config.d"
 "jupyter-config/nbconfig/notebook.d" = "etc/jupyter/nbconfig/notebook.d"
@@ -125,6 +125,3 @@ before-build-npm = [
     "jlpm clean",
     "jlpm build:prod",
 ]
-
-[license]
-file = "LICENSE"
