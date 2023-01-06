@@ -40,6 +40,7 @@ dependencies = [
     "prometheus_client",
     "psutil~=5.6",
 ]
+dynamic = ["version"]
 
 [project.license]
 file = "LICENSE"
@@ -65,6 +66,9 @@ Homepage = "https://github.com/jupyter-server/jupyter-resource-usage"
 "jupyter-config/jupyter_server_config.d" = "etc/jupyter/jupyter_server_config.d"
 "jupyter-config/jupyter_notebook_config.d" = "etc/jupyter/jupyter_notebook_config.d"
 "jupyter-config/nbconfig/notebook.d" = "etc/jupyter/nbconfig/notebook.d"
+
+[tool.hatch.build.hooks.version]
+path = "jupyter_resource_usage/_version.py"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
