@@ -42,24 +42,30 @@ class ApiHandler(APIHandler):
 
         # Get memory information
         rss = 0
+        pss = None
         for p in all_processes:
             try:
-                rss += p.memory_info().rss
+                info = p.memory_full_info()
+                if hasattr(info, "pss"):
+                    pss = (pss or 0) + info.pss
+                rss += info.rss
             except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
                 pass
 
         if callable(config.mem_limit):
-            mem_limit = config.mem_limit(rss=rss)
+            mem_limit = config.mem_limit(rss=rss, pss=pss)
         else:  # mem_limit is an Int
             mem_limit = config.mem_limit
 
-        limits = {"memory": {"rss": mem_limit}}
+        limits = {"memory": {"rss": mem_limit, "pss": mem_limit}}
         if config.mem_limit and config.mem_warning_threshold != 0:
             limits["memory"]["warn"] = (mem_limit - rss) < (
                 mem_limit * config.mem_warning_threshold
             )
 
         metrics = {"rss": rss, "limits": limits}
+        if pss is not None:
+            metrics["pss"] = pss
 
         # Optionally get CPU information
         if config.track_cpu_percent:

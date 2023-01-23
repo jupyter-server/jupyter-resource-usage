@@ -180,10 +180,9 @@ export namespace MemoryUsage {
         this._units = 'B';
         this._warn = false;
       } else {
-        const numBytes = value.rss;
-        const memoryLimit = value.limits.memory
-          ? value.limits.memory.rss
-          : null;
+        const numBytes = value.pss ?? value.rss;
+        const memoryLimits = value.limits.memory;
+        const memoryLimit = memoryLimits?.pss ?? memoryLimits?.rss ?? null;
         const [currentMemory, units] = convertToLargestUnit(numBytes);
         const usageWarning = value.limits.memory
           ? value.limits.memory.warn
@@ -260,9 +259,11 @@ namespace Private {
    */
   export interface IMetricRequestResult {
     rss: number;
+    pss?: number;
     limits: {
       memory?: {
         rss: number;
+        pss?: number;
         warn: boolean;
       };
     };
