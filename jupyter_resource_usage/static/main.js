@@ -60,7 +60,7 @@ define([
                 var display = totalMemoryUsage;
 
                 if (limits['memory']) {
-                    limit = limits['memory']['pss'] || limits['memory']['rss'];
+                    limit = limits['memory']['pss'] ?? limits['memory']['rss'];
                     if (limit) {
                         maxMemoryUsage = humanFileSize(limit);
                         display += " / " + maxMemoryUsage
