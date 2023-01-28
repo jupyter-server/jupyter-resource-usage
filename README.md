@@ -105,8 +105,9 @@ causes "lag"/pauses in the UI. To workaround this you can disable Prometheus met
 
 ## Resources Displayed
 
-Currently the server extension only reports memory usage (just RSS) and CPU usage. Other metrics will be
-added in the future as needed.
+Currently the server extension only reports memory usage and CPU usage. Other metrics will be added in the future as needed.
+
+Memory usage will show the PSS whenever possible (Linux only feature), and default to RSS otherwise.
 
 The notebook extension currently doesn't show CPU usage, only memory usage.
 

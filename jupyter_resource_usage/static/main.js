@@ -53,14 +53,16 @@ define([
         $.getJSON({
             url: utils.get_body_data('baseUrl') + 'api/metrics/v1',
             success: function (data) {
-                totalMemoryUsage = humanFileSize(data['rss']);
+                value = data['pss'] || data['rss'];
+                totalMemoryUsage = humanFileSize(value);
 
                 var limits = data['limits'];
                 var display = totalMemoryUsage;
 
                 if (limits['memory']) {
-                    if (limits['memory']['rss']) {
-                        maxMemoryUsage = humanFileSize(limits['memory']['rss']);
+                    limit = limits['memory']['pss'] ?? limits['memory']['rss'];
+                    if (limit) {
+                        maxMemoryUsage = humanFileSize(limit);
                         display += " / " + maxMemoryUsage
                     }
                     if (limits['memory']['warn']) {
