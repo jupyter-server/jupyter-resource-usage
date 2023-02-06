@@ -37,7 +37,6 @@ class TestBasic:
         ) as prometheus_handler_mock, patch(
             "jupyter_resource_usage.server_extension.PSUtilMetricsLoader"
         ) as psutil_metrics_loader:
-
             # load up with mock
             load_jupyter_server_extension(nbapp_mock)
 
