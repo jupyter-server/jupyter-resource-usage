@@ -99,7 +99,6 @@ class ApiHandler(APIHandler):
 class KernelUsageHandler(APIHandler):
     @web.authenticated
     async def get(self, matched_part=None, *args, **kwargs):
-
         if not USAGE_IS_SUPPORTED:
             self.write(json.dumps({}))
             return

@@ -63,7 +63,6 @@ class PSUtilMetricsLoader:
         return metric_values
 
     def metrics(self, process_metrics, system_metrics):
-
         metric_values = self.get_metric_values(process_metrics, "process")
         metric_values.update(self.get_metric_values(system_metrics, "system"))
 
