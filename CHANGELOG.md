@@ -2,6 +2,29 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.1
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.7.0...dfef59b8aa27eb768eb9e70e849c832d2841e6e9))
+
+### Enhancements made
+
+- Use `pss` if available [#171](https://github.com/jupyter-server/jupyter-resource-usage/pull/171) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Fix formatting [#174](https://github.com/jupyter-server/jupyter-resource-usage/pull/174) ([@jtpio](https://github.com/jtpio))
+- Bump http-cache-semantics from 4.1.0 to 4.1.1 [#173](https://github.com/jupyter-server/jupyter-resource-usage/pull/173) ([@dependabot](https://github.com/dependabot))
+- Migrate to `hatch` [#168](https://github.com/jupyter-server/jupyter-resource-usage/pull/168) ([@jtpio](https://github.com/jtpio))
+- Bump json5 from 1.0.1 to 1.0.2 [#166](https://github.com/jupyter-server/jupyter-resource-usage/pull/166) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2023-01-06&to=2023-02-06&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2023-01-06..2023-02-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2023-01-06..2023-02-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.6.4...861eafdd88aba1c2c405a3a1ade0bd376ac322ff))
@@ -19,8 +42,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2022-11-14&to=2023-01-06&type=c))
 
 [@davidbrochart](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adavidbrochart+updated%3A2022-11-14..2023-01-06&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2022-11-14..2023-01-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2022-11-14..2023-01-06&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2022-11-14..2023-01-06&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2022-11-14..2023-01-06&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2022-11-14..2023-01-06&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.4
 
