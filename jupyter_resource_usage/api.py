@@ -94,12 +94,16 @@ class KernelUsageHandler(APIHandler):
     @web.authenticated
     async def get(self, matched_part=None, *args, **kwargs):
         if not USAGE_IS_SUPPORTED:
-            self.write(json.dumps({
-              "content": {
-                "reason": "not_supported",
-                "kernel_version": IPYKERNEL_VERSION
-              }
-            }))
+            self.write(
+                json.dumps(
+                    {
+                        "content": {
+                            "reason": "not_supported",
+                            "kernel_version": IPYKERNEL_VERSION,
+                        }
+                    }
+                )
+            )
             return
 
         kernel_id = matched_part
@@ -118,10 +122,14 @@ class KernelUsageHandler(APIHandler):
         timeout_ms = 10_000
         events = dict(await poller.poll(timeout_ms))
         if control_socket not in events:
-            self.write(json.dumps({
-              "content": {"reason": "timeout", "timeout_ms": timeout_ms},
-              "kernel_id": kernel_id
-            }))
+            self.write(
+                json.dumps(
+                    {
+                        "content": {"reason": "timeout", "timeout_ms": timeout_ms},
+                        "kernel_id": kernel_id,
+                    }
+                )
+            )
         else:
             res = client.control_channel.get_msg(timeout=0)
             if isawaitable(res):
