@@ -115,8 +115,7 @@ class KernelUsageHandler(APIHandler):
         poller = zmq.asyncio.Poller()
         control_socket = control_channel.socket
         poller.register(control_socket, zmq.POLLIN)
-        # previous behavior was 3 retries: 1 + 2 + 3 = 6 seconds
-        timeout_ms = 6_000
+        timeout_ms = 10_000
         events = dict(await poller.poll(timeout_ms))
         if control_socket not in events:
             self.write(json.dumps({
