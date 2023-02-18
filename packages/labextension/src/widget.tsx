@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { ISignal } from '@lumino/signaling';
 import { ReactWidget, ISessionContext } from '@jupyterlab/apputils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
@@ -13,7 +13,7 @@ import { KernelWidgetTracker } from './tracker';
 
 type Usage = {
   timestamp: Date | null;
-  kernelId: string;
+  kernel_id: string;
   hostname: string;
   kernel_cpu: number;
   kernel_memory: number;
@@ -34,6 +34,9 @@ type Usage = {
 
 const POLL_INTERVAL_SEC = 5;
 
+const KERNEL_USAGE_CLASS = 'jp-KernelUsage-content';
+const TIMEOUT_CLASS = 'jp-KernelUsage-timedOut';
+
 type KernelChangeCallback = (
   _sender: ISessionContext,
   args: IChangedArgs<
@@ -47,6 +50,84 @@ let kernelChangeCallback: {
   panel: IWidgetWithSession;
 } | null = null;
 
+/**
+ * Reasons for lack of usage data.
+ */
+namespace NoUsageReason {
+  export interface INotSupported {
+    reason: 'not_supported';
+    kernel_version: string | undefined;
+  }
+  export interface ITimeout {
+    reason: 'timeout';
+    timeout_ms: number | undefined;
+  }
+  export interface INoKernelWidget {
+    reason: 'no_kernel_widget';
+  }
+  export interface INoKernel {
+    reason: 'no_kernel';
+  }
+  export interface ILoading {
+    reason: 'loading';
+  }
+}
+
+type NoUsageReason =
+  | NoUsageReason.INotSupported
+  | NoUsageReason.ITimeout
+  | NoUsageReason.INoKernelWidget
+  | NoUsageReason.INoKernel
+  | NoUsageReason.ILoading;
+
+const BlankReason = (props: {
+  reason: NoUsageReason;
+  trans: TranslationBundle;
+}) => {
+  const { reason } = props;
+  if (reason.reason === 'not_supported') {
+    return (
+      <div className="jp-KernelUsage-section-separator">
+        {props.trans.__(
+          'Please check with your system administrator that you are running IPyKernel version 6.10.0 or above.'
+        )}
+        {reason.kernel_version
+          ? props.trans.__(
+              'Detected IPyKernel version: %1',
+              reason.kernel_version
+            )
+          : props.trans.__('No IPyKernel installation detected.')}
+      </div>
+    );
+  } else if (reason.reason === 'no_kernel_widget') {
+    return (
+      <div className="jp-KernelUsage-section-separator">
+        {props.trans.__(
+          'Switch to a notebook or console to see kernel usage details.'
+        )}
+      </div>
+    );
+  } else if (reason.reason === 'no_kernel') {
+    return (
+      <div className="jp-KernelUsage-section-separator">
+        {props.trans.__('No active kernel found.')}
+      </div>
+    );
+  } else if (reason.reason === 'loading') {
+    return (
+      <div className="jp-KernelUsage-section-separator">
+        {props.trans.__('Kernel usage is loading.')}
+      </div>
+    );
+  } else {
+    return (
+      <div className="jp-KernelUsage-section-separator">
+        {props.trans.__('Reason: %1.', reason.reason)}
+      </div>
+    );
+  }
+};
+
 const KernelUsage = (props: {
   currentChanged: ISignal<KernelWidgetTracker, IWidgetWithSession | null>;
   panel: KernelUsagePanel;
@@ -56,27 +137,42 @@ const KernelUsage = (props: {
   const [kernelId, setKernelId] = useState<string>();
   const [path, setPath] = useState<string>();
   const [usage, setUsage] = useState<Usage | undefined>();
+  const [blankStateReason, setReason] = useState<NoUsageReason | undefined>({
+    reason: 'loading',
+  });
 
   useInterval(async () => {
     if (kernelId && panel.isVisible) {
-      requestUsage(kernelId)
-        .then((usage) => setUsage(usage))
-        .catch(() => {
-          console.warn(`Request failed for ${kernelId}. Kernel restarting?`);
-        });
+      requestUsage(kernelId).catch(() => {
+        console.warn(`Request failed for ${kernelId}. Kernel restarting?`);
+      });
     }
   }, POLL_INTERVAL_SEC * 1000);
 
-  const requestUsage = (kid: string) => {
+  const requestUsage = useCallback((kid: string) => {
     return requestAPI<any>(`get_usage/${kid}`).then((data) => {
+      // The kernel reply may arrive late due to lax timeouts, so we need to
+      // check if it is for the current kernel
+      if (data.kernel_id && data.kernel_id !== kid) {
+        // Ignore outdated response.
+        return;
+      }
+
+      if (data.content?.reason) {
+        const reason = data.content;
+        setReason(reason);
+        return;
+      }
+
       const usage: Usage = {
         ...data.content,
-        kernelId: kid,
         timestamp: new Date(),
+        kernel_id: kid,
       };
-      return usage;
+      setReason(undefined);
+      setUsage(usage);
     });
-  };
+  }, []);
 
   useEffect(() => {
     const createKernelChangeCallback = (panel: IWidgetWithSession) => {
@@ -93,9 +189,10 @@ const KernelUsage = (props: {
           setKernelId(newKernelId);
           const path = panel?.sessionContext.session?.model.path;
           setPath(path);
-          requestUsage(newKernelId).then((usage) => setUsage(usage));
+          requestUsage(newKernelId);
         } else {
           // Kernel was disposed
+          setReason({ reason: 'no_kernel' });
           setKernelId(newKernelId);
         }
       };
@@ -106,9 +203,10 @@ const KernelUsage = (props: {
       panel: IWidgetWithSession | null
     ) => {
       if (panel === null) {
-        // Ideally we would switch to a new "select a notebook to get kernel
-        // usage" screen instead of showing outdated info.
         setKernelId(undefined);
+        setReason({
+          reason: 'no_kernel_widget',
+        });
         return;
       }
       if (kernelChangeCallback) {
@@ -128,7 +226,10 @@ const KernelUsage = (props: {
           setKernelId(kernelId);
           const path = panel.sessionContext.session?.model.path;
           setPath(path);
-          requestUsage(kernelId).then((usage) => setUsage(usage));
+          requestUsage(kernelId);
+        } else {
+          setKernelId(undefined);
+          setReason({ reason: 'no_kernel' });
         }
       }
     };
@@ -142,101 +243,119 @@ const KernelUsage = (props: {
     };
   }, [kernelId]);
 
+  if (blankStateReason && !(blankStateReason?.reason === 'timeout' && usage)) {
+    return (
+      <>
+        <h3 className="jp-KernelUsage-section-separator">
+          {props.trans.__('Kernel usage not available')}
+        </h3>
+        <BlankReason trans={props.trans} reason={blankStateReason} />
+      </>
+    );
+  }
   if (kernelId) {
     if (usage) {
-      return !usage.hostname ? (
-        <>
-          <h3 className="jp-KernelUsage-section-separator">
-            {props.trans.__('Kernel usage details are not available')}
-          </h3>
-          <div className="jp-KernelUsage-section-separator">
-            {props.trans.__(
-              'Please check with your system administrator that you are running IPyKernel version 6.10.0 or above.'
-            )}
-          </div>
-        </>
-      ) : (
+      return (
         <>
           <h3 className="jp-KernelUsage-section-separator">
             {props.trans.__('Kernel usage')}
           </h3>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Kernel Host:')} {usage.hostname}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Notebook:')} {path}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Kernel ID:')} {kernelId}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Timestamp:')} {usage.timestamp?.toLocaleString()}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Process ID:')} {usage.pid}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('CPU:')} {usage.kernel_cpu}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Memory:')} {formatForDisplay(usage.kernel_memory)}
-          </div>
-          <hr className="jp-KernelUsage-section-separator"></hr>
-          <h4 className="jp-KernelUsage-section-separator">
-            {props.trans.__('Host CPU')}
-          </h4>
-          {usage.host_cpu_percent && (
-            <div className="jp-KernelUsage-separator">
-              {props.trans._n(
-                '%2%% used on %1 CPU',
-                '%2%% used on %1 CPUs',
-                usage.cpu_count,
-                usage.host_cpu_percent.toFixed(1)
+          {blankStateReason?.reason === 'timeout' ? (
+            <strong>
+              {props.trans.__(
+                'Timed out in: %1 ms',
+                blankStateReason.timeout_ms
               )}
-            </div>
-          )}
-          <h4 className="jp-KernelUsage-section-separator">
-            {props.trans.__('Host Virtual Memory')}
-          </h4>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Active:')}{' '}
-            {formatForDisplay(usage.host_virtual_memory.active)}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Available:')}{' '}
-            {formatForDisplay(usage.host_virtual_memory.available)}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Free:')}{' '}
-            {formatForDisplay(usage.host_virtual_memory.free)}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Inactive:')}{' '}
-            {formatForDisplay(usage.host_virtual_memory.inactive)}
-          </div>
-          {usage.host_virtual_memory.percent && (
+            </strong>
+          ) : null}
+          <div
+            className={
+              blankStateReason?.reason === 'timeout' ? TIMEOUT_CLASS : ''
+            }
+          >
             <div className="jp-KernelUsage-separator">
-              {props.trans.__('Percent used:')}{' '}
-              {usage.host_virtual_memory.percent.toFixed(1)}%
+              {props.trans.__('Kernel Host:')} {usage.hostname}
             </div>
-          )}
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Total:')}{' '}
-            {formatForDisplay(usage.host_virtual_memory.total)}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Used:')}{' '}
-            {formatForDisplay(usage.host_virtual_memory.used)}
-          </div>
-          <div className="jp-KernelUsage-separator">
-            {props.trans.__('Wired:')}{' '}
-            {formatForDisplay(usage.host_virtual_memory.wired)}
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Notebook:')} {path}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Kernel ID:')} {kernelId}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Timestamp:')} {usage.timestamp?.toLocaleString()}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Process ID:')} {usage.pid}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('CPU:')} {usage.kernel_cpu}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Memory:')}{' '}
+              {formatForDisplay(usage.kernel_memory)}
+            </div>
+            <hr className="jp-KernelUsage-section-separator"></hr>
+            <h4 className="jp-KernelUsage-section-separator">
+              {props.trans.__('Host CPU')}
+            </h4>
+            {usage.host_cpu_percent && (
+              <div className="jp-KernelUsage-separator">
+                {props.trans._n(
+                  '%2%% used on %1 CPU',
+                  '%2%% used on %1 CPUs',
+                  usage.cpu_count,
+                  usage.host_cpu_percent.toFixed(1)
+                )}
+              </div>
+            )}
+            <h4 className="jp-KernelUsage-section-separator">
+              {props.trans.__('Host Virtual Memory')}
+            </h4>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Active:')}{' '}
+              {formatForDisplay(usage.host_virtual_memory.active)}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Available:')}{' '}
+              {formatForDisplay(usage.host_virtual_memory.available)}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Free:')}{' '}
+              {formatForDisplay(usage.host_virtual_memory.free)}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Inactive:')}{' '}
+              {formatForDisplay(usage.host_virtual_memory.inactive)}
+            </div>
+            {usage.host_virtual_memory.percent && (
+              <div className="jp-KernelUsage-separator">
+                {props.trans.__('Percent used:')}{' '}
+                {usage.host_virtual_memory.percent.toFixed(1)}%
+              </div>
+            )}
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Total:')}{' '}
+              {formatForDisplay(usage.host_virtual_memory.total)}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Used:')}{' '}
+              {formatForDisplay(usage.host_virtual_memory.used)}
+            </div>
+            <div className="jp-KernelUsage-separator">
+              {props.trans.__('Wired:')}{' '}
+              {formatForDisplay(usage.host_virtual_memory.wired)}
+            </div>
           </div>
         </>
       );
     }
   }
-  return <h3>{props.trans.__('Kernel usage is not available')}</h3>;
+  return (
+    <>
+      <h3>{props.trans.__('Kernel usage is missing')}</h3>
+    </>
+  );
 };
 
 export class KernelUsageWidget extends ReactWidget {
@@ -255,6 +374,7 @@ export class KernelUsageWidget extends ReactWidget {
     this._currentChanged = props.currentChanged;
     this._panel = props.panel;
     this._trans = props.trans;
+    this.addClass(KERNEL_USAGE_CLASS);
   }
 
   protected render(): React.ReactElement<any> {

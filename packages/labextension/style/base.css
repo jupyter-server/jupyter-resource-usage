@@ -1,13 +1,15 @@
 .jp-KernelUsage-view {
-  overflow: scroll !important;
-  padding: 10px;
-  background-color: white;
-  min-width: 250px !important;
+  min-width: var(--jp-sidebar-min-width);
+  color: var(--jp-ui-font-color1);
+  background: var(--jp-layout-color1);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--jp-ui-font-size1);
 }
 
 .jp-KernelUsage-section-separator {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: var(--jp-content-heading-margin-top);
+  margin-bottom: var(--jp-content-heading-margin-bottom);
 }
 
 .jp-KernelUsage-separator {
@@ -15,15 +17,11 @@
   margin-bottom: 10px;
 }
 
-.jp-KernelUsage-button {
-  background-color: green;
-  border-radius: 12px;
-  border: none;
-  color: white;
-  padding: 5px 5px;
-  margin: 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 12px;
+.jp-KernelUsage-timedOut {
+  color: var(--jp-ui-font-color3);
+}
+
+.jp-KernelUsage-content {
+  padding: 10px;
+  overflow-y: auto;
 }
