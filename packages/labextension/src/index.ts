@@ -1,10 +1,12 @@
 import {
+  ILabShell,
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
 import { INotebookTracker } from '@jupyterlab/notebook';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { ICommandPalette } from '@jupyterlab/apputils';
+import { IConsoleTracker } from '@jupyterlab/console';
 import { KernelUsagePanel } from './panel';
 import tachometer from '../style/tachometer.svg';
 
@@ -13,6 +15,7 @@ import { IStatusBar } from '@jupyterlab/statusbar';
 import { ITranslator } from '@jupyterlab/translation';
 
 import { MemoryUsage } from './memoryUsage';
+import { KernelWidgetTracker } from './tracker';
 
 namespace CommandIDs {
   export const getKernelUsage = 'kernel-usage:get';
@@ -46,13 +49,15 @@ const memoryStatusPlugin: JupyterFrontEndPlugin<void> = {
 const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:kernel-panel-item',
   autoStart: true,
-  optional: [ICommandPalette],
+  optional: [ICommandPalette, ILabShell, IConsoleTracker],
   requires: [ITranslator, INotebookTracker],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
     notebookTracker: INotebookTracker,
-    palette: ICommandPalette | null
+    palette: ICommandPalette | null,
+    labShell: ILabShell | null,
+    consoleTracker: IConsoleTracker | null
   ) => {
     const trans = translator.load('jupyter-resource-usage');
 
@@ -62,10 +67,15 @@ const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
     let panel: KernelUsagePanel | null = null;
 
     function createPanel() {
-      if ((!panel || panel.isDisposed) && notebookTracker) {
+      if (!panel || panel.isDisposed) {
+        const tracker = new KernelWidgetTracker({
+          notebookTracker,
+          labShell,
+          consoleTracker,
+        });
+
         panel = new KernelUsagePanel({
-          widgetAdded: notebookTracker.widgetAdded,
-          currentNotebookChanged: notebookTracker.currentChanged,
+          currentChanged: tracker.currentChanged,
           trans: trans,
         });
         shell.add(panel, 'right', { rank: 200 });

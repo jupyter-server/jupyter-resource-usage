@@ -4,11 +4,12 @@ import { ReactWidget, ISessionContext } from '@jupyterlab/apputils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
 import { Kernel } from '@jupyterlab/services';
 import { TranslationBundle } from '@jupyterlab/translation';
-import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { requestAPI } from './handler';
 import { KernelUsagePanel } from './panel';
 import useInterval from './useInterval';
 import { formatForDisplay } from './format';
+import { IWidgetWithSession } from './types';
+import { KernelWidgetTracker } from './tracker';
 
 type Usage = {
   timestamp: Date | null;
@@ -43,12 +44,11 @@ type KernelChangeCallback = (
 ) => void;
 let kernelChangeCallback: {
   callback: KernelChangeCallback;
-  panel: NotebookPanel;
+  panel: IWidgetWithSession;
 } | null = null;
 
 const KernelUsage = (props: {
-  widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
-  currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
+  currentChanged: ISignal<KernelWidgetTracker, IWidgetWithSession | null>;
   panel: KernelUsagePanel;
   trans: TranslationBundle;
 }) => {
@@ -79,7 +79,7 @@ const KernelUsage = (props: {
   };
 
   useEffect(() => {
-    const createKernelChangeCallback = (panel: NotebookPanel) => {
+    const createKernelChangeCallback = (panel: IWidgetWithSession) => {
       return (
         _sender: ISessionContext,
         args: IChangedArgs<
@@ -102,12 +102,13 @@ const KernelUsage = (props: {
     };
 
     const notebookChangeCallback = (
-      sender: INotebookTracker,
-      panel: NotebookPanel | null
+      _: KernelWidgetTracker,
+      panel: IWidgetWithSession | null
     ) => {
       if (panel === null) {
         // Ideally we would switch to a new "select a notebook to get kernel
         // usage" screen instead of showing outdated info.
+        setKernelId(undefined);
         return;
       }
       if (kernelChangeCallback) {
@@ -131,9 +132,9 @@ const KernelUsage = (props: {
         }
       }
     };
-    props.currentNotebookChanged.connect(notebookChangeCallback);
+    props.currentChanged.connect(notebookChangeCallback);
     return () => {
-      props.currentNotebookChanged.disconnect(notebookChangeCallback);
+      props.currentChanged.disconnect(notebookChangeCallback);
       // In the ideal world we would disconnect kernelChangeCallback from
       // last panel here, but this can lead to a race condition. Instead,
       // we make sure there is ever only one callback active by holding
@@ -239,22 +240,19 @@ const KernelUsage = (props: {
 };
 
 export class KernelUsageWidget extends ReactWidget {
-  private _widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
-  private _currentNotebookChanged: ISignal<
-    INotebookTracker,
-    NotebookPanel | null
+  private _currentChanged: ISignal<
+    KernelWidgetTracker,
+    IWidgetWithSession | null
   >;
   private _panel: KernelUsagePanel;
   private _trans: TranslationBundle;
   constructor(props: {
-    widgetAdded: ISignal<INotebookTracker, NotebookPanel | null>;
-    currentNotebookChanged: ISignal<INotebookTracker, NotebookPanel | null>;
+    currentChanged: ISignal<KernelWidgetTracker, IWidgetWithSession | null>;
     panel: KernelUsagePanel;
     trans: TranslationBundle;
   }) {
     super();
-    this._widgetAdded = props.widgetAdded;
-    this._currentNotebookChanged = props.currentNotebookChanged;
+    this._currentChanged = props.currentChanged;
     this._panel = props.panel;
     this._trans = props.trans;
   }
@@ -262,8 +260,7 @@ export class KernelUsageWidget extends ReactWidget {
   protected render(): React.ReactElement<any> {
     return (
       <KernelUsage
-        widgetAdded={this._widgetAdded}
-        currentNotebookChanged={this._currentNotebookChanged}
+        currentChanged={this._currentChanged}
         panel={this._panel}
         trans={this._trans}
       />
