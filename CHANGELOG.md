@@ -2,6 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.2
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.7.1...143f4568643af18f668d6388fb65fff06695d58d))
+
+### Bugs fixed
+
+- Clear state when switching away, add blank state indicator [#178](https://github.com/jupyter-server/jupyter-resource-usage/pull/178) ([@krassowski](https://github.com/krassowski))
+- async fixes in kernel usage handler [#177](https://github.com/jupyter-server/jupyter-resource-usage/pull/177) ([@minrk](https://github.com/minrk))
+
+### Maintenance and upkeep improvements
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2023-02-06&to=2023-02-20&type=c))
+
+[@Gsbreddy](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3AGsbreddy+updated%3A2023-02-06..2023-02-20&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2023-02-06..2023-02-20&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2023-02-06..2023-02-20&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Aminrk+updated%3A2023-02-06..2023-02-20&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2023-02-06..2023-02-20&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2023-02-06..2023-02-20&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.1
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.7.0...dfef59b8aa27eb768eb9e70e849c832d2841e6e9))
@@ -22,8 +41,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2023-01-06&to=2023-02-06&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2023-01-06..2023-02-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2023-01-06..2023-02-06&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0
 
