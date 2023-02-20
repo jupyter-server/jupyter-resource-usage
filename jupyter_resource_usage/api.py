@@ -14,9 +14,11 @@ from tornado.concurrent import run_on_executor
 try:
     import ipykernel
 
-    USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(ipykernel.__version__)
+    IPYKERNEL_VERSION = ipykernel.__version__
+    USAGE_IS_SUPPORTED = version.parse("6.9.0") <= version.parse(IPYKERNEL_VERSION)
 except ImportError:
     USAGE_IS_SUPPORTED = False
+    IPYKERNEL_VERSION = None
 
 
 class ApiHandler(APIHandler):
@@ -92,7 +94,16 @@ class KernelUsageHandler(APIHandler):
     @web.authenticated
     async def get(self, matched_part=None, *args, **kwargs):
         if not USAGE_IS_SUPPORTED:
-            self.write(json.dumps({}))
+            self.write(
+                json.dumps(
+                    {
+                        "content": {
+                            "reason": "not_supported",
+                            "kernel_version": IPYKERNEL_VERSION,
+                        }
+                    }
+                )
+            )
             return
 
         kernel_id = matched_part
@@ -108,15 +119,23 @@ class KernelUsageHandler(APIHandler):
         poller = zmq.asyncio.Poller()
         control_socket = control_channel.socket
         poller.register(control_socket, zmq.POLLIN)
-        # previous behavior was 3 retries: 1 + 2 + 3 = 6 seconds
-        timeout_ms = 6_000
+        timeout_ms = 10_000
         events = dict(await poller.poll(timeout_ms))
         if control_socket not in events:
-            self.write(json.dumps({}))
+            self.write(
+                json.dumps(
+                    {
+                        "content": {"reason": "timeout", "timeout_ms": timeout_ms},
+                        "kernel_id": kernel_id,
+                    }
+                )
+            )
         else:
             res = client.control_channel.get_msg(timeout=0)
             if isawaitable(res):
                 # control_channel.get_msg may return a Future,
                 # depending on configured KernelManager class
                 res = await res
+            if res:
+                res["kernel_id"] = kernel_id
             self.write(json.dumps(res, default=date_default))
