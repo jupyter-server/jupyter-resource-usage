@@ -6,7 +6,7 @@
 # jupyter-resource-usage
 
 ![Github Actions Status](https://github.com/jupyter-server/jupyter-resource-usage/workflows/Tests/badge.svg)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-server/jupyter-resource-usage/master)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-server/jupyter-resource-usage/main)
 [![PyPI](https://img.shields.io/pypi/v/jupyter-resource-usage)](https://pypi.python.org/pypi/jupyter-resource-usage)
 [![conda-forge](https://img.shields.io/conda/vn/conda-forge/jupyter-resource-usage.svg)](https://anaconda.org/conda-forge/jupyter-resource-usage)
 [![PyPI](https://img.shields.io/pypi/l/jupyter-resource-usage)](https://pypi.python.org/pypi/jupyter-resource-usage)
