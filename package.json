@@ -47,5 +47,8 @@
     "*node_modules*",
     "coverage",
     "tests"
-  ]
+  ],
+  "prettier": {
+    "singleQuote": true
+  }
 }
