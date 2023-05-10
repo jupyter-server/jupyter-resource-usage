@@ -37,15 +37,24 @@ export class ResourceUsageStatus extends VDomRenderer<ResourceUsage.Model> {
       text = this._trans.__(
         'Mem: %1 %2',
         this.model.currentMemory.toFixed(Private.DECIMAL_PLACES),
-        this.model.units
+        this.model.memoryUnits
       );
     } else {
       text = this._trans.__(
         'Mem: %1 / %2 %3',
         this.model.currentMemory.toFixed(Private.DECIMAL_PLACES),
         this.model.memoryLimit.toFixed(Private.DECIMAL_PLACES),
-        this.model.units
+        this.model.memoryUnits
       );
+    }
+
+    if (this.model.diskAvailable && this.model.diskTotal !== null) {
+      text = `${text} ${this._trans.__(
+        'Disk: %1 / %2 %3',
+        this.model.diskUsed.toFixed(Private.DECIMAL_PLACES),
+        this.model.diskTotal.toFixed(Private.DECIMAL_PLACES),
+        this.model.diskUnits
+      )}`;
     }
     if (this.model.cpuAvailable) {
       text = `CPU: ${(this.model.currentCpuPercent * 100).toFixed(

@@ -80,3 +80,6 @@ class PSUtilMetricsLoader:
         return self.metrics(
             self.config.process_cpu_metrics, self.config.system_cpu_metrics
         )
+
+    def disk_metrics(self):
+        return self.metrics(self.config.system_disk_metrics)
