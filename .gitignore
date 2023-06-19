@@ -42,3 +42,5 @@ node_modules/
 *.tsbuildinfo
 jupyter_resource_usage/labextension
 yarn-error.log
+.yarn/
+.pnp*

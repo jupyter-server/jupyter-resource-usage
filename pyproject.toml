@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "hatchling",
-    "jupyterlab~=3.0",
+    "jupyterlab~=4.0",
 ]
 build-backend = "hatchling.build"
 
@@ -21,7 +21,7 @@ keywords = [
 classifiers = [
     "Framework :: Jupyter",
     "Framework :: Jupyter :: JupyterLab",
-    "Framework :: Jupyter :: JupyterLab :: 3",
+    "Framework :: Jupyter :: JupyterLab :: 4",
     "Framework :: Jupyter :: JupyterLab :: Extensions",
     "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
     "Intended Audience :: Developers",
@@ -130,7 +130,7 @@ default = ""
 
 [tool.jupyter-releaser.hooks]
 before-build-npm = [
-    "python -m pip install jupyterlab~=3.0",
+    "python -m pip install jupyterlab~=4.0",
     "jlpm",
     "jlpm clean",
     "jlpm build:prod",

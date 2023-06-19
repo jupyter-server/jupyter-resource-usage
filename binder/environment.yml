@@ -3,5 +3,5 @@ channels:
 - conda-forge
 dependencies:
 - python=3
-- jupyterlab=3
-- nodejs
+- jupyterlab=4
+- nodejs=18
