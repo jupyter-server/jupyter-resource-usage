@@ -87,15 +87,14 @@ skip-if-exists = [
     "jupyter_resource_usage/labextension/static/style.js",
 ]
 
-[tool.hatch.build.hooks.jupyter-builder.editable-build-kwargs]
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 build_cmd = "build:prod"
 npm = [
     "jlpm",
 ]
-force = true
 
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-build_cmd = "build:prod"
+[tool.hatch.build.hooks.jupyter-builder.editable-build-kwargs]
+build_cmd = "install:extension"
 npm = [
     "jlpm",
 ]
