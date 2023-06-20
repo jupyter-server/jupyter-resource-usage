@@ -29,6 +29,10 @@ jobs:
         jupyter nbclassic-extension install --py jupyter_resource_usage --sys-prefix
         jupyter nbclassic-extension enable --py jupyter_resource_usage --sys-prefix
 
+    - name: debug
+      run: |
+        jupyter nbclassic-extension list
+
     - name: Check the server, classic and lab extensions are installed
       run: |
         jupyter server extension list 2>&1 | grep -ie "jupyter_resource_usage.*enabled"
