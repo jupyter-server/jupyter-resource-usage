@@ -2,6 +2,7 @@
 requires = [
     "hatchling>=1.5.0",
     "jupyterlab>=4.0,<5",
+    "pip",
 ]
 build-backend = "hatchling.build"
 
@@ -94,12 +95,10 @@ npm = [
 ]
 
 [tool.hatch.build.hooks.jupyter-builder.editable-build-kwargs]
-build_cmd = "install:extension"
+build_cmd = "build"
 npm = [
     "jlpm",
 ]
-source_dir = "packages/labextension/src"
-build_dir = "jupyter_resource_usage/labextension"
 
 [tool.tbump.version]
 current = "0.7.2"
