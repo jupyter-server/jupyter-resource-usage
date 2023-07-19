@@ -1,7 +1,8 @@
 [build-system]
 requires = [
-    "hatchling",
-    "jupyterlab~=3.0",
+    "hatchling>=1.5.0",
+    "jupyterlab>=4.0,<5",
+    "pip",
 ]
 build-backend = "hatchling.build"
 
@@ -21,7 +22,7 @@ keywords = [
 classifiers = [
     "Framework :: Jupyter",
     "Framework :: Jupyter :: JupyterLab",
-    "Framework :: Jupyter :: JupyterLab :: 3",
+    "Framework :: Jupyter :: JupyterLab :: 4",
     "Framework :: Jupyter :: JupyterLab :: Extensions",
     "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
     "Intended Audience :: Developers",
@@ -36,7 +37,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    "jupyter_server>=1.0",
+    "jupyter_server>=2.0",
     "prometheus_client",
     "psutil~=5.6",
     "pyzmq>=19",
@@ -61,8 +62,7 @@ Homepage = "https://github.com/jupyter-server/jupyter-resource-usage"
 
 [tool.hatch.build.targets.wheel.shared-data]
 "jupyter_resource_usage/static" = "share/jupyter/nbextensions/jupyter_resource_usage"
-"jupyter_resource_usage/labextension/package.json" = "share/jupyter/labextensions/@jupyter-server/resource-usage/package.json"
-"jupyter_resource_usage/labextension/static" = "share/jupyter/labextensions/@jupyter-server/resource-usage/static"
+"jupyter_resource_usage/labextension" = "share/jupyter/labextensions/@jupyter-server/resource-usage"
 "install.json" = "share/jupyter/labextensions/@jupyter-server/resource-usage/install.json"
 "jupyter-config/jupyter_server_config.d" = "etc/jupyter/jupyter_server_config.d"
 "jupyter-config/jupyter_notebook_config.d" = "etc/jupyter/jupyter_notebook_config.d"
@@ -88,20 +88,17 @@ skip-if-exists = [
     "jupyter_resource_usage/labextension/static/style.js",
 ]
 
-[tool.hatch.build.hooks.jupyter-builder.editable-build-kwargs]
-build_cmd = "build:prod"
-npm = [
-    "jlpm",
-]
-force = true
-
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 build_cmd = "build:prod"
 npm = [
     "jlpm",
 ]
-source_dir = "packages/labextension"
-build_dir = "jupyter_resource_usage/labextension"
+
+[tool.hatch.build.hooks.jupyter-builder.editable-build-kwargs]
+build_cmd = "build"
+npm = [
+    "jlpm",
+]
 
 [tool.tbump.version]
 current = "0.7.2"
@@ -130,7 +127,7 @@ default = ""
 
 [tool.jupyter-releaser.hooks]
 before-build-npm = [
-    "python -m pip install jupyterlab~=3.0",
+    "python -m pip install jupyterlab~=4.0",
     "jlpm",
     "jlpm clean",
     "jlpm build:prod",
