@@ -98,6 +98,8 @@ build_cmd = "install:extension"
 npm = [
     "jlpm",
 ]
+source_dir = "packages/labextension/src"
+build_dir = "jupyter_resource_usage/labextension"
 
 [tool.tbump.version]
 current = "0.7.2"
