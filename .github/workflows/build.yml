@@ -35,5 +35,6 @@ jobs:
         jupyter server extension list 2>&1 | grep -ie "jupyter_resource_usage.*enabled"
         jupyter nbclassic-serverextension list 2>&1 | grep -ie "jupyter_resource_usage.*enabled"
         jupyter nbclassic-extension list 2>&1 | grep -ie "jupyter_resource_usage/main.*enabled"
+        jupyter labextension list
         jupyter labextension list 2>&1 | grep -ie "@jupyter-server/resource-usage.*OK"
         python -m jupyterlab.browser_check
