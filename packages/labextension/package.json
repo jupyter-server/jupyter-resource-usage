@@ -45,7 +45,7 @@
     "@jupyterlab/application": "^4.0.0",
     "@jupyterlab/apputils": "^4.0.0",
     "@jupyterlab/console": "^4.0.0",
-    "@jupyterlab/coreutils": "^4.0.0",
+    "@jupyterlab/coreutils": "^6.0.0",
     "@jupyterlab/notebook": "^4.0.0",
     "@jupyterlab/services": "^7.0.0",
     "@jupyterlab/statusbar": "^4.0.0",
