@@ -63,7 +63,6 @@ Homepage = "https://github.com/jupyter-server/jupyter-resource-usage"
 [tool.hatch.build.targets.wheel.shared-data]
 "jupyter_resource_usage/static" = "share/jupyter/nbextensions/jupyter_resource_usage"
 "jupyter_resource_usage/labextension" = "share/jupyter/labextensions/@jupyter-server/resource-usage"
-"jupyter_resource_usage/labextension/static" = "share/jupyter/labextensions/@jupyter-server/resource-usage/static"
 "install.json" = "share/jupyter/labextensions/@jupyter-server/resource-usage/install.json"
 "jupyter-config/jupyter_server_config.d" = "etc/jupyter/jupyter_server_config.d"
 "jupyter-config/jupyter_notebook_config.d" = "etc/jupyter/jupyter_notebook_config.d"
