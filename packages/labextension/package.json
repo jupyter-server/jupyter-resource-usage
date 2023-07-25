@@ -51,10 +51,12 @@
     "@jupyterlab/statusbar": "^4.0.0",
     "@jupyterlab/translation": "^4.0.0",
     "@lumino/polling": "^2.1.1",
+    "react-sparklines": "^1.7.0",
     "typestyle": "^2.4.0"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^4.0.0",
+    "@types/react-sparklines": "^1.7.0",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
     "eslint": "^7.14.0",
@@ -86,6 +88,7 @@
       }
     },
     "extension": true,
+    "schemaDir": "schema",
     "outputDir": "../../jupyter_resource_usage/labextension"
   }
 }
