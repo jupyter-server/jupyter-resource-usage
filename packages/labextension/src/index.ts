@@ -3,19 +3,65 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
+
+import { IToolbarWidgetRegistry } from '@jupyterlab/apputils';
+
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+
 import { INotebookTracker } from '@jupyterlab/notebook';
+
 import { LabIcon } from '@jupyterlab/ui-components';
+
 import { ICommandPalette } from '@jupyterlab/apputils';
+
 import { IConsoleTracker } from '@jupyterlab/console';
-import { KernelUsagePanel } from './panel';
-import tachometer from '../style/tachometer.svg';
 
 import { IStatusBar } from '@jupyterlab/statusbar';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { MemoryUsage } from './memoryUsage';
+import { JSONObject } from '@lumino/coreutils';
+
+import { KernelUsagePanel } from './panel';
+
+import tachometer from '../style/tachometer.svg';
+
+import { ResourceUsage } from './model';
+
+import { ResourceUsageStatus } from './resourceUsage';
+
 import { KernelWidgetTracker } from './tracker';
+
+import { CpuView } from './cpuView';
+
+import { MemoryView } from './memoryView';
+
+/**
+ * Disable system monitor panels by default.
+ */
+const DEFAULT_ENABLE_SYSTEM_MONITOR = false;
+
+/**
+ * The default refresh rate.
+ */
+const DEFAULT_REFRESH_RATE = 5000;
+
+/**
+ * The default memory label.
+ */
+const DEFAULT_MEMORY_LABEL = 'Mem: ';
+
+/**
+ * The default CPU label.
+ */
+const DEFAULT_CPU_LABEL = 'CPU: ';
+
+/**
+ * An interface for resource settings.
+ */
+interface IResourceSettings extends JSONObject {
+  label: string;
+}
 
 namespace CommandIDs {
   export const getKernelUsage = 'kernel-usage:get';
@@ -24,8 +70,8 @@ namespace CommandIDs {
 /**
  * Initialization data for the jupyter-resource-usage extension.
  */
-const memoryStatusPlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-server/resource-usage:memory-status-item',
+const resourceStatusPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyter-server/resource-usage:status-item',
   autoStart: true,
   requires: [IStatusBar, ITranslator],
   activate: (
@@ -34,15 +80,63 @@ const memoryStatusPlugin: JupyterFrontEndPlugin<void> = {
     translator: ITranslator
   ) => {
     const trans = translator.load('jupyter-resource-usage');
-    const item = new MemoryUsage(trans);
+    const item = new ResourceUsageStatus(trans);
 
-    statusBar.registerStatusItem(memoryStatusPlugin.id, {
+    statusBar.registerStatusItem(resourceStatusPlugin.id, {
       item,
       align: 'left',
       rank: 2,
       isActive: () => item.model.metricsAvailable,
       activeStateChanged: item.model.stateChanged,
     });
+  },
+};
+
+/**
+ * Initialization data for the jupyterlab-system-monitor extension.
+ */
+const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyter-server/resource-usage:topbar-item',
+  autoStart: true,
+  requires: [IToolbarWidgetRegistry],
+  optional: [ISettingRegistry],
+  activate: async (
+    app: JupyterFrontEnd,
+    toolbarRegistry: IToolbarWidgetRegistry,
+    settingRegistry: ISettingRegistry
+  ) => {
+    let enablePlugin = DEFAULT_ENABLE_SYSTEM_MONITOR;
+    let refreshRate = DEFAULT_REFRESH_RATE;
+    let cpuLabel = DEFAULT_CPU_LABEL;
+    let memoryLabel = DEFAULT_MEMORY_LABEL;
+
+    if (settingRegistry) {
+      const settings = await settingRegistry.load(systemMonitorPlugin.id);
+      enablePlugin = settings.get('enable').composite as boolean;
+      refreshRate = settings.get('refreshRate').composite as number;
+      const cpuSettings = settings.get('cpu').composite as IResourceSettings;
+      cpuLabel = cpuSettings.label;
+      const memorySettings = settings.get('memory')
+        .composite as IResourceSettings;
+      memoryLabel = memorySettings.label;
+    }
+
+    const model = new ResourceUsage.Model({ refreshRate });
+    await model.refresh();
+
+    if (enablePlugin && model.cpuAvailable) {
+      toolbarRegistry.addFactory('TopBar', 'cpu', () => {
+        const cpu = CpuView.createCpuView(model, cpuLabel);
+        return cpu;
+      });
+    }
+
+    if (enablePlugin && model.memoryAvailable) {
+      toolbarRegistry.addFactory('TopBar', 'memory', () => {
+        const memory = MemoryView.createMemoryView(model, memoryLabel);
+        return memory;
+      });
+    }
   },
 };
 
@@ -101,7 +195,8 @@ const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
 };
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
-  memoryStatusPlugin,
+  resourceStatusPlugin,
+  systemMonitorPlugin,
   kernelUsagePlugin,
 ];
 export default plugins;

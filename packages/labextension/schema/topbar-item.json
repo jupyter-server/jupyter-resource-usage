@@ -1,0 +1,48 @@
+{
+  "title": "Resource Usage Menu Bar",
+  "description": "Resource Usage Menu Bar settings.",
+  "jupyter.lab.toolbars": {
+    "TopBar": [
+      {
+        "name": "cpu",
+        "rank": 120
+      },
+      {
+        "name": "memory",
+        "rank": 130
+      }
+    ]
+  },
+  "properties": {
+    "enable": {
+      "title": "Enable resource usage panels",
+      "description": "Whether to enable resource usage panels on topbar",
+      "default": false,
+      "type": "boolean"
+    },
+    "refreshRate": {
+      "title": "Refresh Rate (ms)",
+      "description": "Refresh Rate to sync metrics data",
+      "default": 5000,
+      "type": "number"
+    },
+    "memory": {
+      "title": "Memory Settings",
+      "description": "Settings for the memory indicator",
+      "default": {
+        "label": "Mem: "
+      },
+      "type": "object"
+    },
+    "cpu": {
+      "title": "CPU Settings",
+      "description": "Settings for the CPU indicator",
+      "default": {
+        "label": "CPU: "
+      },
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}
