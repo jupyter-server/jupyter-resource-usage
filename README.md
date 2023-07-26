@@ -22,6 +22,12 @@ status bar in the JupyterLab and notebook, refreshing every 5s.
 Kernel resource usage can be displayed in a sidebar for IPython kernels with
 [ipykernel](https://github.com/ipython/ipykernel) >= 6.11.0.
 
+![Screenshot for kernel usage](./doc/kernel-usage.png)
+
+The kernel usage is available for Notebook 7.x too which can be enabled at
+`View -> Right Sidebar -> Show Kernel Usage`. In the case of JupyterLab interface, it is
+enough to click `tachometer` icon on the right sidebar.
+
 The package provides an alternative frontend for the `jupyter-resource-usage` metrics:
 
 ![screencast](./doc/topbar.gif)
