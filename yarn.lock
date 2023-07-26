@@ -454,6 +454,7 @@ __metadata:
     "@jupyterlab/statusbar": ^4.0.0
     "@jupyterlab/translation": ^4.0.0
     "@lumino/polling": ^2.1.1
+    "@types/react-sparklines": ^1.7.0
     "@typescript-eslint/eslint-plugin": ^4.8.1
     "@typescript-eslint/parser": ^4.8.1
     eslint: ^7.14.0
@@ -462,6 +463,7 @@ __metadata:
     mkdirp: ^1.0.3
     npm-run-all: ^4.1.5
     prettier: ^2.1.1
+    react-sparklines: ^1.7.0
     rimraf: ^3.0.2
     typescript: ~5.0.0
     typestyle: ^2.4.0
@@ -2538,14 +2540,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.0.26":
-  version: 18.2.15
-  resolution: "@types/react@npm:18.2.15"
+"@types/react-sparklines@npm:^1.7.0":
+  version: 1.7.2
+  resolution: "@types/react-sparklines@npm:1.7.2"
+  dependencies:
+    "@types/react": "*"
+  checksum: e0e8479c256731c3fe9405a5d3061f81838f8708bc585203afa89ff81f266f06f5b497b1db77e6a488d6073de623c4093afd9cbf3626bb7c89f996632749c281
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:18.2.16":
+  version: 18.2.16
+  resolution: "@types/react@npm:18.2.16"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 36989f638201bfe2f4110b06c119180f6df9c0e13d7060481e82e7a745f81745a01ae543c478a25b61e0767cb52e82da2ad5b0dedacabf99339e523d06176705
+  checksum: 3d4fdc12509e0098e0dbb4bacdea53e8ccc6632e9df63d9f2711c77aa81ce3b2bb9c76d087f284034b25fd7245680167f4832bf6e4df960c5af2634b52adfd0c
   languageName: node
   linkType: hard
 
@@ -7667,7 +7678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.10, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -7811,6 +7822,18 @@ __metadata:
   version: 18.2.0
   resolution: "react-is@npm:18.2.0"
   checksum: e72d0ba81b5922759e4aff17e0252bd29988f9642ed817f56b25a3e217e13eea8a7f2322af99a06edb779da12d5d636e9fda473d620df9a3da0df2a74141d53e
+  languageName: node
+  linkType: hard
+
+"react-sparklines@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "react-sparklines@npm:1.7.0"
+  dependencies:
+    prop-types: ^15.5.10
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  checksum: 9d2f701031e56e0c7b49e3b56479cd7bc1b651c029c2d525d2b480cf6ebcecbdb4dfe83053e7bcdecee1c490f3e5b4cecfa8b48301860b679778d6df7758e480
   languageName: node
   linkType: hard
 

@@ -41,6 +41,9 @@
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2"
   },
+  "resolutions": {
+    "@types/react": "18.2.16"
+  },
   "eslintIgnore": [
     "**/*.d.ts",
     "dist",
