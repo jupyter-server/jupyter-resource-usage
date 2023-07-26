@@ -12,19 +12,34 @@
 [![PyPI](https://img.shields.io/pypi/l/jupyter-resource-usage)](https://pypi.python.org/pypi/jupyter-resource-usage)
 [![GitHub](https://img.shields.io/badge/issue_tracking-github-blue?logo=github)](https://github.com/jupyter-server/jupyter-resource-usage/issues)
 
-![Screenshot with memory limit](screenshot.png)
+![Screenshot with memory limit](./doc/statusbar.png)
 
 Jupyter Resource Usage is an extension for Jupyter Notebooks and JupyterLab that
 displays an indication of how much resources your current notebook server and
 its children (kernels, terminals, etc) are using. This is displayed in the
-main toolbar in the notebook itself, refreshing every 5s.
+status bar in the JupyterLab and notebook, refreshing every 5s.
 
 Kernel resource usage can be displayed in a sidebar for IPython kernels with
 [ipykernel](https://github.com/ipython/ipykernel) >= 6.11.0.
 
+The package provides an alternative frontend for the `jupyter-resource-usage` metrics:
+
+![screencast](./doc/topbar.gif)
+
+Previously, this extension used to be distributed with 
+[jupyterlab-system-monitor](https://github.com/jtpio/jupyterlab-system-monitor) package. 
+Starting from `1.0.0`, the alternative frontend has been integrated into the 
+current repository. Check [Alternative frontend](#enable-alternative-frontend) section 
+on how to enable and configure this alternative frontend.
+
+**Note** that for JupyterLab 3.x and 2.x, users should install the alternative frontend 
+from [jupyterlab-system-monitor](https://github.com/jtpio/jupyterlab-system-monitor).
+
 ## Installation
 
-You can currently install this package from PyPI.
+### JupyterLab 4.x and Notebook 7.x
+
+You should install the latest version `>=1.0.0` for JupyterLab 4 compatability.
 
 ```bash
 pip install jupyter-resource-usage
@@ -34,6 +49,20 @@ Or with `conda`:
 
 ```bash
 conda install -c conda-forge jupyter-resource-usage
+```
+
+### JupyterLab 3.x and Notebook 6.x
+
+You should pin the versions to `<1.0.0`
+
+```bash
+pip install 'jupyter-resource-usage<1.0.0'
+```
+
+Or with `conda`:
+
+```bash
+conda install -c conda-forge 'jupyter-resource-usage<1.0.0'
 ```
 
 **If your notebook version is < 5.3**, you need to enable the extension manually.
@@ -60,7 +89,7 @@ The limit needs to be set as an integer in Bytes.
 
 ### Memory usage warning threshold
 
-![Screenshot with memory warning](warn-screenshot.png)
+![Screenshot with memory warning](./doc/statusbar-warn.png)
 
 The background of the resource display can be changed to red when the user is near a memory limit.
 The threshold for this warning can be configured as a fraction of the memory limit.
@@ -94,6 +123,11 @@ As a command line argument:
 jupyter notebook --ResourceUseDisplay.track_cpu_percent=True
 ```
 
+When `track_cpu_percent` is set to `True`, status will report CPU utilisation along with 
+memory:
+
+![Screenshot with CPU and memory](./doc/statusbar-cpu.png)
+
 ### Disable Prometheus Metrics
 
 There is a [known bug](https://github.com/jupyter-server/jupyter-resource-usage/issues/123) with Prometheus metrics which
@@ -102,6 +136,20 @@ causes "lag"/pauses in the UI. To workaround this you can disable Prometheus met
 ```
 --ResourceUseDisplay.enable_prometheus_metrics=False
 ```
+
+## Enable alternative frontend
+
+By default, the alternative frontend is disabled. To enable it, users should go to 
+`Settings -> Settings Editor -> Resource Usage Indicator` which will render following 
+form
+
+![jupyterlab_setting](./doc/settings.png)
+
+By checking "Enable resource usage indicators" and refreshing the browser tab will 
+render the alternative frontend in the topbar.
+
+Users can change the label and refresh rate for the alternative frontend using settings 
+editor.
 
 ## Resources Displayed
 
