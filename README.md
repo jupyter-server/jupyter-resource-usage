@@ -26,13 +26,13 @@ The package provides an alternative frontend for the `jupyter-resource-usage` me
 
 ![screencast](./doc/topbar.gif)
 
-Previously, this extension used to be distributed with 
-[jupyterlab-system-monitor](https://github.com/jtpio/jupyterlab-system-monitor) package. 
-Starting from `1.0.0`, the alternative frontend has been integrated into the 
-current repository. Check [Alternative frontend](#enable-alternative-frontend) section 
+Previously, this extension used to be distributed with
+[jupyterlab-system-monitor](https://github.com/jtpio/jupyterlab-system-monitor) package.
+Starting from `1.0.0`, the alternative frontend has been integrated into the
+current repository. Check [Alternative frontend](#enable-alternative-frontend) section
 on how to enable and configure this alternative frontend.
 
-**Note** that for JupyterLab 3.x and 2.x, users should install the alternative frontend 
+**Note** that for JupyterLab 3.x and 2.x, users should install the alternative frontend
 from [jupyterlab-system-monitor](https://github.com/jtpio/jupyterlab-system-monitor).
 
 ## Installation
@@ -123,7 +123,7 @@ As a command line argument:
 jupyter notebook --ResourceUseDisplay.track_cpu_percent=True
 ```
 
-When `track_cpu_percent` is set to `True`, status will report CPU utilisation along with 
+When `track_cpu_percent` is set to `True`, status will report CPU utilisation along with
 memory:
 
 ![Screenshot with CPU and memory](./doc/statusbar-cpu.png)
@@ -139,16 +139,16 @@ causes "lag"/pauses in the UI. To workaround this you can disable Prometheus met
 
 ## Enable alternative frontend
 
-By default, the alternative frontend is disabled. To enable it, users should go to 
-`Settings -> Settings Editor -> Resource Usage Indicator` which will render following 
+By default, the alternative frontend is disabled. To enable it, users should go to
+`Settings -> Settings Editor -> Resource Usage Indicator` which will render following
 form
 
 ![jupyterlab_setting](./doc/settings.png)
 
-By checking "Enable resource usage indicators" and refreshing the browser tab will 
+By checking "Enable resource usage indicators" and refreshing the browser tab will
 render the alternative frontend in the topbar.
 
-Users can change the label and refresh rate for the alternative frontend using settings 
+Users can change the label and refresh rate for the alternative frontend using settings
 editor.
 
 ## Resources Displayed
