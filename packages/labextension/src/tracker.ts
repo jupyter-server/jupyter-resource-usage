@@ -34,8 +34,15 @@ export class KernelWidgetTracker {
         });
       }
     }
-    this._currentWidget =
-      notebookTracker.currentWidget ?? consoleTracker?.currentWidget ?? null;
+    // handle an existing current widget in case the KernelWidgetTracker
+    // is created a bit later, or if there is already a Notebook widget available
+    // on page load like in Notebook 7.
+    if (labShell?.currentWidget && hasKernelSession(labShell?.currentWidget)) {
+      this._currentWidget = labShell.currentWidget;
+    } else {
+      this._currentWidget =
+        notebookTracker.currentWidget ?? consoleTracker?.currentWidget ?? null;
+    }
   }
 
   /**
