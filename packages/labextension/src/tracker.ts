@@ -16,20 +16,26 @@ export class KernelWidgetTracker {
         const widget = update.newValue;
         if (widget && hasKernelSession(widget)) {
           this._currentChanged.emit(widget);
+          this._currentWidget = widget;
         } else {
           this._currentChanged.emit(null);
+          this._currentWidget = null;
         }
       });
     } else {
       notebookTracker.currentChanged.connect((_, widget) => {
         this._currentChanged.emit(widget);
+        this._currentWidget = widget;
       });
       if (consoleTracker) {
         consoleTracker.currentChanged.connect((_, widget) => {
           this._currentChanged.emit(widget);
+          this._currentWidget = widget;
         });
       }
     }
+    this._currentWidget =
+      notebookTracker.currentWidget ?? consoleTracker?.currentWidget ?? null;
   }
 
   /**
@@ -44,10 +50,16 @@ export class KernelWidgetTracker {
     return this._currentChanged;
   }
 
+  get currentWidget(): IWidgetWithSession | null {
+    return this._currentWidget;
+  }
+
   private _currentChanged: Signal<
     KernelWidgetTracker,
     IWidgetWithSession | null
   >;
+
+  private _currentWidget: IWidgetWithSession | null = null;
 }
 
 /**

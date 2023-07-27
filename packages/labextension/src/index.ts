@@ -169,8 +169,8 @@ const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
         });
 
         panel = new KernelUsagePanel({
-          currentChanged: tracker.currentChanged,
-          trans: trans,
+          tracker,
+          trans,
         });
         shell.add(panel, 'right', { rank: 200 });
       }

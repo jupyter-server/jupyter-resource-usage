@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ISignal } from '@lumino/signaling';
 import { ReactWidget, ISessionContext } from '@jupyterlab/apputils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
 import { Kernel } from '@jupyterlab/services';
@@ -123,7 +122,7 @@ const BlankReason = (props: {
 };
 
 const KernelUsage = (props: {
-  currentChanged: ISignal<KernelWidgetTracker, IWidgetWithSession | null>;
+  tracker: KernelWidgetTracker;
   panel: KernelUsagePanel;
   trans: TranslationBundle;
 }) => {
@@ -234,9 +233,12 @@ const KernelUsage = (props: {
         }
       }
     };
-    props.currentChanged.connect(notebookChangeCallback);
+    props.tracker.currentChanged.connect(notebookChangeCallback);
+    if (props.tracker.currentWidget) {
+      notebookChangeCallback(props.tracker, props.tracker.currentWidget);
+    }
     return () => {
-      props.currentChanged.disconnect(notebookChangeCallback);
+      props.tracker.currentChanged.disconnect(notebookChangeCallback);
       // In the ideal world we would disconnect kernelChangeCallback from
       // last panel here, but this can lead to a race condition. Instead,
       // we make sure there is ever only one callback active by holding
@@ -368,19 +370,16 @@ const KernelUsage = (props: {
 };
 
 export class KernelUsageWidget extends ReactWidget {
-  private _currentChanged: ISignal<
-    KernelWidgetTracker,
-    IWidgetWithSession | null
-  >;
+  private _tracker: KernelWidgetTracker;
   private _panel: KernelUsagePanel;
   private _trans: TranslationBundle;
   constructor(props: {
-    currentChanged: ISignal<KernelWidgetTracker, IWidgetWithSession | null>;
+    tracker: KernelWidgetTracker;
     panel: KernelUsagePanel;
     trans: TranslationBundle;
   }) {
     super();
-    this._currentChanged = props.currentChanged;
+    this._tracker = props.tracker;
     this._panel = props.panel;
     this._trans = props.trans;
     this.addClass(KERNEL_USAGE_CLASS);
@@ -389,7 +388,7 @@ export class KernelUsageWidget extends ReactWidget {
   protected render(): React.ReactElement<any> {
     return (
       <KernelUsage
-        currentChanged={this._currentChanged}
+        tracker={this._tracker}
         panel={this._panel}
         trans={this._trans}
       />
