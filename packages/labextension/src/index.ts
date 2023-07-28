@@ -73,22 +73,25 @@ namespace CommandIDs {
 const resourceStatusPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:status-item',
   autoStart: true,
-  requires: [IStatusBar, ITranslator],
+  requires: [ITranslator],
+  optional: [IStatusBar],
   activate: (
     app: JupyterFrontEnd,
-    statusBar: IStatusBar,
-    translator: ITranslator
+    translator: ITranslator,
+    statusBar: IStatusBar | null
   ) => {
     const trans = translator.load('jupyter-resource-usage');
     const item = new ResourceUsageStatus(trans);
 
-    statusBar.registerStatusItem(resourceStatusPlugin.id, {
-      item,
-      align: 'left',
-      rank: 2,
-      isActive: () => item.model.metricsAvailable,
-      activeStateChanged: item.model.stateChanged,
-    });
+    if (statusBar) {
+      statusBar.registerStatusItem(resourceStatusPlugin.id, {
+        item,
+        align: 'left',
+        rank: 2,
+        isActive: () => item.model.metricsAvailable,
+        activeStateChanged: item.model.stateChanged,
+      });
+    }
   },
 };
 
@@ -103,7 +106,7 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
   activate: async (
     app: JupyterFrontEnd,
     toolbarRegistry: IToolbarWidgetRegistry,
-    settingRegistry: ISettingRegistry
+    settingRegistry: ISettingRegistry | null
   ) => {
     let enablePlugin = DEFAULT_ENABLE_SYSTEM_MONITOR;
     let refreshRate = DEFAULT_REFRESH_RATE;
