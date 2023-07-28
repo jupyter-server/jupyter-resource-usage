@@ -2,6 +2,42 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.0.0
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.7.2...1cf0e15ed06ce37d8fd4883464beb902fb562d86))
+
+### Enhancements made
+
+- Integrate `jupyterlab-system-monitor` extension [#202](https://github.com/jupyter-server/jupyter-resource-usage/pull/202) ([@mahendrapaipuri](https://github.com/mahendrapaipuri))
+
+### Bugs fixed
+
+- Handle `currentWidget` in `KernelWidgetTracker` [#206](https://github.com/jupyter-server/jupyter-resource-usage/pull/206) ([@jtpio](https://github.com/jtpio))
+- Stop all channels to allow ZMQContext to properly cleanup between calls [#183](https://github.com/jupyter-server/jupyter-resource-usage/pull/183) ([@Zsailer](https://github.com/Zsailer))
+
+### Maintenance and upkeep improvements
+
+- Make `IStatusBar` optional for `resourceStatusPlugin` [#207](https://github.com/jupyter-server/jupyter-resource-usage/pull/207) ([@mahendrapaipuri](https://github.com/mahendrapaipuri))
+- Require Python 3.8+ [#201](https://github.com/jupyter-server/jupyter-resource-usage/pull/201) ([@jtpio](https://github.com/jtpio))
+- Bump word-wrap from 1.2.3 to 1.2.4 [#200](https://github.com/jupyter-server/jupyter-resource-usage/pull/200) ([@dependabot](https://github.com/dependabot))
+- Bump semver from 5.7.1 to 5.7.2 [#198](https://github.com/jupyter-server/jupyter-resource-usage/pull/198) ([@dependabot](https://github.com/dependabot))
+- Update to Jupyterlab 4 [#195](https://github.com/jupyter-server/jupyter-resource-usage/pull/195) ([@jtpio](https://github.com/jtpio))
+- chore: move `prettier` and `eslint` configuration under `package.json` [#188](https://github.com/jupyter-server/jupyter-resource-usage/pull/188) ([@SauravMaheshkar](https://github.com/SauravMaheshkar))
+- Bump webpack from 5.75.0 to 5.76.1 [#184](https://github.com/jupyter-server/jupyter-resource-usage/pull/184) ([@dependabot](https://github.com/dependabot))
+- Rename references from `master` to `main` [#179](https://github.com/jupyter-server/jupyter-resource-usage/pull/179) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update README and fix settings file [#205](https://github.com/jupyter-server/jupyter-resource-usage/pull/205) ([@mahendrapaipuri](https://github.com/mahendrapaipuri))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2023-02-20&to=2023-07-28&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2023-02-20..2023-07-28&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2023-02-20..2023-07-28&type=Issues) | [@mahendrapaipuri](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Amahendrapaipuri+updated%3A2023-02-20..2023-07-28&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2023-02-20..2023-07-28&type=Issues) | [@SauravMaheshkar](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3ASauravMaheshkar+updated%3A2023-02-20..2023-07-28&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2023-02-20..2023-07-28&type=Issues) | [@Zsailer](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3AZsailer+updated%3A2023-02-20..2023-07-28&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.2
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.7.1...143f4568643af18f668d6388fb65fff06695d58d))
@@ -18,8 +54,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2023-02-06&to=2023-02-20&type=c))
 
 [@Gsbreddy](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3AGsbreddy+updated%3A2023-02-06..2023-02-20&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2023-02-06..2023-02-20&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2023-02-06..2023-02-20&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Aminrk+updated%3A2023-02-06..2023-02-20&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2023-02-06..2023-02-20&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2023-02-06..2023-02-20&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.1
 
