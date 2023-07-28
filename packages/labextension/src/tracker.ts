@@ -16,19 +16,32 @@ export class KernelWidgetTracker {
         const widget = update.newValue;
         if (widget && hasKernelSession(widget)) {
           this._currentChanged.emit(widget);
+          this._currentWidget = widget;
         } else {
           this._currentChanged.emit(null);
+          this._currentWidget = null;
         }
       });
     } else {
       notebookTracker.currentChanged.connect((_, widget) => {
         this._currentChanged.emit(widget);
+        this._currentWidget = widget;
       });
       if (consoleTracker) {
         consoleTracker.currentChanged.connect((_, widget) => {
           this._currentChanged.emit(widget);
+          this._currentWidget = widget;
         });
       }
+    }
+    // handle an existing current widget in case the KernelWidgetTracker
+    // is created a bit later, or if there is already a Notebook widget available
+    // on page load like in Notebook 7.
+    if (labShell?.currentWidget && hasKernelSession(labShell?.currentWidget)) {
+      this._currentWidget = labShell.currentWidget;
+    } else {
+      this._currentWidget =
+        notebookTracker.currentWidget ?? consoleTracker?.currentWidget ?? null;
     }
   }
 
@@ -44,10 +57,16 @@ export class KernelWidgetTracker {
     return this._currentChanged;
   }
 
+  get currentWidget(): IWidgetWithSession | null {
+    return this._currentWidget;
+  }
+
   private _currentChanged: Signal<
     KernelWidgetTracker,
     IWidgetWithSession | null
   >;
+
+  private _currentWidget: IWidgetWithSession | null = null;
 }
 
 /**

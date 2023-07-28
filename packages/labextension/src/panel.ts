@@ -1,10 +1,8 @@
 import { Message } from '@lumino/messaging';
-import { ISignal } from '@lumino/signaling';
 import { TranslationBundle } from '@jupyterlab/translation';
 import { StackedPanel } from '@lumino/widgets';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { KernelUsageWidget } from './widget';
-import { IWidgetWithSession } from './types';
 import { KernelWidgetTracker } from './tracker';
 
 import tachometer from '../style/tachometer.svg';
@@ -13,7 +11,7 @@ const PANEL_CLASS = 'jp-KernelUsage-view';
 
 export class KernelUsagePanel extends StackedPanel {
   constructor(props: {
-    currentChanged: ISignal<KernelWidgetTracker, IWidgetWithSession | null>;
+    tracker: KernelWidgetTracker;
     trans: TranslationBundle;
   }) {
     super();
@@ -27,7 +25,7 @@ export class KernelUsagePanel extends StackedPanel {
     this.title.closable = true;
 
     const widget = new KernelUsageWidget({
-      currentChanged: props.currentChanged,
+      tracker: props.tracker,
       panel: this,
       trans: props.trans,
     });
