@@ -19,6 +19,7 @@ type Usage = {
   pid: number;
   host_cpu_percent: number;
   cpu_count: number;
+  host_usage_flag: boolean;
   host_virtual_memory: {
     active: number;
     available: number;
@@ -302,56 +303,56 @@ const KernelUsage = (props: {
                 {formatForDisplay(usage.kernel_memory)}
               </div>
               <hr className="jp-KernelUsage-section-separator"></hr>
-              <h4 className="jp-KernelUsage-section-separator">
-                {props.trans.__('Host CPU')}
-              </h4>
-              {usage.host_cpu_percent && (
-                <div className="jp-KernelUsage-separator">
-                  {props.trans._n(
-                    '%2%% used on %1 CPU',
-                    '%2%% used on %1 CPUs',
-                    usage.cpu_count,
-                    usage.host_cpu_percent.toFixed(1)
+              {usage?.host_usage_flag ? (
+                <>
+                  <h4 className="jp-KernelUsage-section-separator">
+                    {props.trans.__('Host CPU')}
+                  </h4>
+                  {usage.host_cpu_percent && (
+                    <div className="jp-KernelUsage-separator">
+                      {props.trans._n(
+                        '%2%% used on %1 CPU',
+                        '%2%% used on %1 CPUs',
+                        usage.cpu_count,
+                        usage.host_cpu_percent.toFixed(1)
+                      )}
+                    </div>
                   )}
-                </div>
-              )}
-              <h4 className="jp-KernelUsage-section-separator">
-                {props.trans.__('Host Virtual Memory')}
-              </h4>
-              <div className="jp-KernelUsage-separator">
-                {props.trans.__('Active:')}{' '}
-                {formatForDisplay(usage.host_virtual_memory.active)}
-              </div>
-              <div className="jp-KernelUsage-separator">
-                {props.trans.__('Available:')}{' '}
-                {formatForDisplay(usage.host_virtual_memory.available)}
-              </div>
-              <div className="jp-KernelUsage-separator">
-                {props.trans.__('Free:')}{' '}
-                {formatForDisplay(usage.host_virtual_memory.free)}
-              </div>
-              <div className="jp-KernelUsage-separator">
-                {props.trans.__('Inactive:')}{' '}
-                {formatForDisplay(usage.host_virtual_memory.inactive)}
-              </div>
-              {usage.host_virtual_memory.percent && (
-                <div className="jp-KernelUsage-separator">
-                  {props.trans.__('Percent used:')}{' '}
-                  {usage.host_virtual_memory.percent.toFixed(1)}%
-                </div>
-              )}
-              <div className="jp-KernelUsage-separator">
-                {props.trans.__('Total:')}{' '}
-                {formatForDisplay(usage.host_virtual_memory.total)}
-              </div>
-              <div className="jp-KernelUsage-separator">
-                {props.trans.__('Used:')}{' '}
-                {formatForDisplay(usage.host_virtual_memory.used)}
-              </div>
-              <div className="jp-KernelUsage-separator">
-                {props.trans.__('Wired:')}{' '}
-                {formatForDisplay(usage.host_virtual_memory.wired)}
-              </div>
+                  <h4 className="jp-KernelUsage-section-separator">
+                    {props.trans.__('Host Virtual Memory')}
+                  </h4>
+                  <div className="jp-KernelUsage-separator">
+                    {props.trans.__('Active:')}{' '}
+                    {formatForDisplay(usage.host_virtual_memory.active)}
+                  </div>
+                  <div className="jp-KernelUsage-separator">
+                    {props.trans.__('Available:')}{' '}
+                    {formatForDisplay(usage.host_virtual_memory.available)}
+                  </div>
+                  <div className="jp-KernelUsage-separator">
+                    {props.trans.__('Free:')}{' '}
+                    {formatForDisplay(usage.host_virtual_memory.free)}
+                  </div>
+                  <div className="jp-KernelUsage-separator">
+                    {props.trans.__('Inactive:')}{' '}
+                    {formatForDisplay(usage.host_virtual_memory.inactive)}
+                  </div>
+                  {usage.host_virtual_memory.percent && (
+                    <div className="jp-KernelUsage-separator">
+                      {props.trans.__('Percent used:')}{' '}
+                      {usage.host_virtual_memory.percent.toFixed(1)}%
+                    </div>
+                  )}
+                  <div className="jp-KernelUsage-separator">
+                    {props.trans.__('Total:')}{' '}
+                    {formatForDisplay(usage.host_virtual_memory.total)}
+                  </div>
+                  <div className="jp-KernelUsage-separator">
+                    {props.trans.__('Wired:')}{' '}
+                    {formatForDisplay(usage.host_virtual_memory.wired)}
+                  </div>
+                </>
+              ) : null}
             </>
           ) : blankStateReason?.reason === 'loading' ? (
             <div className="jp-KernelUsage-separator">
