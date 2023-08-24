@@ -20,11 +20,11 @@ const MemoryViewComponent = ({
   const [values, setValues] = useState<number[]>([]);
 
   const update = (): void => {
-    const { memoryLimit, currentMemory, units } = model;
-    const precision = ['B', 'KB', 'MB'].indexOf(units) > 0 ? 0 : 2;
+    const { memoryLimit, currentMemory, memoryUnits } = model;
+    const precision = ['B', 'KB', 'MB'].indexOf(memoryUnits) > 0 ? 0 : 2;
     const newText = `${currentMemory.toFixed(precision)} ${
       memoryLimit ? '/ ' + memoryLimit.toFixed(precision) : ''
-    } ${units}`;
+    } ${memoryUnits}`;
     const newValues = model.values.map((value) => value.memoryPercent);
     setText(newText);
     setValues(newValues);

@@ -37,6 +37,11 @@ class ResourceUseDisplay(Configurable):
     Holds server-side configuration for jupyter-resource-usage
     """
 
+    system_disk_metrics = List(
+        trait=PSUtilMetric(),
+        default_value=[{"name": "disk_usage", "attribute": "disk_used"}],
+    )
+
     process_memory_metrics = List(
         trait=PSUtilMetric(),
         default_value=[{"name": "memory_info", "attribute": "rss"}],
@@ -127,5 +132,12 @@ class ResourceUseDisplay(Configurable):
         default_value=True,
         help="""
         Set to False in order to disable reporting of Prometheus style metrics.
+        """,
+    ).tag(config=True)
+
+    track_disk_usage = Bool(
+        default_value=False,
+        help="""
+        Set to True in order to enable reporting of disk usage statistics.
         """,
     ).tag(config=True)

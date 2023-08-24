@@ -1,4 +1,5 @@
 import json
+import os
 from concurrent.futures import ThreadPoolExecutor
 from inspect import isawaitable
 
@@ -60,6 +61,11 @@ class ApiHandler(APIHandler):
         metrics = {"rss": rss, "limits": limits}
         if pss is not None:
             metrics["pss"] = pss
+
+        if config.track_disk_usage:
+            disk_info = psutil.disk_usage(os.getenv("HOME"))
+            metrics["disk_used"] = disk_info.used
+            metrics["disk_total"] = disk_info.total
 
         # Optionally get CPU information
         if config.track_cpu_percent:
