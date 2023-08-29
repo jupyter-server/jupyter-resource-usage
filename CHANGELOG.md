@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.0.1
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.0.0...bd0d80160d4e4588644e842e06a279442c245340))
+
+### Enhancements made
+
+- Adds custom config to show/hide host usage info [#210](https://github.com/jupyter-server/jupyter-resource-usage/pull/210) ([@pinksi](https://github.com/pinksi))
+
+### Maintenance and upkeep improvements
+
+- Add Notebook 7 to Binder [#208](https://github.com/jupyter-server/jupyter-resource-usage/pull/208) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2023-07-28&to=2023-08-29&type=c))
+
+[@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2023-07-28..2023-08-29&type=Issues) | [@pinksi](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apinksi+updated%3A2023-07-28..2023-08-29&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2023-07-28..2023-08-29&type=Issues) | [@yuvipanda](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ayuvipanda+updated%3A2023-07-28..2023-08-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.0.0
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@0.7.2...1cf0e15ed06ce37d8fd4883464beb902fb562d86))
@@ -35,8 +55,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2023-02-20&to=2023-07-28&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Adependabot+updated%3A2023-02-20..2023-07-28&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2023-02-20..2023-07-28&type=Issues) | [@mahendrapaipuri](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Amahendrapaipuri+updated%3A2023-02-20..2023-07-28&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2023-02-20..2023-07-28&type=Issues) | [@SauravMaheshkar](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3ASauravMaheshkar+updated%3A2023-02-20..2023-07-28&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2023-02-20..2023-07-28&type=Issues) | [@Zsailer](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3AZsailer+updated%3A2023-02-20..2023-07-28&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.2
 
