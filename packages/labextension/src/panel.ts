@@ -22,7 +22,6 @@ export class KernelUsagePanel extends StackedPanel {
       name: 'jupyterlab-kernel-usage:icon',
       svgstr: tachometer,
     });
-    this.title.closable = true;
 
     const widget = new KernelUsageWidget({
       tracker: props.tracker,
