@@ -32,7 +32,7 @@ export namespace ResourceUsage {
     constructor(options: Model.IOptions) {
       super();
       for (let i = 0; i < N_BUFFER; i++) {
-        this._values.push({ memoryPercent: 0, cpuPercent: 0 });
+        this._values.push({ memoryPercent: 0, cpuPercent: 0, diskPercent: 0 });
       }
       this._poll = new Poll<Private.IMetricRequestResult | null>({
         factory: (): Promise<Private.IMetricRequestResult | null> =>
@@ -54,7 +54,10 @@ export namespace ResourceUsage {
           const oldCpuAvailable = this._cpuAvailable;
           this._memoryAvailable = false;
           this._cpuAvailable = false;
+          this._diskAvailable = false;
           this._currentMemory = 0;
+          this._currentDisk = 0;
+          this._maxDisk = 0;
           this._memoryLimit = null;
           this._cpuLimit = null;
           this._units = 'B';
@@ -97,10 +100,31 @@ export namespace ResourceUsage {
     }
 
     /**
+     * Whether the disk metric is available.
+     */
+    get diskAvailable(): boolean {
+      return this._diskAvailable;
+    }
+
+    /**
      * The current memory usage.
      */
     get currentMemory(): number {
       return this._currentMemory;
+    }
+
+    /**
+     * The current disk [partition] usage.
+     */
+    get currentDisk(): number {
+      return this._currentDisk;
+    }
+
+    /**
+     * The maximum disk [partition] usage.
+     */
+    get maxDisk(): number {
+      return this._maxDisk;
     }
 
     /**
@@ -165,6 +189,8 @@ export namespace ResourceUsage {
         this._memoryAvailable = false;
         this._cpuAvailable = false;
         this._currentMemory = 0;
+        this._currentDisk = 0;
+        this._maxDisk = 0;
         this._memoryLimit = null;
         this._units = 'B';
         this._warn = false;
@@ -195,14 +221,22 @@ export namespace ResourceUsage {
       this._currentCpuPercent =
         value.cpu_percent !== undefined ? value.cpu_percent / 100 : 0;
 
-      this._values.push({ memoryPercent, cpuPercent: this._currentCpuPercent });
+      this._currentDisk = value.disk_usage_used !== undefined ? value.disk_usage_used : 0;
+      this._maxDisk = value.disk_usage_total !== undefined ? value.disk_usage_total : 0;
+      const currentDiskPercent =Math.min(this._currentDisk / this._maxDisk, 1);
+  
+
+      this._values.push({ memoryPercent, cpuPercent: this._currentCpuPercent, diskPercent: currentDiskPercent });
       this._values.shift();
       this.stateChanged.emit(void 0);
     }
 
     private _memoryAvailable = false;
     private _cpuAvailable = false;
+    private _diskAvailable = false;
     private _currentMemory = 0;
+    private _currentDisk = 0;
+    private _maxDisk = 0;
     private _currentCpuPercent = 0;
     private _memoryLimit: number | null = null;
     private _cpuLimit: number | null = null;
@@ -239,6 +273,11 @@ export namespace ResourceUsage {
        * The cpu percentage.
        */
       cpuPercent: number;
+
+      /**
+       * The cpu percentage.
+       */
+      diskPercent: number;
     }
   }
 }
@@ -268,6 +307,8 @@ namespace Private {
     pss?: number;
     cpu_percent?: number;
     cpu_count?: number;
+    disk_usage_total?: number;
+    disk_usage_used?: number;
     limits: {
       memory?: {
         rss: number;
@@ -276,6 +317,10 @@ namespace Private {
       };
       cpu?: {
         cpu: number;
+        warn: boolean;
+      };
+      disk?: {
+        max: number;
         warn: boolean;
       };
     };

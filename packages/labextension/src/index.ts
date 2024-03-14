@@ -34,6 +34,8 @@ import { KernelWidgetTracker } from './tracker';
 
 import { CpuView } from './cpuView';
 
+import { DiskView } from './diskView';
+
 import { MemoryView } from './memoryView';
 
 /**
@@ -55,6 +57,11 @@ const DEFAULT_MEMORY_LABEL = 'Mem: ';
  * The default CPU label.
  */
 const DEFAULT_CPU_LABEL = 'CPU: ';
+
+/**
+ * The default Disk label.
+ */
+const DEFAULT_DISK_LABEL = 'Disk: ';
 
 /**
  * An interface for resource settings.
@@ -112,16 +119,23 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
     let refreshRate = DEFAULT_REFRESH_RATE;
     let cpuLabel = DEFAULT_CPU_LABEL;
     let memoryLabel = DEFAULT_MEMORY_LABEL;
+    let diskLabel = DEFAULT_DISK_LABEL;
 
     if (settingRegistry) {
       const settings = await settingRegistry.load(systemMonitorPlugin.id);
       enablePlugin = settings.get('enable').composite as boolean;
       refreshRate = settings.get('refreshRate').composite as number;
+
       const cpuSettings = settings.get('cpu').composite as IResourceSettings;
       cpuLabel = cpuSettings.label;
+      
       const memorySettings = settings.get('memory')
         .composite as IResourceSettings;
       memoryLabel = memorySettings.label;
+      
+      const diskSettings = settings.get('disk')
+        .composite as IResourceSettings;
+      diskLabel = diskSettings.label;
     }
 
     const model = new ResourceUsage.Model({ refreshRate });
@@ -138,6 +152,13 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
       toolbarRegistry.addFactory('TopBar', 'memory', () => {
         const memory = MemoryView.createMemoryView(model, memoryLabel);
         return memory;
+      });
+    }
+
+    if (enablePlugin && model.diskAvailable) {
+      toolbarRegistry.addFactory('TopBar', 'disk', () => {
+        const disk = DiskView.createDiskView(model, diskLabel);
+        return disk;
       });
     }
   },

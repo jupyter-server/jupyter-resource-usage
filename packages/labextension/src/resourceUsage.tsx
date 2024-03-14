@@ -52,6 +52,14 @@ export class ResourceUsageStatus extends VDomRenderer<ResourceUsage.Model> {
         Private.DECIMAL_PLACES
       )} % ${text}`;
     }
+    if (this.model.currentDisk) {
+      text = this._trans.__(
+        'Disk: %1 / %2 %3',
+        this.model.currentDisk.toFixed(Private.DECIMAL_PLACES),
+        this.model.MaxDisk.toFixed(Private.DECIMAL_PLACES),
+        this.model.units
+      );
+    }
     if (!this.model.usageWarning) {
       return (
         <TextItem

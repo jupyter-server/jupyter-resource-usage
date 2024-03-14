@@ -4,6 +4,10 @@
   "jupyter.lab.toolbars": {
     "TopBar": [
       {
+        "name": "disk",
+        "rank": 110
+      },
+      {
         "name": "cpu",
         "rank": 120
       },
@@ -41,6 +45,14 @@
       "default": {
         "label": "CPU: "
       }
+    },
+    "disk": {
+      "title": "Disk Settings",
+      "description": "Settings for the Disk indicator",
+      "$ref": "#/definitions/disk",
+      "default": {
+        "label": "Disk: "
+      }
     }
   },
   "additionalProperties": false,
@@ -62,7 +74,17 @@
           "description": "Label for the cpu indicator"
         }
       }
+    },
+    "disk": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Label for the disk indicator"
+        }
+      }
     }
+
   },
   "type": "object"
 }
