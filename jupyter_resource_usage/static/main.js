@@ -25,6 +25,17 @@ define([
                         .attr('title', 'Actively used CPU (updates every 5s)')
             )
         );
+        $('#maintoolbar-container').append(
+            $('<div>').attr('id', 'jupyter-resource-usage-display-disk')
+                .addClass('btn-group')
+                .addClass('jupyter-resource-usage-hide')
+                .addClass('pull-right').append(
+                    $('<strong>').text(' Disk: ')
+                ).append(
+                    $('<span>').attr('id', 'jupyter-resource-usage-disk')
+                        .attr('title', 'Disk usage (updates every 5s)')
+            )
+        );
         // FIXME: Do something cleaner to get styles in here?
         $('head').append(
             $('<style>').html('.jupyter-resource-usage-warn { background-color: #FFD2D2; color: #D8000C; }')
@@ -37,6 +48,9 @@ define([
         );
         $('head').append(
             $('<style>').html('#jupyter-resource-usage-display-cpu { padding: 2px 8px; }')
+        );
+        $('head').append(
+            $('<style>').html('#jupyter-resource-usage-display-disk { padding: 2px 8px; }')
         );
     }
 
@@ -94,6 +108,30 @@ define([
                         }
                     }
     
+                    $('#jupyter-resource-usage-cpu').text(display);    
+                }
+
+                // Handle disk display
+                var diskUsed = data['disk_usage_used'];
+                if (diskUsed !== undefined) {
+                    // Remove hide CSS class if the metrics API gives us disk values to display
+                    $('#jupyter-resource-usage-display-disk').removeClass('jupyter-resource-usage-hide');
+                    
+                    var maxDisk = data['disk_usage_total'];
+                    var limits = data['limits'];
+                    var currentDiskUsed = humanFileSize(diskUsed);
+                    var totalDiskSpace = humanFileSize(maxDisk);
+
+                    var display = currentDiskUsed + " / " + totalDiskSpace;
+    
+                    if (limits['disk']) {
+                        if (limits['disk']['warn']) {
+                            $('#jupyter-resource-usage-display').addClass('jupyter-resource-usage-warn');
+                        } else {
+                            $('#jupyter-resource-usage-display').removeClass('jupyter-resource-usage-warn');
+                        }
+                    }
+
                     $('#jupyter-resource-usage-cpu').text(display);    
                 }
             }

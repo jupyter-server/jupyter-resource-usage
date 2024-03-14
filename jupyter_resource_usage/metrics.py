@@ -13,10 +13,10 @@ class PSUtilMetricsLoader:
         ]
         self.server_app = server_app
 
-    def get_process_metric_value(self, process, name, kwargs, attribute=None):
+    def get_process_metric_value(self, process, name, args, kwargs, attribute=None):
         try:
             # psutil.Process methods will either return...
-            metric_value = getattr(process, name)(**kwargs)
+            metric_value = getattr(process, name)(*args, **kwargs)
             if attribute is not None:  # ... a named tuple
                 return getattr(metric_value, attribute)
             else:  # ... or a number
@@ -26,7 +26,7 @@ class PSUtilMetricsLoader:
         except BaseException:
             return 0
 
-    def process_metric(self, name, kwargs={}, attribute=None):
+    def process_metric(self, name, args=[], kwargs={}, attribute=None):
         if psutil is None:
             return None
         else:
@@ -34,17 +34,20 @@ class PSUtilMetricsLoader:
             all_processes = [current_process] + current_process.children(recursive=True)
 
             process_metric_value = lambda process: self.get_process_metric_value(
-                process, name, kwargs, attribute
+                process, name, args, kwargs, attribute
             )
 
             return sum([process_metric_value(process) for process in all_processes])
 
-    def system_metric(self, name, kwargs={}, attribute=None):
+    def system_metric(self, name, args=[], kwargs={}, attribute=None):
         if psutil is None:
             return None
         else:
-            # psutil functions will either return...
-            metric_value = getattr(psutil, name)(**kwargs)
+            # psutil functions will either raise an error, or return...
+            try:
+                metric_value = getattr(psutil, name)(*args, **kwargs)
+            except:
+                return None
             if attribute is not None:  # ... a named tuple
                 return getattr(metric_value, attribute)
             else:  # ... or a number
@@ -79,4 +82,9 @@ class PSUtilMetricsLoader:
     def cpu_metrics(self):
         return self.metrics(
             self.config.process_cpu_metrics, self.config.system_cpu_metrics
+        )
+    
+    def disk_metrics(self):
+        return self.metrics(
+            self.config.process_disk_metrics, self.config.system_cpu_metrics
         )
