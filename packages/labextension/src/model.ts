@@ -11,6 +11,10 @@ import { Poll } from '@lumino/polling';
 
 import { MemoryUnit, MEMORY_UNIT_LIMITS, convertToLargestUnit } from './format';
 
+import { DEFAULT_CPU_LABEL } from './cpuView';
+import { DEFAULT_DISK_LABEL } from './diskView';
+import { DEFAULT_MEMORY_LABEL } from './memoryView';
+
 /**
  * Number of values to keep in memory.
  */
@@ -76,6 +80,19 @@ export namespace ResourceUsage {
     async refresh(): Promise<void> {
       await this._poll.refresh();
       await this._poll.tick;
+    }
+
+    /**
+     * Labels for items
+     */
+    get cpuLabel(): string {
+      return this._cpuLabel;
+    }
+    get memLabel(): string {
+      return this._memLabel;
+    }
+    get diskLabel(): string {
+      return this._diskLabel;
     }
 
     /**
@@ -256,6 +273,9 @@ export namespace ResourceUsage {
       this.stateChanged.emit(void 0);
     }
 
+    private _cpuLabel = DEFAULT_CPU_LABEL;
+    private _memLabel = DEFAULT_MEMORY_LABEL;
+    private _diskLabel = DEFAULT_DISK_LABEL;
     private _memoryAvailable = false;
     private _cpuAvailable = false;
     private _diskAvailable = false;

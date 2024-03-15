@@ -6,6 +6,8 @@ import { IndicatorComponent } from './indicator';
 
 import { ResourceUsage } from './model';
 
+export const DEFAULT_MEMORY_LABEL = 'Mem: ';
+
 /**
  * A MemoryView component to display memory usage.
  */
@@ -21,7 +23,7 @@ const MemoryViewComponent = ({
 
   const update = (): void => {
     const { memoryLimit, currentMemory, memUnits } = model;
-    const precision = ['B', 'KB', 'MB'].indexOf(memUnits) > 0 ? 0 : 2;
+    const precision = ['B', 'KB', 'MB', 'GB'].indexOf(memUnits) > 0 ? 0 : 3;
     const newText = `${currentMemory.toFixed(precision)} ${
       memoryLimit ? '/ ' + memoryLimit.toFixed(precision) : ''
     } ${memUnits}`;

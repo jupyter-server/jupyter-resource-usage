@@ -296,7 +296,7 @@ const KernelUsage = (props: {
                 {props.trans.__('Process ID:')} {usage.pid}
               </div>
               <div className="jp-KernelUsage-separator">
-                {props.trans.__('CPU:')} {usage.kernel_cpu}
+                {props.trans.__('HPU:')} {usage.kernel_cpu}
               </div>
               <div className="jp-KernelUsage-separator">
                 {props.trans.__('Memory:')}{' '}

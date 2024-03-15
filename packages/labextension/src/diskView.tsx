@@ -6,6 +6,8 @@ import { IndicatorComponent } from './indicator';
 
 import { ResourceUsage } from './model';
 
+export const DEFAULT_DISK_LABEL = 'Disk: ';
+
 /**
  * A DiskView component to display disk usage.
  */

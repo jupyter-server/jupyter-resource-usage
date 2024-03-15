@@ -38,6 +38,10 @@ import { DiskView } from './diskView';
 
 import { MemoryView } from './memoryView';
 
+import { DEFAULT_CPU_LABEL } from './cpuView';
+import { DEFAULT_DISK_LABEL } from './diskView';
+import { DEFAULT_MEMORY_LABEL } from './memoryView';
+
 /**
  * Disable system monitor panels by default.
  */
@@ -47,21 +51,6 @@ const DEFAULT_ENABLE_SYSTEM_MONITOR = false;
  * The default refresh rate.
  */
 const DEFAULT_REFRESH_RATE = 5000;
-
-/**
- * The default memory label.
- */
-const DEFAULT_MEMORY_LABEL = 'Mem: ';
-
-/**
- * The default CPU label.
- */
-const DEFAULT_CPU_LABEL = 'CPU: ';
-
-/**
- * The default Disk label.
- */
-const DEFAULT_DISK_LABEL = 'Disk: ';
 
 /**
  * An interface for resource settings.

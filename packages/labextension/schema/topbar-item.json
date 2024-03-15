@@ -35,7 +35,7 @@
       "description": "Settings for the memory indicator",
       "$ref": "#/definitions/memory",
       "default": {
-        "label": "Mem: "
+        "label": "| Mem: "
       }
     },
     "cpu": {
@@ -51,7 +51,7 @@
       "description": "Settings for the Disk indicator",
       "$ref": "#/definitions/disk",
       "default": {
-        "label": "Disk: "
+        "label": "| Disk: "
       }
     }
   },

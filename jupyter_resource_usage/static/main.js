@@ -4,6 +4,17 @@ define([
 ], function ($, utils) {
     function setupDOM() {
         $('#maintoolbar-container').append(
+            $('<div>').attr('id', 'jupyter-resource-usage-display-disk')
+                .addClass('btn-group')
+                .addClass('jupyter-resource-usage-hide')
+                .addClass('pull-right').append(
+                    $('<strong>').text(' Disk: ')
+                ).append(
+                    $('<span>').attr('id', 'jupyter-resource-usage-disk')
+                        .attr('title', 'Actively used CPU (updates every 5s)')
+            )
+        );
+        $('#maintoolbar-container').append(
             $('<div>').attr('id', 'jupyter-resource-usage-display')
                 .addClass('btn-group')
                 .addClass('pull-right')
@@ -25,17 +36,6 @@ define([
                         .attr('title', 'Actively used CPU (updates every 5s)')
             )
         );
-        $('#maintoolbar-container').append(
-            $('<div>').attr('id', 'jupyter-resource-usage-display-disk')
-                .addClass('btn-group')
-                .addClass('jupyter-resource-usage-hide')
-                .addClass('pull-right').append(
-                    $('<strong>').text(' Disk: ')
-                ).append(
-                    $('<span>').attr('id', 'jupyter-resource-usage-disk')
-                        .attr('title', 'Disk usage (updates every 5s)')
-            )
-        );
         // FIXME: Do something cleaner to get styles in here?
         $('head').append(
             $('<style>').html('.jupyter-resource-usage-warn { background-color: #FFD2D2; color: #D8000C; }')
@@ -51,8 +51,7 @@ define([
         );
         $('head').append(
             $('<style>').html('#jupyter-resource-usage-display-disk { padding: 2px 8px; }')
-        );
-    }
+        );    }
 
     function humanFileSize(size) {
         var i = Math.floor(Math.log(size) / Math.log(1024));
@@ -111,28 +110,25 @@ define([
                     $('#jupyter-resource-usage-cpu').text(display);    
                 }
 
-                // Handle disk display
-                var diskUsed = data['disk_usage_used'];
-                if (diskUsed !== undefined) {
-                    // Remove hide CSS class if the metrics API gives us disk values to display
+                // Handle Disk display
+                var maxDisk = data['disk_total'];
+                if (maxDisk !== undefined) {
+                    // Remove hide CSS class if the metrics API gives us a CPU percent to display
                     $('#jupyter-resource-usage-display-disk').removeClass('jupyter-resource-usage-hide');
-                    
-                    var maxDisk = data['disk_usage_total'];
-                    var limits = data['limits'];
-                    var currentDiskUsed = humanFileSize(diskUsed);
-                    var totalDiskSpace = humanFileSize(maxDisk);
 
-                    var display = currentDiskUsed + " / " + totalDiskSpace;
-    
+                    var currentDisk = data['disk_used'];
+                    var limits = data['limits'];
+                    var display = humanFileSize(maxDisk) + ' / ' + humanFileSize(currentDisk);
+                    // Handle limit warning
                     if (limits['disk']) {
                         if (limits['disk']['warn']) {
-                            $('#jupyter-resource-usage-display').addClass('jupyter-resource-usage-warn');
+                            $('#jupyter-resource-usage-display-disk').addClass('jupyter-resource-usage-warn');
                         } else {
-                            $('#jupyter-resource-usage-display').removeClass('jupyter-resource-usage-warn');
+                            $('#jupyter-resource-usage-display-disk').removeClass('jupyter-resource-usage-warn');
                         }
                     }
-
-                    $('#jupyter-resource-usage-cpu').text(display);    
+    
+                    $('#jupyter-resource-usage-disk').text(display);    
                 }
             }
         });
@@ -144,7 +140,7 @@ define([
         // Update every five seconds, eh?
         setInterval(displayMetrics, 1000 * 5);
 
-        document.addEventListener("visibilitychange", function () {
+        document.addEventListener("visibilitychange", () => {
             // Update instantly when user activates notebook tab
             // FIXME: Turn off update timer completely when tab not in focus
             if (!document.hidden) {
