@@ -4,16 +4,16 @@
   "jupyter.lab.toolbars": {
     "TopBar": [
       {
-        "name": "disk",
-        "rank": 110
-      },
-      {
         "name": "cpu",
         "rank": 120
       },
       {
         "name": "memory",
         "rank": 130
+      },
+      {
+        "name": "disk",
+        "rank": 140
       }
     ]
   },

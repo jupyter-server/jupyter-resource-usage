@@ -66,8 +66,11 @@ class PSUtilMetricsLoader:
         return metric_values
 
     def metrics(self, process_metrics, system_metrics):
-        metric_values = self.get_metric_values(process_metrics, "process")
-        metric_values.update(self.get_metric_values(system_metrics, "system"))
+        metric_values = {}
+        if process_metrics:
+            metric_values.update(self.get_metric_values(process_metrics, "process"))
+        if system_metrics:
+            metric_values.update(self.get_metric_values(system_metrics, "system"))
 
         if any(value is None for value in metric_values.values()):
             return None
@@ -83,8 +86,8 @@ class PSUtilMetricsLoader:
         return self.metrics(
             self.config.process_cpu_metrics, self.config.system_cpu_metrics
         )
-    
+
     def disk_metrics(self):
         return self.metrics(
-            self.config.process_disk_metrics, self.config.system_cpu_metrics
+            self.config.process_disk_metrics, self.config.system_disk_metrics
         )

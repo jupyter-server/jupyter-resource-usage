@@ -60,7 +60,7 @@ export namespace ResourceUsage {
           this._maxDisk = 0;
           this._memoryLimit = null;
           this._cpuLimit = null;
-          this._units = 'B';
+          this._memUnits = 'B';
 
           if (oldMemoryAvailable || oldCpuAvailable) {
             this.stateChanged.emit();
@@ -144,8 +144,15 @@ export namespace ResourceUsage {
     /**
      * The units for memory usages and limits.
      */
-    get units(): MemoryUnit {
-      return this._units;
+    get memUnits(): MemoryUnit {
+      return this._memUnits;
+    }
+
+    /**
+     * The units for disk usages and limits.
+     */
+    get diskUnits(): MemoryUnit {
+      return this._diskUnits;
     }
 
     /**
@@ -192,24 +199,24 @@ export namespace ResourceUsage {
         this._currentDisk = 0;
         this._maxDisk = 0;
         this._memoryLimit = null;
-        this._units = 'B';
+        this._memUnits = 'B';
+        this._diskUnits = 'B';
         this._warn = false;
         return;
       }
-
       const numBytes = value.pss ?? value.rss;
       const memoryLimits = value.limits.memory;
       const memoryLimit = memoryLimits?.pss ?? memoryLimits?.rss ?? null;
-      const [currentMemory, units] = convertToLargestUnit(numBytes);
+      const [currentMemory, memUnits] = convertToLargestUnit(numBytes);
       const usageWarning = value.limits.memory
         ? value.limits.memory.warn
         : false;
 
       this._memoryAvailable = numBytes !== undefined;
       this._currentMemory = currentMemory;
-      this._units = units;
+      this._memUnits = memUnits;
       this._memoryLimit = memoryLimit
-        ? memoryLimit / MEMORY_UNIT_LIMITS[units]
+        ? memoryLimit / MEMORY_UNIT_LIMITS[memUnits]
         : null;
       const memoryPercent = this.memoryLimit
         ? Math.min(this._currentMemory / this.memoryLimit, 1)
@@ -221,12 +228,30 @@ export namespace ResourceUsage {
       this._currentCpuPercent =
         value.cpu_percent !== undefined ? value.cpu_percent / 100 : 0;
 
-      this._currentDisk = value.disk_usage_used !== undefined ? value.disk_usage_used : 0;
-      this._maxDisk = value.disk_usage_total !== undefined ? value.disk_usage_total : 0;
-      const currentDiskPercent =Math.min(this._currentDisk / this._maxDisk, 1);
-  
+      const maxDisk = value.disk_total;
+      this._diskAvailable = maxDisk ? true : false;
+      const currentDisk = value.disk_used;
 
-      this._values.push({ memoryPercent, cpuPercent: this._currentCpuPercent, diskPercent: currentDiskPercent });
+      let maxDiskHuman = 0;
+      let currentDiskHuman = 0;
+      let diskUnits = 'B';
+      [maxDiskHuman, diskUnits] = convertToLargestUnit(maxDisk);
+      [currentDiskHuman, diskUnits] = convertToLargestUnit(
+        currentDisk,
+        diskUnits as MemoryUnit
+      );
+
+      this._currentDisk = currentDiskHuman;
+      this._maxDisk = maxDiskHuman;
+      this._diskUnits = diskUnits as MemoryUnit;
+
+      const currentDiskPercent = Math.min(this._currentDisk / this._maxDisk, 1);
+
+      this._values.push({
+        memoryPercent,
+        cpuPercent: this._currentCpuPercent,
+        diskPercent: currentDiskPercent,
+      });
       this._values.shift();
       this.stateChanged.emit(void 0);
     }
@@ -241,7 +266,8 @@ export namespace ResourceUsage {
     private _memoryLimit: number | null = null;
     private _cpuLimit: number | null = null;
     private _poll: Poll<Private.IMetricRequestResult | null>;
-    private _units: MemoryUnit = 'B';
+    private _memUnits: MemoryUnit = 'B';
+    private _diskUnits: MemoryUnit = 'B';
     private _warn = false;
     private _values: Model.IMetricValue[] = [];
   }
@@ -307,8 +333,8 @@ namespace Private {
     pss?: number;
     cpu_percent?: number;
     cpu_count?: number;
-    disk_usage_total?: number;
-    disk_usage_used?: number;
+    disk_total?: number;
+    disk_used?: number;
     limits: {
       memory?: {
         rss: number;

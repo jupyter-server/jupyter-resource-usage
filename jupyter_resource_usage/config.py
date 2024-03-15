@@ -6,8 +6,8 @@ from traitlets import Dict
 from traitlets import Float
 from traitlets import Int
 from traitlets import List
-from traitlets import Str
 from traitlets import TraitType
+from traitlets import Unicode
 from traitlets import Union
 from traitlets.config import Configurable
 
@@ -28,7 +28,7 @@ class PSUtilMetric(TraitType):
             keys = list(value.keys())
             if "name" in keys:
                 keys.remove("name")
-                if all(key in ["kwargs", "attribute"] for key in keys):
+                if all(key in ["args", "kwargs", "attribute"] for key in keys):
                     return value
         self.error(obj, value)
 
@@ -65,8 +65,8 @@ class ResourceUseDisplay(Configurable):
     system_disk_metrics = List(
         trait=PSUtilMetric(),
         default_value=[
-            {"name": "disk_usage", "args": ['/home' ], "attribute": "total"},
-            {"name": "disk_usage", "args": ['/home' ], "attribute": "used"}
+            {"name": "disk_usage", "args": ["/home"], "attribute": "total"},
+            {"name": "disk_usage", "args": ["/home"], "attribute": "used"},
         ],
     )
 
@@ -145,8 +145,8 @@ class ResourceUseDisplay(Configurable):
     ).tag(config=True)
 
     disk_path = Union(
-        trait_types=[Str(), Callable()],
-        default_value='/home/joyvan',
+        trait_types=[Unicode(), Callable()],
+        default_value="/home/joyvan",
         help="""
         A path in the partition to be reported on.
         """,
@@ -154,7 +154,7 @@ class ResourceUseDisplay(Configurable):
 
     @default("disk_path")
     def _disk_path_default(self):
-        return str(os.environ.get("HOME", '/home/joyvan'))
+        return str(os.environ.get("HOME", "/home/joyvan"))
 
     disk_warning_threshold = Float(
         default_value=0.1,

@@ -20,9 +20,11 @@ const DiskViewComponent = ({
   const [values, setValues] = useState<number[]>([]);
 
   const update = (): void => {
-    const { maxDisk, currentDisk, units } = model;
-    const precision = ['B', 'KB', 'MB'].indexOf(units) > 0 ? 0 : 2;
-    const newText = `${currentDisk.toFixed(precision)} / ${maxDisk.toFixed(precision)} ${units}`;
+    const { maxDisk, currentDisk, diskUnits } = model;
+    const precision = ['B', 'KB', 'MB'].indexOf(diskUnits) > 0 ? 0 : 2;
+    const newText = `${currentDisk.toFixed(precision)} / ${maxDisk.toFixed(
+      precision
+    )} ${diskUnits}`;
     const newValues = model.values.map((value) => value.diskPercent);
     setText(newText);
     setValues(newValues);
@@ -34,7 +36,7 @@ const DiskViewComponent = ({
       model.stateChanged.disconnect(update);
     };
   }, [model]);
-
+  console.log('DiskViewComponent created');
   return (
     <IndicatorComponent
       enabled={model.diskAvailable}

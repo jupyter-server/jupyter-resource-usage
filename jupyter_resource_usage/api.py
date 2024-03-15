@@ -82,10 +82,11 @@ class ApiHandler(APIHandler):
             except:
                 pass
             else:
-                metrics.update(disk_used=disk_info['used'], disk_total=disk_info['total'])
+                metrics.update(disk_used=disk_info.used, disk_total=disk_info.total)
+                limits["disk"] = {"disk": disk_info.total}
                 if config.disk_warning_threshold != 0:
-                    limits["disk"]["warn"] = (disk_info['total'] - disk_info['used']) < (
-                        disk_info['total'] * config.cpu_warning_threshold
+                    limits["disk"]["warn"] = (disk_info.total - disk_info.used) < (
+                        disk_info.total * config.cpu_warning_threshold
                     )
 
         self.write(json.dumps(metrics))

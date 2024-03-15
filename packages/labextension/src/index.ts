@@ -128,13 +128,12 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
 
       const cpuSettings = settings.get('cpu').composite as IResourceSettings;
       cpuLabel = cpuSettings.label;
-      
+
       const memorySettings = settings.get('memory')
         .composite as IResourceSettings;
       memoryLabel = memorySettings.label;
-      
-      const diskSettings = settings.get('disk')
-        .composite as IResourceSettings;
+
+      const diskSettings = settings.get('disk').composite as IResourceSettings;
       diskLabel = diskSettings.label;
     }
 
@@ -154,7 +153,6 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
         return memory;
       });
     }
-
     if (enablePlugin && model.diskAvailable) {
       toolbarRegistry.addFactory('TopBar', 'disk', () => {
         const disk = DiskView.createDiskView(model, diskLabel);
