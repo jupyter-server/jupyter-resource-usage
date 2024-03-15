@@ -38,6 +38,15 @@ class ResourceUseDisplay(Configurable):
     Holds server-side configuration for jupyter-resource-usage
     """
 
+    # Needs to be defined early, so the metrics can use it.
+    disk_path = Union(
+        trait_types=[Unicode(), Callable()],
+        default_value="/home/joyvan",
+        help="""
+        A path in the partition to be reported on.
+        """,
+    ).tag(config=True)
+
     process_memory_metrics = List(
         trait=PSUtilMetric(),
         default_value=[{"name": "memory_info", "attribute": "rss"}],
@@ -65,8 +74,8 @@ class ResourceUseDisplay(Configurable):
     system_disk_metrics = List(
         trait=PSUtilMetric(),
         default_value=[
-            {"name": "disk_usage", "args": ["/home"], "attribute": "total"},
-            {"name": "disk_usage", "args": ["/home"], "attribute": "used"},
+            {"name": "disk_usage", "args": [disk_path], "attribute": "total"},
+            {"name": "disk_usage", "args": [disk_path], "attribute": "used"},
         ],
     )
 
@@ -141,14 +150,6 @@ class ResourceUseDisplay(Configurable):
         default_value=False,
         help="""
         Set to True in order to enable reporting of disk usage statistics.
-        """,
-    ).tag(config=True)
-
-    disk_path = Union(
-        trait_types=[Unicode(), Callable()],
-        default_value="/home/joyvan",
-        help="""
-        A path in the partition to be reported on.
         """,
     ).tag(config=True)
 
