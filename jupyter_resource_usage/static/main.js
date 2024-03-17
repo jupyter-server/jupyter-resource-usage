@@ -147,4 +147,4 @@ define([ // eslint-disable-line no-undef
     return {
         load_ipython_extension: load_ipython_extension,
     };
-});
+}});
