@@ -6,12 +6,12 @@ import { IndicatorComponent } from './indicator';
 
 import { ResourceUsage } from './model';
 
-export const DEFAULT_MEMORY_LABEL = 'Mem: ';
+export const DEFAULT_DISK_LABEL = 'Disk: ';
 
 /**
- * A MemoryView component to display memory usage.
+ * A DiskView component to display disk usage.
  */
-const MemoryViewComponent = ({
+const DiskViewComponent = ({
   model,
   label,
 }: {
@@ -22,12 +22,12 @@ const MemoryViewComponent = ({
   const [values, setValues] = useState<number[]>([]);
 
   const update = (): void => {
-    const { memoryLimit, currentMemory, memUnits } = model;
-    const precision = ['B', 'KB', 'MB', 'GB'].indexOf(memUnits) > 0 ? 0 : 3;
-    const newText = `${currentMemory.toFixed(precision)} ${
-      memoryLimit ? '/ ' + memoryLimit.toFixed(precision) : ''
-    } ${memUnits}`;
-    const newValues = model.values.map((value) => value.memoryPercent);
+    const { maxDisk, currentDisk, diskUnits } = model;
+    const precision = ['B', 'KB', 'MB'].indexOf(diskUnits) > 0 ? 0 : 2;
+    const newText = `${currentDisk.toFixed(precision)} / ${maxDisk.toFixed(
+      precision
+    )} ${diskUnits}`;
+    const newValues = model.values.map((value) => value.diskPercent);
     setText(newText);
     setValues(newValues);
   };
@@ -38,31 +38,31 @@ const MemoryViewComponent = ({
       model.stateChanged.disconnect(update);
     };
   }, [model]);
-
+  console.log('DiskViewComponent created');
   return (
     <IndicatorComponent
-      enabled={model.memoryAvailable}
+      enabled={model.diskAvailable}
       values={values}
       label={label}
-      color={'#00B35B'}
+      color={'#c27ba0'}
       text={text}
     />
   );
 };
 
-export namespace MemoryView {
+export namespace DiskView {
   /**
    * Create a new MemoryView React Widget.
    *
    * @param model The resource usage model.
    * @param label The label next to the component.
    */
-  export const createMemoryView = (
+  export const createDiskView = (
     model: ResourceUsage.Model,
     label: string
   ): ReactWidget => {
     return ReactWidget.create(
-      <MemoryViewComponent model={model} label={label} />
+      <DiskViewComponent model={model} label={label} />
     );
   };
 }

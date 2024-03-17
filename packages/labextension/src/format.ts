@@ -17,22 +17,29 @@ export const MEMORY_UNIT_LIMITS: {
   PB: 1125899906842624,
 };
 
-export function formatForDisplay(numBytes: number | undefined): string {
-  const lu = convertToLargestUnit(numBytes);
+export function formatForDisplay(
+  numBytes: number | undefined,
+  units?: MemoryUnit | undefined
+): string {
+  const lu = convertToLargestUnit(numBytes, units);
   return lu[0].toFixed(2) + ' ' + lu[1];
 }
 
 /**
  * Given a number of bytes, convert to the most human-readable
  * format, (GB, TB, etc).
+ * If "units" is given, convert to that scale
  */
 export function convertToLargestUnit(
-  numBytes: number | undefined
+  numBytes: number | undefined,
+  units?: MemoryUnit
 ): [number, MemoryUnit] {
   if (!numBytes) {
     return [0, 'B'];
   }
-  if (numBytes < MEMORY_UNIT_LIMITS.KB) {
+  if (units && units in MEMORY_UNIT_LIMITS) {
+    return [numBytes / MEMORY_UNIT_LIMITS[units], units];
+  } else if (numBytes < MEMORY_UNIT_LIMITS.KB) {
     return [numBytes, 'B'];
   } else if (
     MEMORY_UNIT_LIMITS.KB === numBytes ||

@@ -134,6 +134,23 @@ memory:
 
 ![Screenshot with CPU and memory](./doc/statusbar-cpu.png)
 
+### Disk [partition] Usage
+
+`jupyter-resource-usage` can also track Disk usage [of a defined parition] and report the `total` and `used` values as part of the `/api/metrics/v1` response.
+
+You enable tracking by setting the `track_disk_usage` trait (disabled by default):
+
+```python
+c = get_config()
+c.ResourceUseDisplay.track_disk_usage = True
+```
+
+The values are from the partition containing the folder in the trait `disk_path` (which defaults to `/home/joyvan`)
+
+Mirroring CPU and Memory, the trait `disk_warning_threshold` signifies when to flag a usage warning, and like the others, it defaults to `0.1` (10% remailing)
+
+![Screenshot with Disk, CPU, and memory](./doc/statusbar_disk.png)
+
 ### Disable Prometheus Metrics
 
 There is a [known bug](https://github.com/jupyter-server/jupyter-resource-usage/issues/123) with Prometheus metrics which
@@ -157,9 +174,11 @@ render the alternative frontend in the topbar.
 Users can change the label and refresh rate for the alternative frontend using settings
 editor.
 
+(The vertical bars are included by default, to help separate the three indicators.)
+
 ## Resources Displayed
 
-Currently the server extension only reports memory usage and CPU usage. Other metrics will be added in the future as needed.
+Currently the server extension only reports disk usage, memory usage and CPU usage. Other metrics will be added in the future as needed.
 
 Memory usage will show the PSS whenever possible (Linux only feature), and default to RSS otherwise.
 

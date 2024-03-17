@@ -29,6 +29,7 @@
 .jp-IndicatorContainer {
   display: flex;
   flex-direction: row;
+  margin-left: 1em;
 }
 
 .jp-IndicatorFiller {
