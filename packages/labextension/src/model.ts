@@ -27,6 +27,26 @@ export namespace ResourceUsage {
   /**
    * A model for the resource usage items.
    */
+
+  export class ResourceUsageWarning {
+    /**
+     * A model for holding resource usage warnings.
+     */
+    constructor(memory: boolean = false, cpu: boolean = false, disk: boolean = false) {
+      this._memory = memory;
+      this._cpu = cpu;
+      this._disk = disk;
+    }
+
+    get hasWarning(): boolean {
+      return this._memory || this._cpu || this._disk;
+    }
+
+    private _memory = false;
+    private _cpu = false;
+    private _disk = false;
+  }
+
   export class Model extends VDomModel {
     /**
      * Construct a new resource usage model.
@@ -187,9 +207,9 @@ export namespace ResourceUsage {
     }
 
     /**
-     * The warning for memory usage.
+     * The warning for resource usage.
      */
-    get usageWarning(): boolean {
+    get usageWarnings(): ResourceUsageWarning {
       return this._warn;
     }
 
@@ -218,16 +238,14 @@ export namespace ResourceUsage {
         this._memoryLimit = null;
         this._memUnits = 'B';
         this._diskUnits = 'B';
-        this._warn = false;
+        this._warn = new ResourceUsageWarning();
         return;
       }
       const numBytes = value.pss ?? value.rss;
       const memoryLimits = value.limits.memory;
       const memoryLimit = memoryLimits?.pss ?? memoryLimits?.rss ?? null;
       const [currentMemory, memUnits] = convertToLargestUnit(numBytes);
-      const usageWarning = value.limits.memory
-        ? value.limits.memory.warn
-        : false;
+      const usageWarnings = new ResourceUsageWarning(value.limits.memory?.warn, value.limits.cpu?.warn, value.limits.disk?.warn);
 
       this._memoryAvailable = numBytes !== undefined;
       this._currentMemory = currentMemory;
@@ -238,7 +256,7 @@ export namespace ResourceUsage {
       const memoryPercent = this.memoryLimit
         ? Math.min(this._currentMemory / this.memoryLimit, 1)
         : 0;
-      this._warn = usageWarning;
+      this._warn = usageWarnings;
 
       this._cpuLimit = value.limits.cpu ? value.limits.cpu.cpu : null;
       this._cpuAvailable = value.cpu_percent !== undefined;
@@ -288,7 +306,7 @@ export namespace ResourceUsage {
     private _poll: Poll<Private.IMetricRequestResult | null>;
     private _memUnits: MemoryUnit = 'B';
     private _diskUnits: MemoryUnit = 'B';
-    private _warn = false;
+    private _warn = new ResourceUsageWarning();
     private _values: Model.IMetricValue[] = [];
   }
 
