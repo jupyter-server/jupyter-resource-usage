@@ -61,7 +61,7 @@ export class ResourceUsageStatus extends VDomRenderer<ResourceUsage.Model> {
         this.model.diskUnits
       } | ${text}`;
     }
-    if (!this.model.usageWarning) {
+    if (!this.model.usageWarnings.hasWarning) {
       return (
         <TextItem
           title={this._trans.__('Current resource usage')}
