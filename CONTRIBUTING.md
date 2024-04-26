@@ -131,7 +131,7 @@ There is an example config file included.
 
 ## Which code creates what content
 
-The stats are created by the server-side code in `jupyter_resource_usage`, 
+The stats are created by the server-side code in `jupyter_resource_usage`,
 
 For the jupyterlab 4 / notebook 7 UIs, the code in `packages/labextension` creates and writes the content for both the statusbar and the topbar.
 
