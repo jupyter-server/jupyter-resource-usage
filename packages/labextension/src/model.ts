@@ -32,7 +32,7 @@ export namespace ResourceUsage {
     /**
      * A model for holding resource usage warnings.
      */
-    constructor(memory: boolean = false, cpu: boolean = false, disk: boolean = false) {
+    constructor(memory = false, cpu = false, disk = false) {
       this._memory = memory;
       this._cpu = cpu;
       this._disk = disk;
@@ -245,7 +245,11 @@ export namespace ResourceUsage {
       const memoryLimits = value.limits.memory;
       const memoryLimit = memoryLimits?.pss ?? memoryLimits?.rss ?? null;
       const [currentMemory, memUnits] = convertToLargestUnit(numBytes);
-      const usageWarnings = new ResourceUsageWarning(value.limits.memory?.warn, value.limits.cpu?.warn, value.limits.disk?.warn);
+      const usageWarnings = new ResourceUsageWarning(
+        value.limits.memory?.warn,
+        value.limits.cpu?.warn,
+        value.limits.disk?.warn
+      );
 
       this._memoryAvailable = numBytes !== undefined;
       this._currentMemory = currentMemory;
