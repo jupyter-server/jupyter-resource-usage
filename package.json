@@ -42,7 +42,10 @@
     "rimraf": "^3.0.2"
   },
   "resolutions": {
-    "@types/react": "18.2.16"
+    "@types/react": "18.2.16",
+    "parse-url": "8.1.0",
+    "parse-path": "5.0.0",
+    "lodash": "4.17.21"
   },
   "eslintIgnore": [
     "**/*.d.ts",
