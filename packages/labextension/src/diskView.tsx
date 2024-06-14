@@ -38,7 +38,6 @@ const DiskViewComponent = ({
       model.stateChanged.disconnect(update);
     };
   }, [model]);
-  console.log('DiskViewComponent created');
   return (
     <IndicatorComponent
       enabled={model.diskAvailable}
