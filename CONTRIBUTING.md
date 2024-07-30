@@ -127,8 +127,6 @@ JupyterLab v3.0.0
         jupyter-resource-usage v0.1.0 enabled OK
 ```
 
-There is an example config file included.
-
 ## Which code creates what content
 
 The stats are created by the server-side code in `jupyter_resource_usage`.
