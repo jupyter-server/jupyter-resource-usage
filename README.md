@@ -178,7 +178,7 @@ editor.
 
 ## Resources Displayed
 
-Currently the server extension only reports disk usage, memory usage and CPU usage. Other metrics will be added in the future as needed.
+Currently the server extension reports disk usage, memory usage and CPU usage. Other metrics will be added in the future as needed.
 
 Memory usage will show the PSS whenever possible (Linux only feature), and default to RSS otherwise.
 
