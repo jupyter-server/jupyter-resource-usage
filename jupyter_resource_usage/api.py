@@ -79,7 +79,7 @@ class ApiHandler(APIHandler):
         if config.track_disk_usage:
             try:
                 disk_info = psutil.disk_usage(config.disk_path)
-            except:
+            except Exception:
                 pass
             else:
                 metrics.update(disk_used=disk_info.used, disk_total=disk_info.total)
