@@ -135,7 +135,7 @@ The stats are created by the server-side code in `jupyter_resource_usage`.
 
 For the jupyterlab 4 / notebook 7 UIs, the code in `packages/labextension` creates and writes the content for both the statusbar and the topbar.
 
-The framework the topbar is defined in the schema, whilst the contents of the statusbar is driven purely by the labextension code.... and labels are defined by their approrpiate `xxxView.tsx` file
+The topbar is defined in the schema, whilst the contents of the statusbar is driven purely by the labextension code.... and labels are defined by their appropriate `*View.tsx` file
 
 ## pre-commit
 
