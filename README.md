@@ -136,7 +136,7 @@ memory:
 
 ### Disk [partition] Usage
 
-`jupyter-resource-usage` can also track Disk usage [of a defined parition] and report the `total` and `used` values as part of the `/api/metrics/v1` response.
+`jupyter-resource-usage` can also track disk usage [of a defined partition] and report the `total` and `used` values as part of the `/api/metrics/v1` response.
 
 You enable tracking by setting the `track_disk_usage` trait (disabled by default):
 
