@@ -11,6 +11,10 @@ import { Poll } from '@lumino/polling';
 
 import { MemoryUnit, MEMORY_UNIT_LIMITS, convertToLargestUnit } from './format';
 
+import { DEFAULT_CPU_LABEL } from './cpuView';
+import { DEFAULT_DISK_LABEL } from './diskView';
+import { DEFAULT_MEMORY_LABEL } from './memoryView';
+
 /**
  * Number of values to keep in memory.
  */
@@ -23,6 +27,26 @@ export namespace ResourceUsage {
   /**
    * A model for the resource usage items.
    */
+
+  export class ResourceUsageWarning {
+    /**
+     * A model for holding resource usage warnings.
+     */
+    constructor(memory = false, cpu = false, disk = false) {
+      this._memory = memory;
+      this._cpu = cpu;
+      this._disk = disk;
+    }
+
+    get hasWarning(): boolean {
+      return this._memory || this._cpu || this._disk;
+    }
+
+    private _memory = false;
+    private _cpu = false;
+    private _disk = false;
+  }
+
   export class Model extends VDomModel {
     /**
      * Construct a new resource usage model.
@@ -32,7 +56,7 @@ export namespace ResourceUsage {
     constructor(options: Model.IOptions) {
       super();
       for (let i = 0; i < N_BUFFER; i++) {
-        this._values.push({ memoryPercent: 0, cpuPercent: 0 });
+        this._values.push({ memoryPercent: 0, cpuPercent: 0, diskPercent: 0 });
       }
       this._poll = new Poll<Private.IMetricRequestResult | null>({
         factory: (): Promise<Private.IMetricRequestResult | null> =>
@@ -54,10 +78,13 @@ export namespace ResourceUsage {
           const oldCpuAvailable = this._cpuAvailable;
           this._memoryAvailable = false;
           this._cpuAvailable = false;
+          this._diskAvailable = false;
           this._currentMemory = 0;
+          this._currentDisk = 0;
+          this._maxDisk = 0;
           this._memoryLimit = null;
           this._cpuLimit = null;
-          this._units = 'B';
+          this._memUnits = 'B';
 
           if (oldMemoryAvailable || oldCpuAvailable) {
             this.stateChanged.emit();
@@ -73,6 +100,19 @@ export namespace ResourceUsage {
     async refresh(): Promise<void> {
       await this._poll.refresh();
       await this._poll.tick;
+    }
+
+    /**
+     * Labels for items
+     */
+    get cpuLabel(): string {
+      return this._cpuLabel;
+    }
+    get memLabel(): string {
+      return this._memLabel;
+    }
+    get diskLabel(): string {
+      return this._diskLabel;
     }
 
     /**
@@ -97,10 +137,31 @@ export namespace ResourceUsage {
     }
 
     /**
+     * Whether the disk metric is available.
+     */
+    get diskAvailable(): boolean {
+      return this._diskAvailable;
+    }
+
+    /**
      * The current memory usage.
      */
     get currentMemory(): number {
       return this._currentMemory;
+    }
+
+    /**
+     * The current disk [partition] usage.
+     */
+    get currentDisk(): number {
+      return this._currentDisk;
+    }
+
+    /**
+     * The maximum disk [partition] usage.
+     */
+    get maxDisk(): number {
+      return this._maxDisk;
     }
 
     /**
@@ -120,8 +181,15 @@ export namespace ResourceUsage {
     /**
      * The units for memory usages and limits.
      */
-    get units(): MemoryUnit {
-      return this._units;
+    get memUnits(): MemoryUnit {
+      return this._memUnits;
+    }
+
+    /**
+     * The units for disk usages and limits.
+     */
+    get diskUnits(): MemoryUnit {
+      return this._diskUnits;
     }
 
     /**
@@ -139,9 +207,9 @@ export namespace ResourceUsage {
     }
 
     /**
-     * The warning for memory usage.
+     * The warning for resource usage.
      */
-    get usageWarning(): boolean {
+    get usageWarnings(): ResourceUsageWarning {
       return this._warn;
     }
 
@@ -165,50 +233,84 @@ export namespace ResourceUsage {
         this._memoryAvailable = false;
         this._cpuAvailable = false;
         this._currentMemory = 0;
+        this._currentDisk = 0;
+        this._maxDisk = 0;
         this._memoryLimit = null;
-        this._units = 'B';
-        this._warn = false;
+        this._memUnits = 'B';
+        this._diskUnits = 'B';
+        this._warn = new ResourceUsageWarning();
         return;
       }
-
       const numBytes = value.pss ?? value.rss;
       const memoryLimits = value.limits.memory;
       const memoryLimit = memoryLimits?.pss ?? memoryLimits?.rss ?? null;
-      const [currentMemory, units] = convertToLargestUnit(numBytes);
-      const usageWarning = value.limits.memory
-        ? value.limits.memory.warn
-        : false;
+      const [currentMemory, memUnits] = convertToLargestUnit(numBytes);
+      const usageWarnings = new ResourceUsageWarning(
+        value.limits.memory?.warn,
+        value.limits.cpu?.warn,
+        value.limits.disk?.warn
+      );
 
       this._memoryAvailable = numBytes !== undefined;
       this._currentMemory = currentMemory;
-      this._units = units;
+      this._memUnits = memUnits;
       this._memoryLimit = memoryLimit
-        ? memoryLimit / MEMORY_UNIT_LIMITS[units]
+        ? memoryLimit / MEMORY_UNIT_LIMITS[memUnits]
         : null;
       const memoryPercent = this.memoryLimit
         ? Math.min(this._currentMemory / this.memoryLimit, 1)
         : 0;
-      this._warn = usageWarning;
+      this._warn = usageWarnings;
 
       this._cpuLimit = value.limits.cpu ? value.limits.cpu.cpu : null;
       this._cpuAvailable = value.cpu_percent !== undefined;
       this._currentCpuPercent =
         value.cpu_percent !== undefined ? value.cpu_percent / 100 : 0;
 
-      this._values.push({ memoryPercent, cpuPercent: this._currentCpuPercent });
+      const maxDisk = value.disk_total;
+      this._diskAvailable = maxDisk ? true : false;
+      const currentDisk = value.disk_used;
+
+      let maxDiskHuman = 0;
+      let currentDiskHuman = 0;
+      let diskUnits = 'B';
+      [maxDiskHuman, diskUnits] = convertToLargestUnit(maxDisk);
+      [currentDiskHuman, diskUnits] = convertToLargestUnit(
+        currentDisk,
+        diskUnits as MemoryUnit
+      );
+
+      this._currentDisk = currentDiskHuman;
+      this._maxDisk = maxDiskHuman;
+      this._diskUnits = diskUnits as MemoryUnit;
+
+      const currentDiskPercent = Math.min(this._currentDisk / this._maxDisk, 1);
+
+      this._values.push({
+        memoryPercent,
+        cpuPercent: this._currentCpuPercent,
+        diskPercent: currentDiskPercent,
+      });
       this._values.shift();
       this.stateChanged.emit(void 0);
     }
 
+    private _cpuLabel = DEFAULT_CPU_LABEL;
+    private _memLabel = DEFAULT_MEMORY_LABEL;
+    private _diskLabel = DEFAULT_DISK_LABEL;
     private _memoryAvailable = false;
     private _cpuAvailable = false;
+    private _diskAvailable = false;
     private _currentMemory = 0;
+    private _currentDisk = 0;
+    private _maxDisk = 0;
     private _currentCpuPercent = 0;
     private _memoryLimit: number | null = null;
     private _cpuLimit: number | null = null;
     private _poll: Poll<Private.IMetricRequestResult | null>;
-    private _units: MemoryUnit = 'B';
-    private _warn = false;
+    private _memUnits: MemoryUnit = 'B';
+    private _diskUnits: MemoryUnit = 'B';
+    private _warn = new ResourceUsageWarning();
     private _values: Model.IMetricValue[] = [];
   }
 
@@ -239,6 +341,11 @@ export namespace ResourceUsage {
        * The cpu percentage.
        */
       cpuPercent: number;
+
+      /**
+       * The cpu percentage.
+       */
+      diskPercent: number;
     }
   }
 }
@@ -268,6 +375,8 @@ namespace Private {
     pss?: number;
     cpu_percent?: number;
     cpu_count?: number;
+    disk_total?: number;
+    disk_used?: number;
     limits: {
       memory?: {
         rss: number;
@@ -276,6 +385,10 @@ namespace Private {
       };
       cpu?: {
         cpu: number;
+        warn: boolean;
+      };
+      disk?: {
+        max: number;
         warn: boolean;
       };
     };

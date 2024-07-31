@@ -6,6 +6,8 @@ import { IndicatorComponent } from './indicator';
 
 import { ResourceUsage } from './model';
 
+export const DEFAULT_CPU_LABEL = 'CPU: ';
+
 /**
  * A CpuView component to display CPU usage.
  */

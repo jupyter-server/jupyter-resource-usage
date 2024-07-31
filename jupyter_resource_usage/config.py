@@ -7,6 +7,7 @@ from traitlets import Float
 from traitlets import Int
 from traitlets import List
 from traitlets import TraitType
+from traitlets import Unicode
 from traitlets import Union
 from traitlets.config import Configurable
 
@@ -27,7 +28,7 @@ class PSUtilMetric(TraitType):
             keys = list(value.keys())
             if "name" in keys:
                 keys.remove("name")
-                if all(key in ["kwargs", "attribute"] for key in keys):
+                if all(key in ["args", "kwargs", "attribute"] for key in keys):
                     return value
         self.error(obj, value)
 
@@ -36,6 +37,15 @@ class ResourceUseDisplay(Configurable):
     """
     Holds server-side configuration for jupyter-resource-usage
     """
+
+    # Needs to be defined early, so the metrics can use it.
+    disk_path = Union(
+        trait_types=[Unicode(), Callable()],
+        default_value="/home/joyvan",
+        help="""
+        A path in the partition to be reported on.
+        """,
+    ).tag(config=True)
 
     process_memory_metrics = List(
         trait=PSUtilMetric(),
@@ -54,6 +64,19 @@ class ResourceUseDisplay(Configurable):
 
     system_cpu_metrics = List(
         trait=PSUtilMetric(), default_value=[{"name": "cpu_count"}]
+    )
+
+    process_disk_metrics = List(
+        trait=PSUtilMetric(),
+        default_value=[],
+    )
+
+    system_disk_metrics = List(
+        trait=PSUtilMetric(),
+        default_value=[
+            {"name": "disk_usage", "args": [disk_path], "attribute": "total"},
+            {"name": "disk_usage", "args": [disk_path], "attribute": "used"},
+        ],
     )
 
     mem_warning_threshold = Float(
@@ -122,6 +145,30 @@ class ResourceUseDisplay(Configurable):
     @default("cpu_limit")
     def _cpu_limit_default(self):
         return float(os.environ.get("CPU_LIMIT", 0))
+
+    track_disk_usage = Bool(
+        default_value=False,
+        help="""
+        Set to True in order to enable reporting of disk usage statistics.
+        """,
+    ).tag(config=True)
+
+    @default("disk_path")
+    def _disk_path_default(self):
+        return str(os.environ.get("HOME", "/home/joyvan"))
+
+    disk_warning_threshold = Float(
+        default_value=0.1,
+        help="""
+        Warn user with flashing lights when disk usage is within this fraction
+        total space.
+
+        For example, if total size is 10G, `disk_warning_threshold` is 0.1,
+        we will start warning the user when they use (10 - (10 * 0.1)) G.
+
+        Set to 0 to disable warning.
+        """,
+    ).tag(config=True)
 
     enable_prometheus_metrics = Bool(
         default_value=True,

@@ -10,6 +10,10 @@
       {
         "name": "memory",
         "rank": 130
+      },
+      {
+        "name": "disk",
+        "rank": 140
       }
     ]
   },
@@ -31,7 +35,7 @@
       "description": "Settings for the memory indicator",
       "$ref": "#/definitions/memory",
       "default": {
-        "label": "Mem: "
+        "label": "| Mem: "
       }
     },
     "cpu": {
@@ -40,6 +44,14 @@
       "$ref": "#/definitions/cpu",
       "default": {
         "label": "CPU: "
+      }
+    },
+    "disk": {
+      "title": "Disk Settings",
+      "description": "Settings for the Disk indicator",
+      "$ref": "#/definitions/disk",
+      "default": {
+        "label": "| Disk: "
       }
     }
   },
@@ -60,6 +72,15 @@
         "label": {
           "type": "string",
           "description": "Label for the cpu indicator"
+        }
+      }
+    },
+    "disk": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Label for the disk indicator"
         }
       }
     }

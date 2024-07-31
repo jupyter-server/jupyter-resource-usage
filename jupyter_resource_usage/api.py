@@ -75,6 +75,20 @@ class ApiHandler(APIHandler):
 
             metrics.update(cpu_percent=cpu_percent, cpu_count=cpu_count)
 
+        # Optionally get Disk information
+        if config.track_disk_usage:
+            try:
+                disk_info = psutil.disk_usage(config.disk_path)
+            except Exception:
+                pass
+            else:
+                metrics.update(disk_used=disk_info.used, disk_total=disk_info.total)
+                limits["disk"] = {"disk": disk_info.total}
+                if config.disk_warning_threshold != 0:
+                    limits["disk"]["warn"] = (disk_info.total - disk_info.used) < (
+                        disk_info.total * config.disk_warning_threshold
+                    )
+
         self.write(json.dumps(metrics))
 
     @run_on_executor

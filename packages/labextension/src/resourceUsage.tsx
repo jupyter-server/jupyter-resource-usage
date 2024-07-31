@@ -35,24 +35,33 @@ export class ResourceUsageStatus extends VDomRenderer<ResourceUsage.Model> {
     let text: string;
     if (this.model.memoryLimit === null) {
       text = this._trans.__(
-        'Mem: %1 %2',
+        '%1 %2 %3',
+        this.model.memLabel,
         this.model.currentMemory.toFixed(Private.DECIMAL_PLACES),
-        this.model.units
+        this.model.memUnits
       );
     } else {
       text = this._trans.__(
-        'Mem: %1 / %2 %3',
+        '%1 %2 / %3 %4',
+        this.model.memLabel,
         this.model.currentMemory.toFixed(Private.DECIMAL_PLACES),
         this.model.memoryLimit.toFixed(Private.DECIMAL_PLACES),
-        this.model.units
+        this.model.memUnits
       );
     }
     if (this.model.cpuAvailable) {
-      text = `CPU: ${(this.model.currentCpuPercent * 100).toFixed(
-        Private.DECIMAL_PLACES
-      )} % ${text}`;
+      text = `${this.model.cpuLabel} ${(
+        this.model.currentCpuPercent * 100
+      ).toFixed(Private.DECIMAL_PLACES)} % | ${text}`;
     }
-    if (!this.model.usageWarning) {
+    if (this.model.diskAvailable) {
+      text = `${this.model.diskLabel} ${this.model.currentDisk.toFixed(
+        Private.DECIMAL_PLACES
+      )} / ${this.model.maxDisk.toFixed(Private.DECIMAL_PLACES)} ${
+        this.model.diskUnits
+      } | ${text}`;
+    }
+    if (!this.model.usageWarnings.hasWarning) {
       return (
         <TextItem
           title={this._trans.__('Current resource usage')}
