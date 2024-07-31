@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.1.0
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.0.2...41d88a2dc4bc9820f5801223d9830bd8f7c3d1d6))
+
+### Enhancements made
+
+- Add disk monitoring [#233](https://github.com/jupyter-server/jupyter-resource-usage/pull/233) ([@iandesj](https://github.com/iandesj))
+
+### Bugs fixed
+
+- Remove spurious close button on kernel usage panel [#228](https://github.com/jupyter-server/jupyter-resource-usage/pull/228) ([@krassowski](https://github.com/krassowski))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2024-03-12&to=2024-07-31&type=c))
+
+[@iandesj](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Aiandesj+updated%3A2024-03-12..2024-07-31&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2024-03-12..2024-07-31&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2024-03-12..2024-07-31&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.0.2
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.0.1...498fd0c3eedccf37e7af8d344a2c26cf8a03ab80))
@@ -15,8 +35,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2023-08-29&to=2024-03-12&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ablink1073+updated%3A2023-08-29..2024-03-12&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apre-commit-ci+updated%3A2023-08-29..2024-03-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.0.1
 
