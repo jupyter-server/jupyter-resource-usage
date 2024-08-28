@@ -127,6 +127,14 @@ JupyterLab v3.0.0
         jupyter-resource-usage v0.1.0 enabled OK
 ```
 
+## Which code creates what content
+
+The stats are created by the server-side code in `jupyter_resource_usage`.
+
+For the jupyterlab 4 / notebook 7 UIs, the code in `packages/labextension` creates and writes the content for both the statusbar and the topbar.
+
+The topbar is defined in the schema, whilst the contents of the statusbar is driven purely by the labextension code.... and labels are defined by their appropriate `*View.tsx` file
+
 ## pre-commit
 
 `jupyter-resource-usage` has adopted automatic code formatting so you shouldn't need to worry too much about your code style.
