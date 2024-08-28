@@ -26,11 +26,11 @@ Kernel resource usage can be displayed in a sidebar for IPython kernels with
 
 The kernel usage is available for Notebook 7.x too which can be enabled at
 `View -> Right Sidebar -> Show Kernel Usage`. In the case of JupyterLab interface, it is
-enough to click `tachometer` icon on the right sidebar. 
+enough to click `tachometer` icon on the right sidebar.
 
-If you want to hide information from the Kernel Usage sidebar
-you can set `--ResourceUseDisplay.show_host_usage=False` to hide `Host CPU` and `Host Virtual Memory` information. The default is
-set as `True`, i.e. show all the information.
+If you want to hide host information from the Kernel Usage sidebar
+you can set `--ResourceUseDisplay.show_host_usage=False` to hide `Host CPU` and `Host Virtual Memory` information.
+The default is set as `True`, i.e. show all the information.
 
 ![Screenshot for kernel usage with limited info](./doc/kernel-usage-limited-info.png)
 
