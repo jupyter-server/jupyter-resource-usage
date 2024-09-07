@@ -87,9 +87,9 @@ class ResourceUseDisplay(Configurable):
         return int(os.environ.get("MEM_LIMIT", 0))
 
     track_cpu_percent = Bool(
-        default_value=False,
+        default_value=True,
         help="""
-        Set to True in order to enable reporting of CPU usage statistics.
+        Set to False in order to disable reporting of CPU usage statistics.
         """,
     ).tag(config=True)
 

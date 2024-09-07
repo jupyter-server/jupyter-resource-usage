@@ -47,18 +47,19 @@ class ApiHandler(APIHandler):
 
         metrics = {"rss": rss, "limits": limits}
 
-        # Always get cpu usage information
-        cpu_count = psutil.cpu_count()
-        cpu_percent = await self._get_cpu_percent(all_processes)
+        # Optionally get CPU information
+        if config.track_cpu_percent:
+            cpu_count = psutil.cpu_count()
+            cpu_percent = await self._get_cpu_percent(all_processes)
 
-        if config.cpu_limit != 0:
-            limits["cpu"] = {"cpu": config.cpu_limit}
-            if config.cpu_warning_threshold != 0:
-                limits["cpu"]["warn"] = (config.cpu_limit - cpu_percent) < (
-                    config.cpu_limit * config.cpu_warning_threshold
-                )
+            if config.cpu_limit != 0:
+                limits["cpu"] = {"cpu": config.cpu_limit}
+                if config.cpu_warning_threshold != 0:
+                    limits["cpu"]["warn"] = (config.cpu_limit - cpu_percent) < (
+                        config.cpu_limit * config.cpu_warning_threshold
+                    )
 
-        metrics.update(cpu_percent=cpu_percent, cpu_count=cpu_count)
+            metrics.update(cpu_percent=cpu_percent, cpu_count=cpu_count)
 
         self.write(json.dumps(metrics))
 
