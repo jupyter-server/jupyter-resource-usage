@@ -41,7 +41,7 @@ class ResourceUseDisplay(Configurable):
     # Needs to be defined early, so the metrics can use it.
     disk_path = Union(
         trait_types=[Unicode(), Callable()],
-        default_value="/home/joyvan",
+        default_value="/home/jovyan",
         help="""
         A path in the partition to be reported on.
         """,
@@ -155,7 +155,7 @@ class ResourceUseDisplay(Configurable):
 
     @default("disk_path")
     def _disk_path_default(self):
-        return str(os.environ.get("HOME", "/home/joyvan"))
+        return str(os.environ.get("HOME", "/home/jovyan"))
 
     disk_warning_threshold = Float(
         default_value=0.1,

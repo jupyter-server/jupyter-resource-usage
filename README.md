@@ -153,7 +153,7 @@ c = get_config()
 c.ResourceUseDisplay.track_disk_usage = True
 ```
 
-The values are from the partition containing the folder in the trait `disk_path` (which defaults to `/home/joyvan`). If this path does not exist, disk usage information is omitted from the display.
+The values are from the partition containing the folder in the trait `disk_path` (which defaults to `/home/jovyan`). If this path does not exist, disk usage information is omitted from the display.
 
 Mirroring CPU and Memory, the trait `disk_warning_threshold` signifies when to flag a usage warning, and like the others, it defaults to `0.1` (10% remaining)
 
