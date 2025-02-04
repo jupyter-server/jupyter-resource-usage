@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.1.1
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.1.0...6d739a7cda47c1101f0c70e16806739cf6b0c575))
+
+### Bugs fixed
+
+- Fix typo in default username for jupyter [#239](https://github.com/jupyter-server/jupyter-resource-usage/pull/239) ([@evsasha](https://github.com/evsasha))
+
+### Maintenance and upkeep improvements
+
+- Update to `actions/upload-artifact@v4` [#241](https://github.com/jupyter-server/jupyter-resource-usage/pull/241) ([@jtpio](https://github.com/jtpio))
+- Delete second copy of enforce-labels [#240](https://github.com/jupyter-server/jupyter-resource-usage/pull/240) ([@krassowski](https://github.com/krassowski))
+
+### Documentation improvements
+
+- Document `show_host_usage` configuration option in README [#218](https://github.com/jupyter-server/jupyter-resource-usage/pull/218) ([@pinksi](https://github.com/pinksi))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2024-07-31&to=2025-02-04&type=c))
+
+[@evsasha](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Aevsasha+updated%3A2024-07-31..2025-02-04&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2024-07-31..2025-02-04&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2024-07-31..2025-02-04&type=Issues) | [@pinksi](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apinksi+updated%3A2024-07-31..2025-02-04&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2024-07-31..2025-02-04&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.1.0
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.0.2...41d88a2dc4bc9820f5801223d9830bd8f7c3d1d6))
@@ -19,8 +44,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2024-03-12&to=2024-07-31&type=c))
 
 [@iandesj](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Aiandesj+updated%3A2024-03-12..2024-07-31&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2024-03-12..2024-07-31&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2024-03-12..2024-07-31&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.0.2
 
