@@ -171,7 +171,7 @@ class ResourceUseDisplay(Configurable):
     ).tag(config=True)
 
     enable_prometheus_metrics = Bool(
-        default_value=True,
+        default_value=False,
         help="""
         Set to False in order to disable reporting of Prometheus style metrics.
         """,
