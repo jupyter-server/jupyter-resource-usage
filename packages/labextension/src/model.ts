@@ -64,8 +64,10 @@ export namespace ResourceUsage {
         frequency: {
           interval: options.refreshRate,
           backoff: true,
+          max: 300 * 1000,
         },
         name: '@jupyterlab/statusbar:ResourceUsage#metrics',
+        standby: options.refreshStandby || 'when-hidden',
       });
       this._poll.ticked.connect((poll) => {
         const { payload, phase } = poll.state;
@@ -326,6 +328,11 @@ export namespace ResourceUsage {
        * The refresh rate (in ms) for querying the server.
        */
       refreshRate: number;
+
+      /**
+       * When the model stops polling the API. Defaults to `when-hidden`.
+       */
+      refreshStandby?: Poll.Standby | (() => boolean | Poll.Standby);
     }
 
     /**
