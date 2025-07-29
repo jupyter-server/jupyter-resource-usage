@@ -254,9 +254,25 @@ export namespace ResourceUsage {
       this._memoryAvailable = numBytes !== undefined;
       this._currentMemory = currentMemory;
       this._memUnits = memUnits;
-      this._memoryLimit = memoryLimit
-        ? memoryLimit / MEMORY_UNIT_LIMITS[memUnits]
+
+// Use mem_avail if the host exposes it.
+      const hostAvailBytes = value.mem_avail ?? null ;
+      let minMemAvailable = null;
+      let hostMaxBytes = hostAvailBytes ? ( hostAvailBytes + numBytes ) : null;
+
+      if ( memoryLimit && hostMaxBytes ) { minMemAvailable = Math.min(hostMaxBytes,memoryLimit); }
+      else if ( hostMaxBytes ) { minMemAvailable = hostMaxBytes }
+      else if ( memoryLimit ) { minMemAvailable = memoryLimit }
+      else if ( hostAvailBytes ) { minMemAvailable = hostAvailBytes + numBytes; }
+
+      this._memoryLimit = minMemAvailable
+        ? minMemAvailable / MEMORY_UNIT_LIMITS[memUnits]
         : null;
+
+//      this._memoryLimit = memoryLimit
+//        ? memoryLimit / MEMORY_UNIT_LIMITS[memUnits]
+//        : null;
+
       const memoryPercent = this.memoryLimit
         ? Math.min(this._currentMemory / this.memoryLimit, 1)
         : 0;
@@ -373,6 +389,7 @@ namespace Private {
   export interface IMetricRequestResult {
     rss: number;
     pss?: number;
+    mem_avail?: number;
     cpu_percent?: number;
     cpu_count?: number;
     disk_total?: number;
