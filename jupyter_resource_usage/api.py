@@ -46,6 +46,8 @@ class ApiHandler(APIHandler):
             except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
                 pass
 
+        available = psutil.virtual_memory().available
+
         if callable(config.mem_limit):
             mem_limit = config.mem_limit(rss=rss, pss=pss)
         else:  # mem_limit is an Int
@@ -58,6 +60,7 @@ class ApiHandler(APIHandler):
             )
 
         metrics = {"rss": rss, "limits": limits}
+        metrics["mem_avail"] = available
         if pss is not None:
             metrics["pss"] = pss
 

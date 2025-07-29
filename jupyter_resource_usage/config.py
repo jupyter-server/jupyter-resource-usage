@@ -54,7 +54,10 @@ class ResourceUseDisplay(Configurable):
 
     system_memory_metrics = List(
         trait=PSUtilMetric(),
-        default_value=[{"name": "virtual_memory", "attribute": "total"}],
+        default_value=[
+            {"name": "virtual_memory", "attribute": "total"},
+            {"name": "virtual_memory", "attribute": "available"}
+        ],
     )
 
     process_cpu_metrics = List(
