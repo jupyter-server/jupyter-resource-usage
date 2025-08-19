@@ -2,6 +2,7 @@ import {
   ILabShell,
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
+  JupyterLab,
 } from '@jupyterlab/application';
 
 import { IToolbarWidgetRegistry } from '@jupyterlab/apputils';
@@ -70,14 +71,25 @@ const resourceStatusPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:status-item',
   autoStart: true,
   requires: [ITranslator],
-  optional: [IStatusBar],
+  optional: [IStatusBar, JupyterLab.IInfo],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
-    statusBar: IStatusBar | null
+    statusBar: IStatusBar | null,
+    info: JupyterLab.IInfo | null
   ) => {
+    const refreshRate = DEFAULT_REFRESH_RATE;
+
     const trans = translator.load('jupyter-resource-usage');
-    const item = new ResourceUsageStatus(trans);
+    const item = new ResourceUsageStatus(trans, {
+      refreshRate,
+      refreshStandby: () => {
+        if (info) {
+          return !info.isConnected || 'when-hidden';
+        }
+        return 'when-hidden';
+      },
+    });
 
     if (statusBar) {
       statusBar.registerStatusItem(resourceStatusPlugin.id, {
@@ -98,11 +110,12 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:topbar-item',
   autoStart: true,
   requires: [IToolbarWidgetRegistry],
-  optional: [ISettingRegistry],
+  optional: [ISettingRegistry, JupyterLab.IInfo],
   activate: async (
     app: JupyterFrontEnd,
     toolbarRegistry: IToolbarWidgetRegistry,
-    settingRegistry: ISettingRegistry | null
+    settingRegistry: ISettingRegistry | null,
+    info: JupyterLab.IInfo | null
   ) => {
     let enablePlugin = DEFAULT_ENABLE_SYSTEM_MONITOR;
     let refreshRate = DEFAULT_REFRESH_RATE;
@@ -126,7 +139,15 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
       diskLabel = diskSettings.label;
     }
 
-    const model = new ResourceUsage.Model({ refreshRate });
+    const model = new ResourceUsage.Model({
+      refreshRate,
+      refreshStandby: () => {
+        if (info) {
+          return !info.isConnected || 'when-hidden';
+        }
+        return 'when-hidden';
+      },
+    });
     await model.refresh();
 
     if (enablePlugin && model.cpuAvailable) {

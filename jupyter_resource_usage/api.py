@@ -95,7 +95,7 @@ class ApiHandler(APIHandler):
     def _get_cpu_percent(self, all_processes):
         def get_cpu_percent(p):
             try:
-                return p.cpu_percent(interval=0.05)
+                return p.cpu_percent()
             # Avoid littering logs with stack traces complaining
             # about dead processes having no CPU usage
             except:

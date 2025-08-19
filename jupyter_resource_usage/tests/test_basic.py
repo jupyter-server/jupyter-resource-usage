@@ -30,13 +30,18 @@ class TestBasic:
         nbapp_mock.web_app.settings = {"base_url": ""}
 
         # mock these out for unit test
-        with patch("tornado.ioloop.PeriodicCallback") as periodic_callback_mock, patch(
-            "jupyter_resource_usage.server_extension.ResourceUseDisplay"
-        ) as resource_use_display_mock, patch(
-            "jupyter_resource_usage.server_extension.PrometheusHandler"
-        ) as prometheus_handler_mock, patch(
-            "jupyter_resource_usage.server_extension.PSUtilMetricsLoader"
-        ) as psutil_metrics_loader:
+        with (
+            patch("tornado.ioloop.PeriodicCallback") as periodic_callback_mock,
+            patch(
+                "jupyter_resource_usage.server_extension.ResourceUseDisplay"
+            ) as resource_use_display_mock,
+            patch(
+                "jupyter_resource_usage.server_extension.PrometheusHandler"
+            ) as prometheus_handler_mock,
+            patch(
+                "jupyter_resource_usage.server_extension.PSUtilMetricsLoader"
+            ) as psutil_metrics_loader,
+        ):
             # load up with mock
             load_jupyter_server_extension(nbapp_mock)
 

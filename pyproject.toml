@@ -10,7 +10,7 @@ build-backend = "hatchling.build"
 name = "jupyter-resource-usage"
 description = "Jupyter Extension to show resource usage"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 authors = [
     { name = "Jupyter Development Team" },
 ]
@@ -30,15 +30,16 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "jupyter_server>=2.0",
     "prometheus_client",
-    "psutil~=5.6",
+    "psutil>=5.6",
     "pyzmq>=19",
 ]
 dynamic = ["version"]
@@ -126,7 +127,7 @@ default = ""
 
 [tool.jupyter-releaser.hooks]
 before-build-npm = [
-    "python -m pip install jupyterlab~=4.0",
+    "python -m pip install 'jupyterlab>=4.0,<5'",
     "jlpm",
     "jlpm clean",
     "jlpm build:prod",
