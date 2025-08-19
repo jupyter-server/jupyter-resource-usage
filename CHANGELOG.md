@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.2.0
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.1.1...f2ea9229a73cca8a818ced6414255734dec5532b))
+
+### Enhancements made
+
+- Configure `standby` callback to polling [#247](https://github.com/jupyter-server/jupyter-resource-usage/pull/247) ([@mahendrapaipuri](https://github.com/mahendrapaipuri))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2025-02-04&to=2025-08-19&type=c))
+
+[@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2025-02-04..2025-08-19&type=Issues) | [@mahendrapaipuri](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Amahendrapaipuri+updated%3A2025-02-04..2025-08-19&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.1.1
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.1.0...6d739a7cda47c1101f0c70e16806739cf6b0c575))
@@ -24,8 +40,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2024-07-31&to=2025-02-04&type=c))
 
 [@evsasha](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Aevsasha+updated%3A2024-07-31..2025-02-04&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2024-07-31..2025-02-04&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2024-07-31..2025-02-04&type=Issues) | [@pinksi](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Apinksi+updated%3A2024-07-31..2025-02-04&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Awelcome+updated%3A2024-07-31..2025-02-04&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.1.0
 
