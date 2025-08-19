@@ -76,7 +76,7 @@ const resourceStatusPlugin: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     translator: ITranslator,
     statusBar: IStatusBar | null,
-    info: JupyterLab.IInfo
+    info: JupyterLab.IInfo | null
   ) => {
     const refreshRate = DEFAULT_REFRESH_RATE;
 
