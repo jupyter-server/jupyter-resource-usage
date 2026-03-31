@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { ReactWidget, ISessionContext } from '@jupyterlab/apputils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
 import { Kernel } from '@jupyterlab/services';
+import type { ServerConnection } from '@jupyterlab/services';
 import { TranslationBundle } from '@jupyterlab/translation';
 import { requestAPI } from './handler';
 import { KernelUsagePanel } from './panel';
@@ -126,8 +127,9 @@ const KernelUsage = (props: {
   tracker: KernelWidgetTracker;
   panel: KernelUsagePanel;
   trans: TranslationBundle;
+  serverSettings?: ServerConnection.ISettings;
 }) => {
-  const { panel } = props;
+  const { panel, serverSettings } = props;
   const [kernelId, setKernelId] = useState<string>();
   const [path, setPath] = useState<string>();
   const [usage, setUsage] = useState<Usage | undefined>();
@@ -147,30 +149,32 @@ const KernelUsage = (props: {
   kernelIdRef.current = kernelId;
 
   const requestUsage = (kid: string) => {
-    return requestAPI<any>(`get_usage/${kid}`).then((data) => {
-      // The kernel reply may arrive late due to lax timeouts, so we need to
-      // check if it is for the current kernel
+    return requestAPI<any>(`get_usage/${kid}`, {}, serverSettings).then(
+      (data) => {
+        // The kernel reply may arrive late due to lax timeouts, so we need to
+        // check if it is for the current kernel
 
-      if (kid !== kernelIdRef.current) {
-        // Ignore outdated response, but preserve current reason
-        return;
+        if (kid !== kernelIdRef.current) {
+          // Ignore outdated response, but preserve current reason
+          return;
+        }
+
+        if (data.content?.reason) {
+          const reason = data.content;
+          setReason(reason);
+          return;
+        } else {
+          setReason(undefined);
+        }
+
+        const usage: Usage = {
+          ...data.content,
+          timestamp: new Date(),
+          kernel_id: kid,
+        };
+        setUsage(usage);
       }
-
-      if (data.content?.reason) {
-        const reason = data.content;
-        setReason(reason);
-        return;
-      } else {
-        setReason(undefined);
-      }
-
-      const usage: Usage = {
-        ...data.content,
-        timestamp: new Date(),
-        kernel_id: kid,
-      };
-      setUsage(usage);
-    });
+    );
   };
 
   useEffect(() => {
@@ -378,11 +382,13 @@ export class KernelUsageWidget extends ReactWidget {
     tracker: KernelWidgetTracker;
     panel: KernelUsagePanel;
     trans: TranslationBundle;
+    serverSettings?: ServerConnection.ISettings;
   }) {
     super();
     this._tracker = props.tracker;
     this._panel = props.panel;
     this._trans = props.trans;
+    this._serverSettings = props.serverSettings;
     this.addClass(KERNEL_USAGE_CLASS);
   }
 
@@ -392,7 +398,10 @@ export class KernelUsageWidget extends ReactWidget {
         tracker={this._tracker}
         panel={this._panel}
         trans={this._trans}
+        serverSettings={this._serverSettings}
       />
     );
   }
+
+  private _serverSettings: ServerConnection.ISettings | undefined;
 }

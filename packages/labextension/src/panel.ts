@@ -1,4 +1,5 @@
 import { Message } from '@lumino/messaging';
+import type { ServerConnection } from '@jupyterlab/services';
 import { TranslationBundle } from '@jupyterlab/translation';
 import { StackedPanel } from '@lumino/widgets';
 import { LabIcon } from '@jupyterlab/ui-components';
@@ -13,6 +14,7 @@ export class KernelUsagePanel extends StackedPanel {
   constructor(props: {
     tracker: KernelWidgetTracker;
     trans: TranslationBundle;
+    serverSettings?: ServerConnection.ISettings;
   }) {
     super();
     this.addClass(PANEL_CLASS);
@@ -27,6 +29,7 @@ export class KernelUsagePanel extends StackedPanel {
       tracker: props.tracker,
       panel: this,
       trans: props.trans,
+      serverSettings: props.serverSettings,
     });
     this.addWidget(widget);
   }

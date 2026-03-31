@@ -55,12 +55,14 @@ export namespace ResourceUsage {
      */
     constructor(options: Model.IOptions) {
       super();
+      this._serverSettings =
+        options.serverSettings ?? ServerConnection.makeSettings();
       for (let i = 0; i < N_BUFFER; i++) {
         this._values.push({ memoryPercent: 0, cpuPercent: 0, diskPercent: 0 });
       }
       this._poll = new Poll<Private.IMetricRequestResult | null>({
         factory: (): Promise<Private.IMetricRequestResult | null> =>
-          Private.factory(),
+          Private.factory(this._serverSettings),
         frequency: {
           interval: options.refreshRate,
           backoff: true,
@@ -310,6 +312,7 @@ export namespace ResourceUsage {
     private _memoryLimit: number | null = null;
     private _cpuLimit: number | null = null;
     private _poll: Poll<Private.IMetricRequestResult | null>;
+    private _serverSettings: ServerConnection.ISettings;
     private _memUnits: MemoryUnit = 'B';
     private _diskUnits: MemoryUnit = 'B';
     private _warn = new ResourceUsageWarning();
@@ -328,6 +331,11 @@ export namespace ResourceUsage {
        * The refresh rate (in ms) for querying the server.
        */
       refreshRate: number;
+
+      /**
+       * The server connection settings to use for API requests.
+       */
+      serverSettings?: ServerConnection.ISettings;
 
       /**
        * When the model stops polling the API. Defaults to `when-hidden`.
@@ -362,19 +370,6 @@ export namespace ResourceUsage {
  */
 namespace Private {
   /**
-   * Settings for making requests to the server.
-   */
-  const SERVER_CONNECTION_SETTINGS = ServerConnection.makeSettings();
-
-  /**
-   * The url endpoint for making requests to the server.
-   */
-  const METRIC_URL = URLExt.join(
-    SERVER_CONNECTION_SETTINGS.baseUrl,
-    'api/metrics/v1'
-  );
-
-  /**
    * The shape of a response from the metrics server extension.
    */
   export interface IMetricRequestResult {
@@ -404,11 +399,13 @@ namespace Private {
   /**
    * Make a request to the backend.
    */
-  export const factory = async (): Promise<IMetricRequestResult | null> => {
+  export const factory = async (
+    serverSettings: ServerConnection.ISettings
+  ): Promise<IMetricRequestResult | null> => {
     const request = ServerConnection.makeRequest(
-      METRIC_URL,
+      URLExt.join(serverSettings.baseUrl, 'api/metrics/v1'),
       {},
-      SERVER_CONNECTION_SETTINGS
+      serverSettings
     );
     const response = await request;
 

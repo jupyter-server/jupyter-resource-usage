@@ -79,10 +79,12 @@ const resourceStatusPlugin: JupyterFrontEndPlugin<void> = {
     info: JupyterLab.IInfo | null
   ) => {
     const refreshRate = DEFAULT_REFRESH_RATE;
+    const { serverSettings } = app.serviceManager;
 
     const trans = translator.load('jupyter-resource-usage');
     const item = new ResourceUsageStatus(trans, {
       refreshRate,
+      serverSettings,
       refreshStandby: () => {
         if (info) {
           return !info.isConnected || 'when-hidden';
@@ -117,6 +119,7 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
     settingRegistry: ISettingRegistry | null,
     info: JupyterLab.IInfo | null
   ) => {
+    const { serverSettings } = app.serviceManager;
     let enablePlugin = DEFAULT_ENABLE_SYSTEM_MONITOR;
     let refreshRate = DEFAULT_REFRESH_RATE;
     let cpuLabel = DEFAULT_CPU_LABEL;
@@ -141,6 +144,7 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
 
     const model = new ResourceUsage.Model({
       refreshRate,
+      serverSettings,
       refreshStandby: () => {
         if (info) {
           return !info.isConnected || 'when-hidden';
@@ -188,6 +192,7 @@ const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
     const trans = translator.load('jupyter-resource-usage');
 
     const { commands, shell } = app;
+    const { serverSettings } = app.serviceManager;
     const category = trans.__('Kernel Resource');
 
     let panel: KernelUsagePanel | null = null;
@@ -203,6 +208,7 @@ const kernelUsagePlugin: JupyterFrontEndPlugin<void> = {
         panel = new KernelUsagePanel({
           tracker,
           trans,
+          serverSettings,
         });
         shell.add(panel, 'right', { rank: 200 });
       }
