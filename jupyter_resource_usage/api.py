@@ -23,6 +23,9 @@ except ImportError:
 
 class ApiHandler(APIHandler):
     executor = ThreadPoolExecutor(max_workers=5)
+    # Cache Process instances so cpu_percent() (without interval) can compare
+    # against the previous measurement instead of always returning 0.
+    _cached_processes = {}
 
     @web.authenticated
     async def get(self):
@@ -33,6 +36,10 @@ class ApiHandler(APIHandler):
 
         cur_process = psutil.Process()
         all_processes = [cur_process] + cur_process.children(recursive=True)
+
+        # Build list using cached Process instances for cpu_percent tracking
+        cached = [ApiHandler._cached_processes.get(p.pid, p) for p in all_processes]
+        ApiHandler._cached_processes = {p.pid: p for p in cached}
 
         # Get memory information
         rss = 0
@@ -64,7 +71,7 @@ class ApiHandler(APIHandler):
         # Optionally get CPU information
         if config.track_cpu_percent:
             cpu_count = psutil.cpu_count()
-            cpu_percent = await self._get_cpu_percent(all_processes)
+            cpu_percent = await self._get_cpu_percent(cached)
 
             if config.cpu_limit != 0:
                 limits["cpu"] = {"cpu": config.cpu_limit}
