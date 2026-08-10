@@ -54,6 +54,7 @@ dev = [
     "mock",
     "pytest",
     "pytest-cov>=2.6.1",
+    "pytest-jupyter[server]",
 ]
 
 [project.urls]
