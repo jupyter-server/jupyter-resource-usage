@@ -2,6 +2,29 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.3.0
+
+([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.2.1...21df4c7b86cad9430a16ce99d8a9146cdaf593f5))
+
+### Bugs fixed
+
+- Fix `cpu_percent` always returning 0 in status bar/topbar [#259](https://github.com/jupyter-server/jupyter-resource-usage/pull/259) ([@SilviaSWR](https://github.com/SilviaSWR), [@krassowski](https://github.com/krassowski))
+
+### Maintenance and upkeep improvements
+
+- Drop Python 3.9 support (EOL Oct 2025) [#261](https://github.com/jupyter-server/jupyter-resource-usage/pull/261) ([@SilviaSWR](https://github.com/SilviaSWR), [@krassowski](https://github.com/krassowski))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2026-03-31&to=2026-08-11&type=c))
+
+@krassowski ([activity](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2026-03-31..2026-08-11&type=Issues)) | @SilviaSWR ([activity](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3ASilviaSWR+updated%3A2026-03-31..2026-08-11&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.2.1
 
 ([Full Changelog](https://github.com/jupyter-server/jupyter-resource-usage/compare/@jupyter-server/resource-usage@1.2.0...f7b5b86032811faa1f6cfefd3caca25eacc7395c))
@@ -22,8 +45,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyter-server/jupyter-resource-usage/graphs/contributors?from=2025-08-19&to=2026-03-31&type=c))
 
 @jtpio ([activity](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Ajtpio+updated%3A2025-08-19..2026-03-31&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyter-server%2Fjupyter-resource-usage+involves%3Akrassowski+updated%3A2025-08-19..2026-03-31&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.2.0
 
