@@ -49,7 +49,10 @@ class ApiHandler(APIHandler):
                 info = p.memory_full_info()
                 if hasattr(info, "pss"):
                     pss = (pss or 0) + info.pss
-                rss += info.rss
+                if hasattr(info, "swap"):
+                    rss += info.rss + info.swap
+                else:
+                    rss += info.rss
             except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
                 pass
 
