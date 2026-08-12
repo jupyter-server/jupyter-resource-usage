@@ -162,10 +162,12 @@ Mirroring CPU and Memory, the trait `disk_warning_threshold` signifies when to f
 ### Disable Prometheus Metrics
 
 There is a [known bug](https://github.com/jupyter-server/jupyter-resource-usage/issues/123) with Prometheus metrics which
-causes "lag"/pauses in the UI. To workaround this you can disable Prometheus metric reporting using:
+causes "lag"/pauses in the UI. Hence, the Prometheus metric reporting is disabled by default (for all versions > 1.1.1).
+
+If you want to use the Prometheus metric reporting you need to enable it with:
 
 ```
---ResourceUseDisplay.enable_prometheus_metrics=False
+--ResourceUseDisplay.enable_prometheus_metrics=True
 ```
 
 ## Enable alternative frontend
