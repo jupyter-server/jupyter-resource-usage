@@ -122,7 +122,7 @@ jupyter labextension list
 It should show something like the following:
 
 ```bash
-JupyterLab v3.0.0
+JupyterLab v4.0.0
 /path/to/env/share/jupyter/labextensions
         jupyter-resource-usage v0.1.0 enabled OK
 ```
