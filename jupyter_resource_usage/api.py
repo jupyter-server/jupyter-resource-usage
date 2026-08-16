@@ -34,24 +34,11 @@ class ApiHandler(APIHandler):
         """
         config = self.settings["jupyter_resource_usage_display_config"]
 
-        cur_process = psutil.Process()
-        all_processes = [cur_process] + cur_process.children(recursive=True)
+        all_processes, rss, pss = await self._get_process_metrics()
 
         # Build list using cached Process instances for cpu_percent tracking
         cached = [ApiHandler._cached_processes.get(p.pid, p) for p in all_processes]
         ApiHandler._cached_processes = {p.pid: p for p in cached}
-
-        # Get memory information
-        rss = 0
-        pss = None
-        for p in all_processes:
-            try:
-                info = p.memory_full_info()
-                if hasattr(info, "pss"):
-                    pss = (pss or 0) + info.pss
-                rss += info.rss
-            except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-                pass
 
         if callable(config.mem_limit):
             mem_limit = config.mem_limit(rss=rss, pss=pss)
@@ -97,6 +84,23 @@ class ApiHandler(APIHandler):
                     )
 
         self.write(json.dumps(metrics))
+
+    @run_on_executor
+    def _get_process_metrics(self):
+        cur_process = psutil.Process()
+        all_processes = [cur_process] + cur_process.children(recursive=True)
+        rss = 0
+        pss = None
+        for p in all_processes:
+            try:
+                info = p.memory_full_info()
+                if hasattr(info, "pss"):
+                    pss = (pss or 0) + info.pss
+                rss += info.rss
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+
+        return all_processes, rss, pss
 
     @run_on_executor
     def _get_cpu_percent(self, all_processes):
