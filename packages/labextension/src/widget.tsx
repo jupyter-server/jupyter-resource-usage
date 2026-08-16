@@ -88,7 +88,7 @@ const BlankReason = (props: {
   const { reason } = props;
   if (reason.reason === 'not_supported') {
     return (
-      <div className="jp-KernelUsage-section-separator">
+      <p>
         {props.trans.__(
           'Please check with your system administrator that you are running IPyKernel version 6.10.0 or above.'
         )}
@@ -98,27 +98,23 @@ const BlankReason = (props: {
               reason.kernel_version
             )
           : props.trans.__('No IPyKernel installation detected.')}
-      </div>
+      </p>
     );
   } else if (reason.reason === 'no_kernel_widget') {
     return (
-      <div className="jp-KernelUsage-section-separator">
+      <p>
         {props.trans.__(
           'Switch to a notebook or console to see kernel usage details.'
         )}
-      </div>
+      </p>
     );
   } else if (reason.reason === 'no_kernel') {
-    return (
-      <div className="jp-KernelUsage-section-separator">
-        {props.trans.__('No active kernel found.')}
-      </div>
-    );
+    return <p>{props.trans.__('No active kernel found.')}</p>;
   } else {
     return (
-      <div className="jp-KernelUsage-section-separator">
+      <p>
         {props.trans.__('Reason: %1.', reason.reason)}
-      </div>
+      </p>
     );
   }
 };
@@ -257,12 +253,12 @@ const KernelUsage = (props: {
     blankStateReason?.reason !== 'loading'
   ) {
     return (
-      <>
-        <h3 className="jp-KernelUsage-section-separator">
-          {props.trans.__('Kernel usage not available')}
-        </h3>
-        <BlankReason trans={props.trans} reason={blankStateReason} />
-      </>
+      <div className="jp-KernelUsage-placeholder">
+        <div className="jp-KernelUsage-placeholderContent">
+          <h3>{props.trans.__('Kernel Usage Not Available')}</h3>
+          <BlankReason trans={props.trans} reason={blankStateReason} />
+        </div>
+      </div>
     );
   }
   if (kernelId) {

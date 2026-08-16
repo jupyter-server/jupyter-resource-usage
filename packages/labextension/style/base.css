@@ -22,8 +22,20 @@
 }
 
 .jp-KernelUsage-content {
-  padding: 10px;
+  padding: 8px;
   overflow-y: auto;
+}
+
+.jp-KernelUsage-placeholder {
+  text-align: center;
+}
+
+.jp-KernelUsage-placeholderContent {
+  color: var(--jp-content-font-color2);
+}
+
+.jp-KernelUsage-placeholderContent > h3 {
+  margin-bottom: var(--jp-content-heading-margin-bottom);
 }
 
 .jp-IndicatorContainer {
