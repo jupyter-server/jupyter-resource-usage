@@ -1,4 +1,6 @@
 import json
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from inspect import isawaitable
 
@@ -23,9 +25,28 @@ except ImportError:
 
 class ApiHandler(APIHandler):
     executor = ThreadPoolExecutor(max_workers=5)
+
     # Cache Process instances so cpu_percent() (without interval) can compare
     # against the previous measurement instead of always returning 0.
     _cached_processes = {}
+
+    # The status bar item, the top bar item and every additional browser tab
+    # poll this endpoint on their own schedule, and they all share the caches
+    # above. Without a floor on the sampling interval whichever request lands
+    # second measures over a couple of milliseconds, which reads as 0 or as a
+    # large spike, so serve it the reading taken for the first one instead.
+    _cpu_lock = threading.Lock()
+    _cpu_sample = None
+    min_cpu_sample_interval = 0.5
+
+    @staticmethod
+    def _remembered(process):
+        """Return the instance used for this process on the previous request."""
+        previous = ApiHandler._cached_processes.get(process.pid)
+        # psutil identifies a process by (pid, create_time), so a recycled PID
+        # falls back to the fresh instance rather than measuring the new
+        # process against the CPU times of the dead one.
+        return previous if previous == process else process
 
     @web.authenticated
     async def get(self):
@@ -36,10 +57,8 @@ class ApiHandler(APIHandler):
 
         cur_process = psutil.Process()
         all_processes = [cur_process] + cur_process.children(recursive=True)
-
-        # Build list using cached Process instances for cpu_percent tracking
-        cached = [ApiHandler._cached_processes.get(p.pid, p) for p in all_processes]
-        ApiHandler._cached_processes = {p.pid: p for p in cached}
+        all_processes = [self._remembered(p) for p in all_processes]
+        ApiHandler._cached_processes = {p.pid: p for p in all_processes}
 
         # Get memory information
         rss = 0
@@ -71,7 +90,7 @@ class ApiHandler(APIHandler):
         # Optionally get CPU information
         if config.track_cpu_percent:
             cpu_count = psutil.cpu_count()
-            cpu_percent = await self._get_cpu_percent(cached)
+            cpu_percent = await self._get_cpu_percent(all_processes)
 
             if config.cpu_limit != 0:
                 limits["cpu"] = {"cpu": config.cpu_limit}
@@ -108,7 +127,15 @@ class ApiHandler(APIHandler):
             except:
                 return 0
 
-        return sum([get_cpu_percent(p) for p in all_processes])
+        with ApiHandler._cpu_lock:
+            now = time.monotonic()
+            sample = ApiHandler._cpu_sample
+            if sample is not None and now - sample[0] < self.min_cpu_sample_interval:
+                return sample[1]
+
+            cpu_percent = sum([get_cpu_percent(p) for p in all_processes])
+            ApiHandler._cpu_sample = (now, cpu_percent)
+            return cpu_percent
 
 
 class KernelUsageHandler(APIHandler):
