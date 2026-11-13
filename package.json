@@ -18,7 +18,7 @@
     "clean": "lerna run clean",
     "install": "lerna bootstrap",
     "install:dev": "jlpm run build:prod && jlpm run develop",
-    "install:extension": "jupyter labextension develop --overwrite .",
+    "install:extension": "jupyter-builder develop --overwrite .",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
     "lint": "jlpm run eslint && jlpm run prettier",

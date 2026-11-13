@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "hatchling>=1.5.0",
-    "jupyterlab>=4.0,<5",
+    "jupyter-builder>=1.3.0,<2",
     "pip",
 ]
 build-backend = "hatchling.build"
@@ -51,6 +51,7 @@ dev = [
     "autopep8",
     "black",
     "flake8",
+    "jupyter-builder>=1.3.0",
     "mock",
     "pytest",
     "pytest-cov>=2.6.1",
@@ -115,6 +116,7 @@ src = "jupyter_resource_usage/_version.py"
 
 [[tool.tbump.file]]
 src = "packages/labextension/package.json"
+search = '"version": "{current_version}"'
 
 [[tool.tbump.field]]
 name = "channel"
@@ -126,7 +128,7 @@ default = ""
 
 [tool.jupyter-releaser.hooks]
 before-build-npm = [
-    "python -m pip install 'jupyterlab>=4.0,<5'",
+    "python -m pip install 'jupyter-builder>=1.3.0,<2'",
     "jlpm",
     "jlpm clean",
     "jlpm build:prod",
