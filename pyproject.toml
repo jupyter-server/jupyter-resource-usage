@@ -116,6 +116,7 @@ src = "jupyter_resource_usage/_version.py"
 
 [[tool.tbump.file]]
 src = "packages/labextension/package.json"
+search = '"version": "{current_version}"'
 
 [[tool.tbump.field]]
 name = "channel"
