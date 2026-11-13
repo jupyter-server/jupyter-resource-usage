@@ -1,4 +1,6 @@
 import json
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from inspect import isawaitable
 
@@ -26,6 +28,10 @@ class ApiHandler(APIHandler):
     # Cache Process instances so cpu_percent() (without interval) can compare
     # against the previous measurement instead of always returning 0.
     _cached_processes = {}
+    _cpu_lock = threading.Lock()
+    _cpu_min_interval = 1.0
+    _cpu_last_sampled = None
+    _cpu_last_value = 0.0
 
     @web.authenticated
     async def get(self):
@@ -100,6 +106,14 @@ class ApiHandler(APIHandler):
 
     @run_on_executor
     def _get_cpu_percent(self, all_processes):
+        return ApiHandler._sample_cpu_percent(all_processes)
+
+    @classmethod
+    def _sample_cpu_percent(cls, all_processes):
+        # cpu_percent() measures CPU time since the previous call on the same
+        # Process instance. Requests arriving close together would measure a
+        # tiny interval, where a single clock tick yields hundreds of percent,
+        # so reuse the last result until the minimum interval has elapsed.
         def get_cpu_percent(p):
             try:
                 return p.cpu_percent()
@@ -108,7 +122,16 @@ class ApiHandler(APIHandler):
             except:
                 return 0
 
-        return sum([get_cpu_percent(p) for p in all_processes])
+        with cls._cpu_lock:
+            now = time.monotonic()
+            if (
+                cls._cpu_last_sampled is not None
+                and now - cls._cpu_last_sampled < cls._cpu_min_interval
+            ):
+                return cls._cpu_last_value
+            cls._cpu_last_value = sum([get_cpu_percent(p) for p in all_processes])
+            cls._cpu_last_sampled = now
+            return cls._cpu_last_value
 
 
 class KernelUsageHandler(APIHandler):
