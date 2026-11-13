@@ -27,10 +27,16 @@ def recycled(pid):
     psutil tells processes apart by ``(pid, create_time)`` and remembers the CPU
     times read by the previous ``cpu_percent()`` call, so an entry left over by
     a dead process would measure its successor against times it never spent.
+
+    This sets the private ``_ident`` and ``_last_proc_cpu_times`` attributes of
+    psutil, so a psutil release that changes them can fail this test without a
+    fault in the handler.
     """
     stale = psutil.Process(pid)
     stale.cpu_percent()
-    stale._ident = (pid, 0.0)  # as if the PID had belonged to an older process
+    # as if the PID had belonged to an older process; psutil 8 takes a creation
+    # time of 0 as unknown, and an unknown time compares equal to any other
+    stale._ident = (pid, 1.0)
     times = stale._last_proc_cpu_times
     stale._last_proc_cpu_times = times._replace(user=times.user + 3600)
     return stale
