@@ -76,8 +76,10 @@ class ApiHandler(APIHandler):
             if config.cpu_limit != 0:
                 limits["cpu"] = {"cpu": config.cpu_limit}
                 if config.cpu_warning_threshold != 0:
-                    limits["cpu"]["warn"] = (config.cpu_limit - cpu_percent) < (
-                        config.cpu_limit * config.cpu_warning_threshold
+                    # cpu_limit is a number of CPUs, cpu_percent a percentage of one
+                    cpu_limit_percent = config.cpu_limit * 100
+                    limits["cpu"]["warn"] = (cpu_limit_percent - cpu_percent) < (
+                        cpu_limit_percent * config.cpu_warning_threshold
                     )
 
             metrics.update(cpu_percent=cpu_percent, cpu_count=cpu_count)
