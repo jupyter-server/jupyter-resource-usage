@@ -33,7 +33,7 @@ export class ResourceUsageStatus extends VDomRenderer<ResourceUsage.Model> {
       return <div></div>;
     }
     let text: string;
-    if (this.model.memoryLimit === null) {
+    if (this.model.memoryLimitDisplay === null) {
       text = this._trans.__(
         '%1 %2 %3',
         this.model.memLabel,
@@ -42,11 +42,12 @@ export class ResourceUsageStatus extends VDomRenderer<ResourceUsage.Model> {
       );
     } else {
       text = this._trans.__(
-        '%1 %2 / %3 %4',
+        '%1 %2 %3 / %4 %5',
         this.model.memLabel,
         this.model.currentMemory.toFixed(Private.DECIMAL_PLACES),
-        this.model.memoryLimit.toFixed(Private.DECIMAL_PLACES),
-        this.model.memUnits
+        this.model.memUnits,
+        this.model.memoryLimitDisplay.toFixed(Private.DECIMAL_PLACES),
+        this.model.memLimitUnits
       );
     }
     if (this.model.cpuAvailable) {
