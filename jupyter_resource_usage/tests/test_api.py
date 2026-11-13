@@ -98,10 +98,17 @@ async def test_cpu_percent_is_reported(jp_fetch, busy_child):
     assert metrics["cpu_percent"] > 0
 
 
-async def test_cpu_percent_is_reported_to_concurrent_clients(jp_fetch, busy_child):
+async def test_cpu_percent_is_reported_to_concurrent_clients(
+    jp_fetch, busy_child, monkeypatch
+):
     """The status bar item, the top bar item and every browser tab poll on their own."""
     await get_metrics(jp_fetch)
     await asyncio.sleep(1)
+    # A slow runner can take longer than the default interval to get to the
+    # second request, so widen the interval. The baseline reading would then
+    # be served to both requests, so drop it.
+    monkeypatch.setattr(ApiHandler, "min_cpu_sample_interval", 60, raising=False)
+    ApiHandler._cpu_sample = None
     first, second = await asyncio.gather(get_metrics(jp_fetch), get_metrics(jp_fetch))
     assert first["cpu_percent"] > 0
     # whichever request arrives second must not measure over the few
