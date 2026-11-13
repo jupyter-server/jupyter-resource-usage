@@ -4,6 +4,8 @@ import React, { useState, useEffect, ReactElement } from 'react';
 
 import { IndicatorComponent } from './indicator';
 
+import { MemoryUnit } from './format';
+
 import { ResourceUsage } from './model';
 
 export const DEFAULT_MEMORY_LABEL = 'Mem: ';
@@ -22,11 +24,18 @@ const MemoryViewComponent = ({
   const [values, setValues] = useState<number[]>([]);
 
   const update = (): void => {
-    const { memoryLimit, currentMemory, memUnits } = model;
-    const precision = ['B', 'KB', 'MB', 'GB'].indexOf(memUnits) > 0 ? 0 : 3;
-    const newText = `${currentMemory.toFixed(precision)} ${
-      memoryLimit ? '/ ' + memoryLimit.toFixed(precision) : ''
-    } ${memUnits}`;
+    const { memoryLimitDisplay, memLimitUnits, currentMemory, memUnits } =
+      model;
+    const toText = (value: number, units: MemoryUnit): string => {
+      const precision = ['B', 'KB', 'MB', 'GB'].indexOf(units) > 0 ? 0 : 3;
+      return `${value.toFixed(precision)} ${units}`;
+    };
+    const newText = memoryLimitDisplay
+      ? `${toText(currentMemory, memUnits)} / ${toText(
+          memoryLimitDisplay,
+          memLimitUnits
+        )}`
+      : toText(currentMemory, memUnits);
     const newValues = model.values.map((value) => value.memoryPercent);
     setText(newText);
     setValues(newValues);
