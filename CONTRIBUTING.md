@@ -93,7 +93,7 @@ The JupyterLab extension for `jupyter-resource-usage` was bootstrapped from the 
 python -m pip install -e ".[dev]"
 
 # link your development version of the extension with JupyterLab
-jupyter labextension develop . --overwrite
+jupyter-builder develop . --overwrite
 
 # go to the labextension directory
 cd packages/labextension/
