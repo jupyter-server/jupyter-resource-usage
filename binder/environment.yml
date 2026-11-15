@@ -5,4 +5,4 @@ dependencies:
 - python=3.10
 - jupyterlab=4
 - notebook=7
-- nodejs=18
+- nodejs=24
