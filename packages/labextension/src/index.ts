@@ -142,6 +142,10 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
       diskLabel = diskSettings.label;
     }
 
+    if (!enablePlugin) {
+      return;
+    }
+
     const model = new ResourceUsage.Model({
       refreshRate,
       serverSettings,
@@ -154,20 +158,20 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
     });
     await model.refresh();
 
-    if (enablePlugin && model.cpuAvailable) {
+    if (model.cpuAvailable) {
       toolbarRegistry.addFactory('TopBar', 'cpu', () => {
         const cpu = CpuView.createCpuView(model, cpuLabel);
         return cpu;
       });
     }
 
-    if (enablePlugin && model.memoryAvailable) {
+    if (model.memoryAvailable) {
       toolbarRegistry.addFactory('TopBar', 'memory', () => {
         const memory = MemoryView.createMemoryView(model, memoryLabel);
         return memory;
       });
     }
-    if (enablePlugin && model.diskAvailable) {
+    if (model.diskAvailable) {
       toolbarRegistry.addFactory('TopBar', 'disk', () => {
         const disk = DiskView.createDiskView(model, diskLabel);
         return disk;
