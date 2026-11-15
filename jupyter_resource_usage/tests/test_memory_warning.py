@@ -27,10 +27,12 @@ def get_metrics(memory_info, threshold=0.2):
         track_disk_usage=False,
     )
     written = []
-    handler = SimpleNamespace(
-        settings={"jupyter_resource_usage_display_config": config},
-        write=written.append,
+    # a handler without a request, so that `get` can still call the other methods
+    handler = ApiHandler.__new__(ApiHandler)
+    handler.application = SimpleNamespace(
+        settings={"jupyter_resource_usage_display_config": config}
     )
+    handler.write = written.append
     with patch("jupyter_resource_usage.api.psutil.Process", return_value=process):
         # the underlying coroutine, without the authentication check
         asyncio.run(ApiHandler.get.__wrapped__(handler))
