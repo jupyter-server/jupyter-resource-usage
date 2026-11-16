@@ -60,7 +60,9 @@ class ApiHandler(APIHandler):
 
         limits = {"memory": {"rss": mem_limit, "pss": mem_limit}}
         if config.mem_limit and config.mem_warning_threshold != 0:
-            limits["memory"]["warn"] = (mem_limit - rss) < (
+            # warn on the same value the frontend displays: PSS when available
+            used_memory = pss if pss is not None else rss
+            limits["memory"]["warn"] = (mem_limit - used_memory) < (
                 mem_limit * config.mem_warning_threshold
             )
 
