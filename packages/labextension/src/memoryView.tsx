@@ -30,8 +30,11 @@ const MemoryViewComponent = ({
       const precision = ['B', 'KB', 'MB', 'GB'].indexOf(units) > 0 ? 0 : 3;
       return `${value.toFixed(precision)} ${units}`;
     };
+    // keeps limit up to two decimals: 1.5 GB, not 2 GB
+    const limitText = (value: number, units: MemoryUnit): string =>
+      `${parseFloat(value.toFixed(2))} ${units}`;
     const newText = memoryLimitDisplay
-      ? `${toText(currentMemory, memUnits)} / ${toText(
+      ? `${toText(currentMemory, memUnits)} / ${limitText(
           memoryLimitDisplay,
           memLimitUnits
         )}`
