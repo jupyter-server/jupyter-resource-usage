@@ -133,7 +133,8 @@ class ResourceUseDisplay(Configurable):
         trait_types=[Float(), Callable()],
         default_value=0,
         help="""
-        CPU usage limit to display to the user.
+        CPU usage limit to display to the user, as a number of CPUs
+        (for example 1.5).
 
         Note that this does not actually limit the user's CPU usage!
 
