@@ -122,7 +122,7 @@ class ResourceUseDisplay(Configurable):
         Warn user with flashing lights when CPU usage is within this fraction
         CPU usage limit.
 
-        For example, if CPU limit is 150%, `cpu_warning_threshold` is 0.1,
+        For example, if CPU limit is 1.5 CPUs, `cpu_warning_threshold` is 0.1,
         we will start warning the user when they use (150 - (150 * 0.1)) %.
 
         Set to 0 to disable warning.
@@ -133,7 +133,8 @@ class ResourceUseDisplay(Configurable):
         trait_types=[Float(), Callable()],
         default_value=0,
         help="""
-        CPU usage limit to display to the user.
+        CPU usage limit to display to the user, as a number of CPUs
+        (for example 1.5).
 
         Note that this does not actually limit the user's CPU usage!
 
