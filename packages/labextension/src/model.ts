@@ -87,8 +87,10 @@ export namespace ResourceUsage {
           this._currentDisk = 0;
           this._maxDisk = 0;
           this._memoryLimit = null;
+          this._memoryLimitDisplay = null;
           this._cpuLimit = null;
           this._memUnits = 'B';
+          this._memLimitUnits = 'B';
 
           if (oldMemoryAvailable || oldCpuAvailable) {
             this.stateChanged.emit();
@@ -170,9 +172,25 @@ export namespace ResourceUsage {
 
     /**
      * The current memory limit, or null if not specified.
+     * Expressed in the same units as the current memory usage.
      */
     get memoryLimit(): number | null {
       return this._memoryLimit;
+    }
+
+    /**
+     * The current memory limit, or null if not specified.
+     * Expressed in its own units, which do not change with the usage.
+     */
+    get memoryLimitDisplay(): number | null {
+      return this._memoryLimitDisplay;
+    }
+
+    /**
+     * The units of the memory limit shown to the user.
+     */
+    get memLimitUnits(): MemoryUnit {
+      return this._memLimitUnits;
     }
 
     /**
@@ -240,7 +258,9 @@ export namespace ResourceUsage {
         this._currentDisk = 0;
         this._maxDisk = 0;
         this._memoryLimit = null;
+        this._memoryLimitDisplay = null;
         this._memUnits = 'B';
+        this._memLimitUnits = 'B';
         this._diskUnits = 'B';
         this._warn = new ResourceUsageWarning();
         return;
@@ -261,6 +281,11 @@ export namespace ResourceUsage {
       this._memoryLimit = memoryLimit
         ? memoryLimit / MEMORY_UNIT_LIMITS[memUnits]
         : null;
+      const [memoryLimitDisplay, memLimitUnits] = convertToLargestUnit(
+        memoryLimit ?? undefined
+      );
+      this._memoryLimitDisplay = memoryLimit ? memoryLimitDisplay : null;
+      this._memLimitUnits = memLimitUnits;
       const memoryPercent = this.memoryLimit
         ? Math.min(this._currentMemory / this.memoryLimit, 1)
         : 0;
@@ -310,10 +335,12 @@ export namespace ResourceUsage {
     private _maxDisk = 0;
     private _currentCpuPercent = 0;
     private _memoryLimit: number | null = null;
+    private _memoryLimitDisplay: number | null = null;
     private _cpuLimit: number | null = null;
     private _poll: Poll<Private.IMetricRequestResult | null>;
     private _serverSettings: ServerConnection.ISettings;
     private _memUnits: MemoryUnit = 'B';
+    private _memLimitUnits: MemoryUnit = 'B';
     private _diskUnits: MemoryUnit = 'B';
     private _warn = new ResourceUsageWarning();
     private _values: Model.IMetricValue[] = [];
