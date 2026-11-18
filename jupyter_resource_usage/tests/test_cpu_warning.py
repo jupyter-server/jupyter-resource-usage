@@ -29,11 +29,13 @@ def get_metrics(cpu_percent, cpu_limit, threshold=0.1):
         return cpu_percent
 
     written = []
-    handler = SimpleNamespace(
-        settings={"jupyter_resource_usage_display_config": config},
-        write=written.append,
-        _get_cpu_percent=get_cpu_percent,
+    # a handler without a request, so that `get` can still call the other methods
+    handler = ApiHandler.__new__(ApiHandler)
+    handler.application = SimpleNamespace(
+        settings={"jupyter_resource_usage_display_config": config}
     )
+    handler.write = written.append
+    handler._get_cpu_percent = get_cpu_percent
     with patch("jupyter_resource_usage.api.psutil.Process", return_value=process):
         # the underlying coroutine, without the authentication check
         asyncio.run(ApiHandler.get.__wrapped__(handler))
