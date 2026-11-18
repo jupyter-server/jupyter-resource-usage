@@ -1,3 +1,4 @@
+import asyncio
 from typing import Optional
 
 from prometheus_client import Gauge
@@ -37,7 +38,7 @@ class PrometheusHandler(Callable):
             self.TOTAL_MEMORY_USAGE.set(memory_metric_values["memory_info_rss"])
             self.MAX_MEMORY_USAGE.set(self.apply_memory_limit(memory_metric_values))
         if self.config.track_cpu_percent:
-            cpu_metric_values = self.metricsloader.cpu_metrics()
+            cpu_metric_values = await asyncio.to_thread(self.metricsloader.cpu_metrics)
             if cpu_metric_values is not None:
                 self.TOTAL_CPU_USAGE.set(cpu_metric_values["cpu_percent"])
                 self.MAX_CPU_USAGE.set(self.apply_cpu_limit(cpu_metric_values))
