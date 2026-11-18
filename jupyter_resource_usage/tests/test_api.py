@@ -53,8 +53,7 @@ def jp_server_config():
             "ServerApp": {"jpserver_extensions": {"jupyter_resource_usage": True}},
             "ResourceUseDisplay": {
                 "track_cpu_percent": True,
-                # the Prometheus callback samples with a blocking interval,
-                # which would hold up the event loop while a request is served
+                # the Prometheus gauges can be registered only once per process
                 "enable_prometheus_metrics": False,
             },
         }
