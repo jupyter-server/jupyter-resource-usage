@@ -65,4 +65,3 @@ def test_cpu_sampling_does_not_block_event_loop():
 
     handler.TOTAL_CPU_USAGE.set.assert_called_once_with(42.0)
     handler.MAX_CPU_USAGE.set.assert_called_once_with(400.0)
-
