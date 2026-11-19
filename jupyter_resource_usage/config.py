@@ -116,6 +116,23 @@ class ResourceUseDisplay(Configurable):
         """,
     ).tag(config=True)
 
+    cpu_sample_interval = Float(
+        default_value=2.0,
+        min=0.0,
+        help="""
+        Minimum time, in seconds, between two CPU usage measurements.
+
+        The CPU usage reported by `/api/metrics/v1` is the average over the
+        time since the previous measurement. A request that arrives sooner than
+        this after the last measurement is served that measurement instead of
+        taking a new one, so that several clients polling on their own schedule
+        (the top bar, the status bar, other browser tabs) all see the same value.
+
+        Keep it below the refresh interval of the clients, otherwise some
+        responses repeat the previous reading.
+        """,
+    ).tag(config=True)
+
     cpu_warning_threshold = Float(
         default_value=0.1,
         help="""

@@ -53,6 +53,8 @@ def jp_server_config():
             "ServerApp": {"jpserver_extensions": {"jupyter_resource_usage": True}},
             "ResourceUseDisplay": {
                 "track_cpu_percent": True,
+                # shorter than the sleeps between the requests of these tests
+                "cpu_sample_interval": 0.5,
                 # the Prometheus callback samples with a blocking interval,
                 # which would hold up the event loop while a request is served
                 "enable_prometheus_metrics": False,
@@ -99,15 +101,16 @@ async def test_cpu_percent_is_reported(jp_fetch, busy_child):
 
 
 async def test_cpu_percent_is_reported_to_concurrent_clients(
-    jp_fetch, busy_child, monkeypatch
+    jp_fetch, jp_serverapp, busy_child, monkeypatch
 ):
-    """The status bar item, the top bar item and every browser tab poll on their own."""
+    """Every browser tab polls on its own."""
     await get_metrics(jp_fetch)
     await asyncio.sleep(1)
     # A slow runner can take longer than the default interval to get to the
     # second request, so widen the interval. The baseline reading would then
     # be served to both requests, so drop it.
-    monkeypatch.setattr(ApiHandler, "min_cpu_sample_interval", 60, raising=False)
+    config = jp_serverapp.web_app.settings["jupyter_resource_usage_display_config"]
+    monkeypatch.setattr(config, "cpu_sample_interval", 60)
     ApiHandler._cpu_sample = None
     first, second = await asyncio.gather(get_metrics(jp_fetch), get_metrics(jp_fetch))
     assert first["cpu_percent"] > 0

@@ -64,6 +64,47 @@ namespace CommandIDs {
   export const getKernelUsage = 'kernel-usage:get';
 }
 
+const TOPBAR_PLUGIN_ID = '@jupyter-server/resource-usage:topbar-item';
+
+let sharedModel: Promise<ResourceUsage.Model> | null = null;
+
+/**
+ * Get the model polling the metrics endpoint, creating it on first use.
+ *
+ * The status bar item and the top bar items show the same metrics, so they
+ * share one model. Separate models would each poll the server on their own
+ * schedule, and since the server reports the CPU usage averaged over the time
+ * since the previous request, they would show different values.
+ */
+const getSharedModel = (
+  app: JupyterFrontEnd,
+  info: JupyterLab.IInfo | null,
+  settingRegistry: ISettingRegistry | null
+): Promise<ResourceUsage.Model> => {
+  if (!sharedModel) {
+    sharedModel = (async () => {
+      let refreshRate = DEFAULT_REFRESH_RATE;
+      if (settingRegistry) {
+        const settings = await settingRegistry.load(TOPBAR_PLUGIN_ID);
+        refreshRate = settings.get('refreshRate').composite as number;
+      }
+      const model = new ResourceUsage.Model({
+        refreshRate,
+        serverSettings: app.serviceManager.serverSettings,
+        refreshStandby: () => {
+          if (info) {
+            return !info.isConnected || 'when-hidden';
+          }
+          return 'when-hidden';
+        },
+      });
+      await model.refresh();
+      return model;
+    })();
+  }
+  return sharedModel;
+};
+
 /**
  * Initialization data for the jupyter-resource-usage extension.
  */
@@ -71,27 +112,17 @@ const resourceStatusPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-server/resource-usage:status-item',
   autoStart: true,
   requires: [ITranslator],
-  optional: [IStatusBar, JupyterLab.IInfo],
-  activate: (
+  optional: [IStatusBar, JupyterLab.IInfo, ISettingRegistry],
+  activate: async (
     app: JupyterFrontEnd,
     translator: ITranslator,
     statusBar: IStatusBar | null,
-    info: JupyterLab.IInfo | null
+    info: JupyterLab.IInfo | null,
+    settingRegistry: ISettingRegistry | null
   ) => {
-    const refreshRate = DEFAULT_REFRESH_RATE;
-    const { serverSettings } = app.serviceManager;
-
     const trans = translator.load('jupyter-resource-usage');
-    const item = new ResourceUsageStatus(trans, {
-      refreshRate,
-      serverSettings,
-      refreshStandby: () => {
-        if (info) {
-          return !info.isConnected || 'when-hidden';
-        }
-        return 'when-hidden';
-      },
-    });
+    const model = await getSharedModel(app, info, settingRegistry);
+    const item = new ResourceUsageStatus(trans, model);
 
     if (statusBar) {
       statusBar.registerStatusItem(resourceStatusPlugin.id, {
@@ -109,7 +140,7 @@ const resourceStatusPlugin: JupyterFrontEndPlugin<void> = {
  * Initialization data for the jupyterlab-system-monitor extension.
  */
 const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-server/resource-usage:topbar-item',
+  id: TOPBAR_PLUGIN_ID,
   autoStart: true,
   requires: [IToolbarWidgetRegistry],
   optional: [ISettingRegistry, JupyterLab.IInfo],
@@ -119,9 +150,7 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
     settingRegistry: ISettingRegistry | null,
     info: JupyterLab.IInfo | null
   ) => {
-    const { serverSettings } = app.serviceManager;
     let enablePlugin = DEFAULT_ENABLE_SYSTEM_MONITOR;
-    let refreshRate = DEFAULT_REFRESH_RATE;
     let cpuLabel = DEFAULT_CPU_LABEL;
     let memoryLabel = DEFAULT_MEMORY_LABEL;
     let diskLabel = DEFAULT_DISK_LABEL;
@@ -129,7 +158,6 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
     if (settingRegistry) {
       const settings = await settingRegistry.load(systemMonitorPlugin.id);
       enablePlugin = settings.get('enable').composite as boolean;
-      refreshRate = settings.get('refreshRate').composite as number;
 
       const cpuSettings = settings.get('cpu').composite as IResourceSettings;
       cpuLabel = cpuSettings.label;
@@ -146,17 +174,7 @@ const systemMonitorPlugin: JupyterFrontEndPlugin<void> = {
       return;
     }
 
-    const model = new ResourceUsage.Model({
-      refreshRate,
-      serverSettings,
-      refreshStandby: () => {
-        if (info) {
-          return !info.isConnected || 'when-hidden';
-        }
-        return 'when-hidden';
-      },
-    });
-    await model.refresh();
+    const model = await getSharedModel(app, info, settingRegistry);
 
     if (model.cpuAvailable) {
       toolbarRegistry.addFactory('TopBar', 'cpu', () => {
