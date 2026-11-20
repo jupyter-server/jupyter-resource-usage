@@ -20,8 +20,8 @@ export class ResourceUsageStatus extends VDomRenderer<ResourceUsage.Model> {
   /**
    * Construct a new resource usage status item.
    */
-  constructor(trans: TranslationBundle, options: ResourceUsage.Model.IOptions) {
-    super(new ResourceUsage.Model(options));
+  constructor(trans: TranslationBundle, model: ResourceUsage.Model) {
+    super(model);
     this._trans = trans;
   }
 

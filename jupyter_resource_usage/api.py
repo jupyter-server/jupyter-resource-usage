@@ -30,14 +30,16 @@ class ApiHandler(APIHandler):
     # against the previous measurement instead of always returning 0.
     _cached_processes = {}
 
-    # The status bar item, the top bar item and every additional browser tab
-    # poll this endpoint on their own schedule, and they all share the caches
-    # above. Without a floor on the sampling interval whichever request lands
-    # second measures over a couple of milliseconds, which reads as 0 or as a
-    # large spike, so serve it the reading taken for the first one instead.
+    # Every browser tab polls this endpoint on its own schedule, and they all
+    # share the caches above, so each request would otherwise measure the CPU
+    # time spent since the previous request of *any* client. Two tabs would then
+    # report different averages over differently sized windows, and whichever
+    # request lands second would measure over a couple of milliseconds, which
+    # reads as 0 or as a large spike. Instead a reading is taken at most once
+    # per `ResourceUseDisplay.cpu_sample_interval` and served to every request
+    # in between, so all clients see the same value.
     _cpu_lock = threading.Lock()
     _cpu_sample = None
-    min_cpu_sample_interval = 0.5
 
     @staticmethod
     def _remembered(process):
@@ -131,10 +133,12 @@ class ApiHandler(APIHandler):
             except:
                 return 0
 
+        config = self.settings["jupyter_resource_usage_display_config"]
+
         with ApiHandler._cpu_lock:
             now = time.monotonic()
             sample = ApiHandler._cpu_sample
-            if sample is not None and now - sample[0] < self.min_cpu_sample_interval:
+            if sample is not None and now - sample[0] < config.cpu_sample_interval:
                 return sample[1]
 
             cpu_percent = sum([get_cpu_percent(p) for p in all_processes])

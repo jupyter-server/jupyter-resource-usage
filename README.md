@@ -142,6 +142,11 @@ memory:
 
 ![Screenshot with CPU and memory](./doc/statusbar-cpu.png)
 
+`cpu_percent` is the average CPU usage since the previous measurement. To make all clients
+(the status bar, the top bar, other browser tabs) show the same value, the server takes a new
+measurement at most once every `cpu_sample_interval` seconds (2 by default) and serves that
+measurement to the requests in between. Keep it below the refresh interval of the clients (5 seconds by default).
+
 ### Disk [partition] Usage
 
 `jupyter-resource-usage` can also track disk usage [of a defined partition] and report the `total` and `used` values as part of the `/api/metrics/v1` response.
