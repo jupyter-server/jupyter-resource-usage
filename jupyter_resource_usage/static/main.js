@@ -46,6 +46,7 @@ define([ // eslint-disable-line no-undef
             #jupyter-resource-usage-display-disk { padding: 2px 8px; }
             `
         ));
+    }
 
     function humanFileSize(size) {
         var i = Math.floor(Math.log(size) / Math.log(1024));
@@ -147,4 +148,4 @@ define([ // eslint-disable-line no-undef
     return {
         load_ipython_extension: load_ipython_extension,
     };
-}});
+});
